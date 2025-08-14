@@ -529,12 +529,12 @@ with_theme(Makie.theme(nothing)) do
     λ = brute_fit_dist.λ
     @info λ
     lines!(ax, xplt, brute_fit_dist, label = "Curve fit on histogram, parameter sweep")
-    #lines!(ax, xplt, λ * pdf.(brute_fit_dist.N₁, xplt), label = "Normal 1st")
-    #lines!(ax, xplt, (1-λ) * pdf(brute_fit_dist.N₂, xplt), label = "Normal 2nd")
-    #lines!(ax, xplt, hist_curve_fit_distrib, label = "Curve fit on histogram, LsqFit.jl")
+    ##lines!(ax, xplt, λ * pdf.(brute_fit_dist.N₁, xplt), label = "Normal 1st")
+    ##lines!(ax, xplt, (1-λ) * pdf(brute_fit_dist.N₂, xplt), label = "Normal 2nd")
+    ##lines!(ax, xplt, hist_curve_fit_distrib, label = "Curve fit on histogram, LsqFit.jl")
     ax.xminorgridvisible = true
     ax.yminorgridvisible = true
-    #lines!(ax, xplt, pdf.(mixture_model_test, xplt))
+    ##lines!(ax, xplt, pdf.(mixture_model_test, xplt))
     axislegend(ax)
     f
 end
@@ -590,7 +590,7 @@ md"""
 CairoMakie.density(testset)
 
 # ╔═╡ 43a719e7-97d5-4e36-ba6f-3a4ec4b02463
-#density_maxes = findmaxima(testset_kde.density) |> peakproms
+##density_maxes = findmaxima(testset_kde.density) |> peakproms
 
 # ╔═╡ b822d103-e6c1-4b76-86ea-84eb84736133
 testset_kde, density_maxes = BiNormalDistributions.histmaxes(testset, 2)
@@ -635,7 +635,7 @@ end
 # ╔═╡ 8572d3a4-405c-438c-9dfc-0d37222eee9b
 let f = Figure()
     ax = Axis(f[1,1], xminorgridvisible = true, yminorgridvisible = true)
-    #stephist!(ax, testset; bins, normalization = :pdf)
+    ##stephist!(ax, testset; bins, normalization = :pdf)
     plot!(ax, testset_kde, label = "kde")
     xplt = range(extrema(testset)..., length = 1000)
     lines!(ax, xplt, kde_curve_fit_distrib, label = "Curve fit on kde, LsqFit.jl")
@@ -668,11 +668,11 @@ testset_mle_fit_distrib = fit_mle(MixtureModel([Normal(), Normal()], ), testset;
 # ╔═╡ 788836a8-e168-4eed-b5cd-3522e43b80a6
 let f = Figure()
     ax = Axis(f[1,1], xminorgridvisible = true, yminorgridvisible = true)
-    #stephist!(ax, testset; bins, normalization = :pdf, label = "stephist")
+    ##stephist!(ax, testset; bins, normalization = :pdf, label = "stephist")
     plot!(ax, testset_kde, label = "KDE")
     xplt = range(extrema(testset)..., length = 1000)
     lines!(ax, xplt, testset_mle_fit_distrib, label = "EM fit")
-    #lines!(ax, xplt, pdf.(mixture_model_test, xplt))
+    ##lines!(ax, xplt, pdf.(mixture_model_test, xplt))
     axislegend(ax)
     f
 end
@@ -685,7 +685,7 @@ md"""
 # ╔═╡ e780481f-ffde-407f-8dff-bc289e0ceb40
 function fitdistribution(DT::Type{<:Distribution}, x::AbstractVector{Union{Missing,T}}) where {T}
     x = collect(skipmissing(x))
-    if isempty(x) # don't fit to a dataset with only missings
+    if isempty(x) # don't fit to a dataset with only `missing`s
         return missing
     end
 

@@ -2,7 +2,7 @@ using JLD2
 using DataFrames
 
 """
-dehistogram each dataframe of a GroupedDataFrame, then return one big DataFrame
+De-histogram each `DataFrame` of a `GroupedDataFrame`, then return one big DataFrame
 containing all the rows.
 """
 function dehistogram(gdf::GroupedDataFrame)
@@ -30,10 +30,10 @@ CR_df = let
     df = load_object("dNdp-CR.jld2")
     gdf = groupby(df, [:initial_seed, :iteration])
     insertcols!(df, 1, :run_id => groupindices(gdf))
-    # drop the two columns which are now redundant (or not ig)
+    # drop the two columns which are now redundant (or not I guess)
     #select!(df, Not(:initial_seed, :iteration))
     # column i is pointless, only has 66s
-    # plot is useful for pgf plot, not here
+    # plot is useful for PGF plot, not here
     select!(df, Not(:i, :plot))
 
     disallowmissing!(df, error = false)
@@ -48,7 +48,7 @@ CR_p_df, CR_e_df = let
     gdf = groupby(CR_df, [:iter, :ion])
     CR_df_dehistogrammed = dehistogram(gdf)
 
-    # if all three dNdp_cr is missing, drop that row
+    # if all three dN/dp_cr is missing, drop that row
     subset!(
         CR_df_dehistogrammed,
         [:log_dNdp_cr_sf, :log_dNdp_cr_pf, :log_dNdp_cr_ISM] =>
@@ -76,7 +76,7 @@ save_object("dNdp-CR-electrons-iteration-split.jld2", CR_e_gdf_iteration)
 @info "Saved dNdp-CR-electrons-iteration-split.jld2"
 
 
-# repeat for thermal dNdp
+# repeat for thermal dN/dp
 #therm_df = let
 #    df = load_object("dNdp_therm.jld2")
 #    gdf = groupby(df, [:initial_seed, :iteration])

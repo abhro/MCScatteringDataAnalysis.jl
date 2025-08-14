@@ -126,7 +126,7 @@ md"""
 md"""
 at plot_iter 1, there's a weird kick at the end. why?
 
-Dr. warren suggestion: momentum splitting. to be investigated
+Dr. Warren suggestion: momentum splitting. to be investigated
 """
 
 # ╔═╡ 220c3ca5-e0b5-4f5c-86b0-e5d7cdd67558
