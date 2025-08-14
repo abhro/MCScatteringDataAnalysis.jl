@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.20.4
+# v0.20.15
 
 using Markdown
 using InteractiveUtils
@@ -29,15 +29,8 @@ md"""
 # ╔═╡ cd50f95b-8e0b-44a1-982b-52f08192d7b4
 TableOfContents(depth = 6)
 
-# ╔═╡ 95f0d053-cf1f-41e6-8a60-437ad4b547f1
-
-
-# ╔═╡ 41051c07-b2bc-4890-ad4e-9261f2f6c7ed
-md"""
-Increase cell width
-"""
-
 # ╔═╡ 846ce513-17b4-49aa-8823-15e3f90c7dcb
+# Increase cell width
 html"""<style>
 main {
     max-width: 70%;
@@ -51,27 +44,14 @@ md"""
 # Read data files
 """
 
-# ╔═╡ ee889b66-662c-4e86-a42e-50e02c99323b
-md"""
-## Create data file filter
-"""
+# ╔═╡ 5deeedc5-7c11-495f-a3db-27f2e6f5dfd9
+const datadir = "G:/My Drive/MC Scattering/Processed-data/";
 
 # ╔═╡ 6eefa524-9d4a-418e-b0fd-9a770986723c
-grid_df = load_object("grid.jld2")
+grid_df = load_object(joinpath(datadir, "grid.jld2"))
 
 # ╔═╡ 6e28bd19-e152-420b-905b-58ffcfc84f8f
 describe(grid_df)
-
-# ╔═╡ 3213f4b0-a5f7-4fa3-a53b-c45a620953e7
-
-
-# ╔═╡ 7205a1dd-3e4b-40d4-9584-e10607a6139f
-md"""
-# Constants and functions
-"""
-
-# ╔═╡ dd93decc-706c-4c96-8e60-2ac734916e81
-
 
 # ╔═╡ Cell order:
 # ╠═8cecd3b0-d2b1-11ef-35c7-1fb9d13a3262
@@ -81,13 +61,8 @@ md"""
 # ╠═87c538d7-28ab-40ef-84d7-1b34feceec44
 # ╠═e4034545-f28d-442e-9e45-9d57d6a07ef3
 # ╠═cd50f95b-8e0b-44a1-982b-52f08192d7b4
-# ╠═95f0d053-cf1f-41e6-8a60-437ad4b547f1
-# ╟─41051c07-b2bc-4890-ad4e-9261f2f6c7ed
 # ╟─846ce513-17b4-49aa-8823-15e3f90c7dcb
 # ╟─9bd001d5-d346-4f92-890c-358fce5e64ea
-# ╟─ee889b66-662c-4e86-a42e-50e02c99323b
+# ╠═5deeedc5-7c11-495f-a3db-27f2e6f5dfd9
 # ╠═6eefa524-9d4a-418e-b0fd-9a770986723c
 # ╠═6e28bd19-e152-420b-905b-58ffcfc84f8f
-# ╠═3213f4b0-a5f7-4fa3-a53b-c45a620953e7
-# ╟─7205a1dd-3e4b-40d4-9584-e10607a6139f
-# ╠═dd93decc-706c-4c96-8e60-2ac734916e81
