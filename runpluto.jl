@@ -12,4 +12,5 @@ Pluto.run(;
     host = "0.0.0.0",
     port = 5999,
     launch_browser,
+    enable_ai_editor_features = false,
 )
