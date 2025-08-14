@@ -4,13 +4,13 @@ import Pkg
 
 Pkg.activate(Base.current_project())
 
-import Pluto
+cd("notebooks")
 
-launch_browser = "--browser" in Base.ARGS
+import Pluto
 
 Pluto.run(;
     host = "0.0.0.0",
     port = 5999,
-    launch_browser,
+    launch_browser = "--browser" in Base.ARGS,
     enable_ai_editor_features = false,
 )
