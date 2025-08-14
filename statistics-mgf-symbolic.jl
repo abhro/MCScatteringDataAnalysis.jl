@@ -14,7 +14,7 @@ using PlutoUI
 using Symbolics
 
 # ╔═╡ 4bcb0ee6-a5f7-457e-8457-2cbc07bb40db
-using BiNormalDistribution
+using BiNormalDistributions
 
 # ╔═╡ ecc7d76f-f828-49ea-b15b-69a8865be999
 using Distributions
@@ -315,7 +315,7 @@ skewness = (third central moment) / (second central moment)^(3/2)
 
 # ╔═╡ bd9b02ae-777c-4147-aecd-065de1889471
 md"""
-see the docs for BiNormalDistribution.jl
+see the docs for BiNormalDistributions.jl
 """
 
 # ╔═╡ c04ee9dc-dc26-469e-801b-ea8f1cc251a2

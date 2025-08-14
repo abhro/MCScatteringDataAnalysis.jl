@@ -53,7 +53,7 @@ using NLsolve
 using LinearAlgebra
 
 # ╔═╡ 75e49b40-bff0-48f5-ab57-28b185f63cc9
-using BiNormalDistribution
+using BiNormalDistributions
 
 # ╔═╡ 4d538e1f-31d3-46b4-832e-0dad096089c2
 using StatsBase

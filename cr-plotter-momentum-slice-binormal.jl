@@ -47,7 +47,7 @@ using Missings
 using Printf
 
 # ╔═╡ 75e49b40-bff0-48f5-ab57-28b185f63cc9
-using BiNormalDistribution
+using BiNormalDistributions
 
 # ╔═╡ de7bbc47-64c6-4e3c-bd2e-71f189225d52
 using KernelDensity
@@ -593,7 +593,7 @@ CairoMakie.density(testset)
 #density_maxes = findmaxima(testset_kde.density) |> peakproms
 
 # ╔═╡ b822d103-e6c1-4b76-86ea-84eb84736133
-testset_kde, density_maxes = BiNormalDistribution.histmaxes(testset, 2)
+testset_kde, density_maxes = BiNormalDistributions.histmaxes(testset, 2)
 
 # ╔═╡ dbcc47ad-952e-475b-9657-f7fd280de743
 let
