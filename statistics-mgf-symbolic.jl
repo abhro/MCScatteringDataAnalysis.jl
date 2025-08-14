@@ -192,7 +192,7 @@ function cm(::Type{BiNormal}, j::Integer)
     for k in 0:j
         normal_central = cm(Normal, k)
         moment += (
-                 λ * binomial(j, k) * (μ₁ - μ)^(j-k) * substitute(normal_central, N₁_subst)
+                 λ  * binomial(j, k) * (μ₁ - μ)^(j-k) * substitute(normal_central, N₁_subst)
             + (1-λ) * binomial(j, k) * (μ₂ - μ)^(j-k) * substitute(normal_central, N₂_subst)
         )
     end
