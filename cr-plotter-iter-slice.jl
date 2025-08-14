@@ -87,9 +87,6 @@ md"""
 # ╔═╡ f91132bd-28af-4a6c-9a77-5c5b0ed4a08a
 const axis_properties = (xminorgridvisible = true, yminorgridvisible = true);
 
-# ╔═╡ a4f1af08-1a89-4f9c-921b-a998e7e9381e
-axis_properties |> dump
-
 # ╔═╡ 50b1a87f-49ff-4d93-aa6e-f042a87b875e
 const color_pf_p, color_sf_p, color_ISM_p, color_pf_e, color_sf_e, color_ISM_e = Makie.wong_colors();
 
@@ -339,7 +336,6 @@ md"""
 # ╠═80b16c96-b0f3-42a8-8544-7fbd9c06a1d9
 # ╟─628130bf-da25-4799-8e5e-3d2db15b1e49
 # ╠═f91132bd-28af-4a6c-9a77-5c5b0ed4a08a
-# ╠═a4f1af08-1a89-4f9c-921b-a998e7e9381e
 # ╠═50b1a87f-49ff-4d93-aa6e-f042a87b875e
 # ╠═3cc54622-c4e4-4c59-8828-4aa899a51e51
 # ╟─19a41e11-d031-498c-adbb-082e682fb67e
