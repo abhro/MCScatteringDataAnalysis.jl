@@ -403,8 +403,8 @@ md"""
 ## Kolmogorov–Smirnov test
 """
 
-# ╔═╡ 7f8c7cb4-8f33-43b8-93c8-8406d9986eef
-scatterlines(1:5, [1,missing,3,missing,5]; markersize)
+# ╔═╡ 08542eea-964a-4f1d-aae5-2b50a628588a
+# TODO: plot Kolmogorov--Smirnov test results
 
 # ╔═╡ 8d03de5e-d344-4efd-b9af-dd5391028780
 md"""
@@ -765,8 +765,8 @@ CR_gdfstats(CR_e_gdf_momentum)
 # ╟─a2dca585-2b84-4958-8ba6-af51602c4d8a
 # ╟─ec6883c9-b6bb-4e7e-bd6d-e65d6e06144d
 # ╟─2ab2979f-1ad4-4168-b59c-a25e57d4826a
+# ╠═08542eea-964a-4f1d-aae5-2b50a628588a
 # ╠═e8ab294c-0612-43c5-8b64-bb1ddec387ae
-# ╠═7f8c7cb4-8f33-43b8-93c8-8406d9986eef
 # ╟─8d03de5e-d344-4efd-b9af-dd5391028780
 # ╠═e780481f-ffde-407f-8dff-bc289e0ceb40
 # ╠═84d1d644-6a5b-44eb-ab4f-3b9b7171d6fe
