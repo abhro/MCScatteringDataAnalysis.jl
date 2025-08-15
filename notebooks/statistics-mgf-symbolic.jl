@@ -60,6 +60,20 @@ md"""
 # ╔═╡ 68746676-7121-4ef4-afbf-ded292130da6
 const Dt = Differential(t)
 
+# ╔═╡ 30de8ac9-3935-4e0a-b287-94884d8d30e8
+md"""
+# Background
+"""
+
+# ╔═╡ 77dc30bd-0e8a-4b2c-8574-3bcba5947d65
+md"""
+The central moment function of order _k_ is
+```math
+\operatorname{E}{\!\left[\left(x - μ_x\right)^k\right]}
+```
+where ``μ_x = \operatorname{E}[x]`` is the mean of the distribution.
+"""
+
 # ╔═╡ 845e8631-258d-48bf-94c6-e3e84591f66b
 md"""
 # Normal distribution
@@ -68,6 +82,17 @@ md"""
 # ╔═╡ 8fbeb891-3c41-4c28-a5e6-c8053be05c90
 md"""
 ## Closed form central moment function
+"""
+
+# ╔═╡ 296ed25b-738f-4867-a70b-45a98f3b609c
+md"""
+For a normal distribution ``\mathcal{N}(μ, σ)``, the central moment generating function is
+```math
+\operatorname{E}{\!\left[\left(x - μ\right)^k\right]} = \begin{cases}
+    0 & \text{if $k$ is odd} \\
+    σ^k \left(k-1\right)!! & \text{if $k$ is even}
+\end{cases}
+```
 """
 
 # ╔═╡ 769de7d8-cd30-4670-a146-8aa981ea0666
@@ -83,7 +108,7 @@ md"""
 
 # ╔═╡ 5e31d1e0-f779-44cd-b3f1-79110ee7845f
 md"""
-mgf of normal distribution
+Moment generating function of normal distribution
 """
 
 # ╔═╡ c2239cf1-9068-4ca1-9497-06a474b315cc
@@ -457,8 +482,11 @@ substitute(cm(BiNormal, 6), μ=>mean_binormal) |> simplify |> terms
 # ╟─d5fcbe3c-ff12-4394-a225-16d211024693
 # ╠═2d52e729-1c62-49a3-8acc-a9e19a3c2797
 # ╠═68746676-7121-4ef4-afbf-ded292130da6
+# ╟─30de8ac9-3935-4e0a-b287-94884d8d30e8
+# ╟─77dc30bd-0e8a-4b2c-8574-3bcba5947d65
 # ╟─845e8631-258d-48bf-94c6-e3e84591f66b
 # ╟─8fbeb891-3c41-4c28-a5e6-c8053be05c90
+# ╟─296ed25b-738f-4867-a70b-45a98f3b609c
 # ╠═769de7d8-cd30-4670-a146-8aa981ea0666
 # ╠═cfd61008-5a1b-473a-944d-793dd273877b
 # ╠═ad80264e-7851-4da6-9aa5-5739011fcbb6
