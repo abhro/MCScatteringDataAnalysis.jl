@@ -89,7 +89,7 @@ let f = Figure()
     ax1 = Axis(f[1,1], title = "dN/dp, escaping, upstream")
     ax2 = Axis(f[2,1], title = "dN/dp, escaping, downstream", xlabel = "log(p)")
 
-    for df in esc
+    for df in escdf
         scatter!(ax1, single_and_filter(df.psd_mom_bounds_cgs, df.dNdp_esc_UpS_IF)..., label = "Upstream")
         scatter!(ax2, single_and_filter(df.psd_mom_bounds_cgs, df.dNdp_esc_DwS_IF)..., label = "Downstream")
     end
