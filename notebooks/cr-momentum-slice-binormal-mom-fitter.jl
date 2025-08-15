@@ -94,7 +94,7 @@ md"""
 """
 
 # ╔═╡ 22088c63-a7ac-45c0-97db-c1fc3360fe2d
-datadir = joinpath(ENV["DATADIR_ROOT"], "Processed-data");
+const datadir = "G:/My Drive/MC Scattering/Processed-data";
 
 # ╔═╡ bdb9591b-b7ac-47e6-98bc-f18921bb64f9
 CR_p_gdf_momentum = load_object(joinpath(datadir, "dNdp-CR-protons-momentum-split.jld2"))

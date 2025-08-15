@@ -48,13 +48,11 @@ md"""
 # Read data files
 """
 
-# ╔═╡ 79dac686-897c-44cb-8daa-1e1b511337a5
-md"""
-## Create data file filter
-"""
+# ╔═╡ 2c4010ac-7402-4f03-a041-129f60930d89
+const datadir = "G:/My Drive/MC Scattering/Processed-data";
 
 # ╔═╡ 8f8beeee-3b47-4463-a233-1024478a8cf8
-escdf = load_object("dNdp-esc.jld2")
+escdf = load_object(joinpath(datadir, "dNdp-esc.jld2"));
 
 # ╔═╡ f802e55a-d945-4c88-a285-8d3b906211f2
 md"""
@@ -110,7 +108,7 @@ end
 # ╟─05c27a13-db8c-4627-a25f-9d3b14e885b6
 # ╠═194f6821-15d4-4398-8daa-81164ec55578
 # ╟─ddefdc26-3cdc-480d-a5d5-32dc7c39d4a1
-# ╟─79dac686-897c-44cb-8daa-1e1b511337a5
+# ╠═2c4010ac-7402-4f03-a041-129f60930d89
 # ╠═8f8beeee-3b47-4463-a233-1024478a8cf8
 # ╟─f802e55a-d945-4c88-a285-8d3b906211f2
 # ╠═da1ab6df-120a-4afd-a532-70faaa10dcc4

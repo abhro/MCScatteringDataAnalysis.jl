@@ -111,11 +111,14 @@ md"""
 # Read data file
 """
 
+# ╔═╡ c159f801-b129-4919-85ef-29eedf977f14
+const datadir = "G:/My Drive/MC Scattering/Processed-data";
+
 # ╔═╡ bdb9591b-b7ac-47e6-98bc-f18921bb64f9
-CR_p_gdf_momentum = load_object("Processed-data/dNdp-CR-protons-momentum-split.jld2")
+CR_p_gdf_momentum = load_object(joinpath(datadir, "dNdp-CR-protons-momentum-split.jld2"));
 
 # ╔═╡ 3777306e-eb41-413b-80a9-72cdc0228a94
-CR_e_gdf_momentum = load_object("Processed-data/dNdp-CR-electrons-momentum-split.jld2")
+CR_e_gdf_momentum = load_object(joinpath(datadir, "dNdp-CR-electrons-momentum-split.jld2"));
 
 # ╔═╡ 628130bf-da25-4799-8e5e-3d2db15b1e49
 md"""
@@ -732,6 +735,7 @@ end
 # ╟─259697bd-dee5-432d-9377-a3d3c30b3564
 # ╟─4415022a-54dc-4f3d-a651-f66ae63dd051
 # ╟─8dfe6f3c-f693-4c73-8152-8c43c1c1ff42
+# ╠═c159f801-b129-4919-85ef-29eedf977f14
 # ╠═bdb9591b-b7ac-47e6-98bc-f18921bb64f9
 # ╠═3777306e-eb41-413b-80a9-72cdc0228a94
 # ╟─628130bf-da25-4799-8e5e-3d2db15b1e49
