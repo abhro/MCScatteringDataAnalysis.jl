@@ -58,22 +58,25 @@ md"""
 ## Import packages
 """
 
+# ╔═╡ 5c6b130f-0a51-4131-bab7-40b059c4cc11
+md"""
+## Configure notebook appearance
+"""
+
 # ╔═╡ b544df91-fe2d-4396-892c-7faea2edd141
 TableOfContents(depth = 6)
 
-# ╔═╡ 259697bd-dee5-432d-9377-a3d3c30b3564
-md"""
-Increase cell width
-"""
-
 # ╔═╡ 4415022a-54dc-4f3d-a651-f66ae63dd051
-html"""<style>
+# Increase cell width
+html"""
+<style>
 main {
     max-width: 83%;
     padding-left: max(300px, 5%);
     padding-right: 0%;
 }
-</style>"""
+</style>
+"""
 
 # ╔═╡ 8dfe6f3c-f693-4c73-8152-8c43c1c1ff42
 md"""
@@ -680,8 +683,8 @@ end
 # ╠═40efcd80-db38-4db3-a193-6e65ee5c4367
 # ╠═3791e767-dcf1-4f9d-909d-a7d08e4c5f9c
 # ╠═fe2b3846-c753-4685-8704-e6fb50624989
+# ╟─5c6b130f-0a51-4131-bab7-40b059c4cc11
 # ╠═b544df91-fe2d-4396-892c-7faea2edd141
-# ╟─259697bd-dee5-432d-9377-a3d3c30b3564
 # ╟─4415022a-54dc-4f3d-a651-f66ae63dd051
 # ╟─8dfe6f3c-f693-4c73-8152-8c43c1c1ff42
 # ╠═d70a4da5-1589-4b41-af32-05671f27be4d

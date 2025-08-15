@@ -23,25 +23,28 @@ md"""
 
 # ╔═╡ 9e48bcdc-b9d3-4a71-81bf-d45a3a1f4037
 md"""
-## Import packages and set up base variables
+## Import packages
+"""
+
+# ╔═╡ eb9c48c8-42a5-4416-a1c0-ff43c7e91aae
+md"""
+## Configure notebook appearance
 """
 
 # ╔═╡ e950378a-3c65-4148-ad9d-7f1f82afaa01
 TableOfContents(depth = 6)
 
-# ╔═╡ 05c27a13-db8c-4627-a25f-9d3b14e885b6
-md"""
-Increase cell width
-"""
-
 # ╔═╡ 194f6821-15d4-4398-8daa-81164ec55578
-html"""<style>
+# Increase cell width
+html"""
+<style>
 main {
-    max-width: 70%;
-    padding-left: max(360px, 10%);
+    max-width: 83%;
+    padding-left: max(300px, 5%);
     padding-right: 0%;
 }
-</style>"""
+</style>
+"""
 
 # ╔═╡ ddefdc26-3cdc-480d-a5d5-32dc7c39d4a1
 md"""
@@ -104,9 +107,9 @@ end
 # ╠═b8029e47-60db-4574-af33-51d74b25bb60
 # ╠═0c4a7349-4ecb-454c-9c8d-4dcf2b66ba94
 # ╠═590b9a88-33ff-4400-82ba-40be75d8da23
+# ╟─eb9c48c8-42a5-4416-a1c0-ff43c7e91aae
 # ╠═e950378a-3c65-4148-ad9d-7f1f82afaa01
-# ╟─05c27a13-db8c-4627-a25f-9d3b14e885b6
-# ╠═194f6821-15d4-4398-8daa-81164ec55578
+# ╟─194f6821-15d4-4398-8daa-81164ec55578
 # ╟─ddefdc26-3cdc-480d-a5d5-32dc7c39d4a1
 # ╠═2c4010ac-7402-4f03-a041-129f60930d89
 # ╠═8f8beeee-3b47-4463-a233-1024478a8cf8

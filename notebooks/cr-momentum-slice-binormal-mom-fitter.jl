@@ -71,22 +71,25 @@ md"""
 ## Import packages
 """
 
+# ╔═╡ dc0952b3-5443-4c99-8cc6-497897c38dea
+md"""
+## Configure notebook appearance
+"""
+
 # ╔═╡ b544df91-fe2d-4396-892c-7faea2edd141
 TableOfContents(depth = 6)
 
-# ╔═╡ 259697bd-dee5-432d-9377-a3d3c30b3564
-md"""
-Increase cell width
-"""
-
 # ╔═╡ 4415022a-54dc-4f3d-a651-f66ae63dd051
-html"""<style>
+# Increase cell width
+html"""
+<style>
 main {
     max-width: 83%;
     padding-left: max(300px, 5%);
     padding-right: 0%;
 }
-</style>"""
+</style>
+"""
 
 # ╔═╡ 8dfe6f3c-f693-4c73-8152-8c43c1c1ff42
 md"""
@@ -159,9 +162,6 @@ const normalization = :pdf;
 
 # ╔═╡ 50b1a87f-49ff-4d93-aa6e-f042a87b875e
 const color_pf_p, color_sf_p, color_ISM_p, color_pf_e, color_sf_e, color_ISM_e = Makie.wong_colors();
-
-# ╔═╡ 6c16fc5a-7113-4b6e-abf2-de1275cceda5
-
 
 # ╔═╡ 35710ad9-f2e4-487b-be19-c29500633726
 let
@@ -625,8 +625,8 @@ BiNormalDistribution.componentpdfs(sciml_sol_dist, 3)
 # ╠═40efcd80-db38-4db3-a193-6e65ee5c4367
 # ╠═3791e767-dcf1-4f9d-909d-a7d08e4c5f9c
 # ╠═fe2b3846-c753-4685-8704-e6fb50624989
+# ╟─dc0952b3-5443-4c99-8cc6-497897c38dea
 # ╠═b544df91-fe2d-4396-892c-7faea2edd141
-# ╟─259697bd-dee5-432d-9377-a3d3c30b3564
 # ╟─4415022a-54dc-4f3d-a651-f66ae63dd051
 # ╟─8dfe6f3c-f693-4c73-8152-8c43c1c1ff42
 # ╠═22088c63-a7ac-45c0-97db-c1fc3360fe2d
@@ -643,7 +643,6 @@ BiNormalDistribution.componentpdfs(sciml_sol_dist, 3)
 # ╠═50b1a87f-49ff-4d93-aa6e-f042a87b875e
 # ╠═71404de8-f8b2-4d26-b7d7-41064cae1447
 # ╠═cef8f0a4-0967-4e86-bfde-7fa84c474e31
-# ╟─6c16fc5a-7113-4b6e-abf2-de1275cceda5
 # ╟─35710ad9-f2e4-487b-be19-c29500633726
 # ╟─7be1e6da-0eb9-45e5-a4f9-bb6deedc3def
 # ╟─ecf80697-b786-4b02-9563-f3d082383b76
