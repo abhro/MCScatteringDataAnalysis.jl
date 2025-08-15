@@ -97,43 +97,15 @@ md"""
 # Plot Cosmic Ray data
 """
 
-# ╔═╡ 067dc6df-b9ef-45cf-a32f-128a5a5cfdb6
-begin
-    function printstats(io::IO, gdf)
-        headers = "p index | log p | nrows | # pf samples| # sf samples| # ISM samples"
-        splitter = "--------|-------|-------|-------------|-------------|--------------"
-        println(io, headers)
-        println(io, splitter)
-        for (i, df) in enumerate(gdf)
-            log_p = keys(gdf)[i] |> values |> first
+# ╔═╡ 68c8329f-501e-47df-8047-d3cbc319e705
+md"""
+For protons:
+"""
 
-            println(io, @sprintf("%-7i | %5.1f | %5i | %11i | %11i | %12i", i, log_p,
-                                    nrow(df),
-                                    count(!ismissing, df.log_dNdp_cr_pf),
-                                    count(!ismissing, df.log_dNdp_cr_sf),
-                                    count(!ismissing, df.log_dNdp_cr_ISM)))
-        end
-        println(io, splitter)
-        println(io, headers)
-    end
-    printstats(gdf) = printstats(stdout, gdf)
-end
-
-# ╔═╡ c16d7ba5-3272-4903-93eb-5ebf06511243
-with_terminal() do
-    println("For protons:")
-    println()
-    println()
-    printstats(CR_p_gdf_momentum)
-end
-
-# ╔═╡ 653d7f99-776e-495c-8200-5e9510648de3
-with_terminal() do
-    println("For electrons:")
-    println()
-    println()
-    printstats(CR_e_gdf_momentum)
-end
+# ╔═╡ 985a2460-3fbc-4935-af59-2e734786c973
+md"""
+For electrons:
+"""
 
 # ╔═╡ 59a22149-3397-4e97-9f7b-5d502aacf293
 const markersize = 5;
@@ -672,6 +644,42 @@ let
     f
 end
 
+# ╔═╡ ea3f967e-770b-4879-bddd-8d3b497344bf
+"""
+    CR_gdfstats(gdf)
+
+For a `GroupedDataFrame` of dN/dp values, compute various statistics grouped by momentum.
+"""
+function CR_gdfstats(gdf)
+    n = length(gdf)
+    log_p = zeros(n)
+    nrows = zeros(Int, n)
+    n_pf_samples = zeros(Int, n)
+    n_sf_samples = zeros(Int, n)
+    n_ISM_samples = zeros(Int, n)
+
+    for (i, df) in enumerate(gdf)
+        log_p[i] = keys(gdf)[i] |> values |> first
+        nrows[i] = nrow(df)
+        n_pf_samples[i] = count(!ismissing, df.log_dNdp_cr_pf)
+        n_sf_samples[i] = count(!ismissing, df.log_dNdp_cr_sf)
+        n_ISM_samples[i] = count(!ismissing, df.log_dNdp_cr_ISM)
+    end
+    return DataFrame(;
+        log_p,
+        nrows,
+        n_pf_samples,
+        n_sf_samples,
+        n_ISM_samples,
+    )
+end
+
+# ╔═╡ a36ea9cf-176f-40bd-8577-cc2ea8db64af
+CR_gdfstats(CR_p_gdf_momentum)
+
+# ╔═╡ d85427f4-86ed-4c04-980a-a4152b5875e8
+CR_gdfstats(CR_e_gdf_momentum)
+
 # ╔═╡ Cell order:
 # ╠═f1ee2cb0-8274-11ef-0826-f55183647219
 # ╟─a5526239-2f05-4618-8868-0f552855d574
@@ -691,9 +699,10 @@ end
 # ╠═bdb9591b-b7ac-47e6-98bc-f18921bb64f9
 # ╠═3777306e-eb41-413b-80a9-72cdc0228a94
 # ╟─628130bf-da25-4799-8e5e-3d2db15b1e49
-# ╟─067dc6df-b9ef-45cf-a32f-128a5a5cfdb6
-# ╟─c16d7ba5-3272-4903-93eb-5ebf06511243
-# ╟─653d7f99-776e-495c-8200-5e9510648de3
+# ╟─68c8329f-501e-47df-8047-d3cbc319e705
+# ╟─a36ea9cf-176f-40bd-8577-cc2ea8db64af
+# ╟─985a2460-3fbc-4935-af59-2e734786c973
+# ╟─d85427f4-86ed-4c04-980a-a4152b5875e8
 # ╠═59a22149-3397-4e97-9f7b-5d502aacf293
 # ╠═f91132bd-28af-4a6c-9a77-5c5b0ed4a08a
 # ╠═f86707a1-9d79-4df8-8798-3f7ea1d1797c
@@ -754,3 +763,4 @@ end
 # ╟─8d03de5e-d344-4efd-b9af-dd5391028780
 # ╠═84d1d644-6a5b-44eb-ab4f-3b9b7171d6fe
 # ╠═e780481f-ffde-407f-8dff-bc289e0ceb40
+# ╠═ea3f967e-770b-4879-bddd-8d3b497344bf
