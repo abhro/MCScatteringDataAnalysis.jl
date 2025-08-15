@@ -100,10 +100,16 @@ md"""
 const datadir = "G:/My Drive/MC Scattering/Processed-data";
 
 # ╔═╡ bdb9591b-b7ac-47e6-98bc-f18921bb64f9
-CR_p_gdf_momentum = load_object(joinpath(datadir, "dNdp-CR-protons-momentum-split.jld2"))
+CR_p_gdf_momentum = load_object(joinpath(datadir, "dNdp-CR-protons-momentum-split.jld2"));
 
 # ╔═╡ 3777306e-eb41-413b-80a9-72cdc0228a94
-CR_e_gdf_momentum = load_object(joinpath(datadir, "dNdp-CR-electrons-momentum-split.jld2"))
+CR_e_gdf_momentum = load_object(joinpath(datadir, "dNdp-CR-electrons-momentum-split.jld2"));
+
+# ╔═╡ 710739bb-10f4-4a8e-abc2-b884c6b9dfef
+CR_p_gdf_momentum
+
+# ╔═╡ 67ec1e13-d315-4566-a877-2346dca07a0c
+CR_e_gdf_momentum
 
 # ╔═╡ 628130bf-da25-4799-8e5e-3d2db15b1e49
 md"""
@@ -632,6 +638,8 @@ BiNormalDistributions.componentpdfs(sciml_sol_dist, 3)
 # ╠═22088c63-a7ac-45c0-97db-c1fc3360fe2d
 # ╠═bdb9591b-b7ac-47e6-98bc-f18921bb64f9
 # ╠═3777306e-eb41-413b-80a9-72cdc0228a94
+# ╠═710739bb-10f4-4a8e-abc2-b884c6b9dfef
+# ╠═67ec1e13-d315-4566-a877-2346dca07a0c
 # ╟─628130bf-da25-4799-8e5e-3d2db15b1e49
 # ╟─067dc6df-b9ef-45cf-a32f-128a5a5cfdb6
 # ╟─c16d7ba5-3272-4903-93eb-5ebf06511243

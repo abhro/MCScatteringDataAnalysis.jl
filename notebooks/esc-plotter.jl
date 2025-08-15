@@ -57,6 +57,9 @@ const datadir = "G:/My Drive/MC Scattering/Processed-data";
 # ╔═╡ 8f8beeee-3b47-4463-a233-1024478a8cf8
 escdf = load_object(joinpath(datadir, "dNdp-esc.jld2"));
 
+# ╔═╡ 61632ddf-55a6-4fd5-84c0-8344b007c70d
+escdf
+
 # ╔═╡ f802e55a-d945-4c88-a285-8d3b906211f2
 md"""
 # Plot data
@@ -113,6 +116,7 @@ end
 # ╟─ddefdc26-3cdc-480d-a5d5-32dc7c39d4a1
 # ╠═2c4010ac-7402-4f03-a041-129f60930d89
 # ╠═8f8beeee-3b47-4463-a233-1024478a8cf8
+# ╠═61632ddf-55a6-4fd5-84c0-8344b007c70d
 # ╟─f802e55a-d945-4c88-a285-8d3b906211f2
 # ╠═da1ab6df-120a-4afd-a532-70faaa10dcc4
 # ╟─79b8174c-d208-41c8-80e5-13b3d60c09c1

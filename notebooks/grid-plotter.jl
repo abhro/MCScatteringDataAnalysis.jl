@@ -55,7 +55,10 @@ md"""
 const datadir = "G:/My Drive/MC Scattering/Processed-data/";
 
 # ╔═╡ 6eefa524-9d4a-418e-b0fd-9a770986723c
-grid_df = load_object(joinpath(datadir, "grid.jld2"))
+grid_df = load_object(joinpath(datadir, "grid.jld2"));
+
+# ╔═╡ 4c194f9d-bf3b-4547-bc29-bf73a4570551
+grid_df
 
 # ╔═╡ 6e28bd19-e152-420b-905b-58ffcfc84f8f
 describe(grid_df)
@@ -73,4 +76,5 @@ describe(grid_df)
 # ╟─9bd001d5-d346-4f92-890c-358fce5e64ea
 # ╠═5deeedc5-7c11-495f-a3db-27f2e6f5dfd9
 # ╠═6eefa524-9d4a-418e-b0fd-9a770986723c
+# ╠═4c194f9d-bf3b-4547-bc29-bf73a4570551
 # ╠═6e28bd19-e152-420b-905b-58ffcfc84f8f

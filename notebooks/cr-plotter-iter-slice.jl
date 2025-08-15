@@ -77,10 +77,16 @@ md"""
 const datadir = "G:/My Drive/MC Scattering/Processed-data";
 
 # ╔═╡ 3bc899e5-ce26-4384-bf7b-f0bb3820f08d
-CR_p_gdf_iter = load_object(joinpath(datadir, "dNdp-CR-protons-iteration-split.jld2"))
+CR_p_gdf_iter = load_object(joinpath(datadir, "dNdp-CR-protons-iteration-split.jld2"));
 
 # ╔═╡ 80b16c96-b0f3-42a8-8544-7fbd9c06a1d9
-CR_e_gdf_iter = load_object(joinpath(datadir, "dNdp-CR-electrons-iteration-split.jld2"))
+CR_e_gdf_iter = load_object(joinpath(datadir, "dNdp-CR-electrons-iteration-split.jld2"));
+
+# ╔═╡ 3a2e4aee-bc90-493e-84b1-79897934f16a
+CR_p_gdf_iter
+
+# ╔═╡ fae99b13-0b14-45c0-989f-8d0f22f0e96c
+CR_e_gdf_iter
 
 # ╔═╡ 628130bf-da25-4799-8e5e-3d2db15b1e49
 md"""
@@ -338,6 +344,8 @@ md"""
 # ╠═ee3eab6d-7913-4650-a5c3-aabf0747a58a
 # ╠═3bc899e5-ce26-4384-bf7b-f0bb3820f08d
 # ╠═80b16c96-b0f3-42a8-8544-7fbd9c06a1d9
+# ╠═3a2e4aee-bc90-493e-84b1-79897934f16a
+# ╠═fae99b13-0b14-45c0-989f-8d0f22f0e96c
 # ╟─628130bf-da25-4799-8e5e-3d2db15b1e49
 # ╠═f91132bd-28af-4a6c-9a77-5c5b0ed4a08a
 # ╠═50b1a87f-49ff-4d93-aa6e-f042a87b875e
