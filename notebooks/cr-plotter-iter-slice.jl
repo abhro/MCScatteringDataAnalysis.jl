@@ -272,6 +272,8 @@ md"""
 """
 
 # ╔═╡ 4e26e9ec-b4f2-46f8-bada-945c00cb4907
+# ╠═╡ disabled = true
+#=╠═╡
 let f = Figure()
     ax = Axis(
         f[1,1];
@@ -291,6 +293,7 @@ let f = Figure()
     #axislegend(ax, position = :lb)
     f
 end
+  ╠═╡ =#
 
 # ╔═╡ a0be5567-9256-4c03-9a96-11d4d1973347
 md"""
@@ -300,6 +303,8 @@ Found: iteration 5775 (iseed: 289, iter within seed: 15).
 """
 
 # ╔═╡ 526cd197-9ec7-445a-9018-3163d3916e10
+# ╠═╡ disabled = true
+#=╠═╡
 let f = Figure()
     ax = Axis(
         f[1,1];
@@ -317,6 +322,7 @@ let f = Figure()
     #axislegend(ax, position = :lb)
     f
 end
+  ╠═╡ =#
 
 # ╔═╡ 8d03de5e-d344-4efd-b9af-dd5391028780
 md"""
@@ -364,8 +370,8 @@ md"""
 # ╟─1f35f220-7739-4097-b51d-0ab6000be247
 # ╟─6c07e039-2575-49a6-a50d-531c40ee7965
 # ╟─e5dbf380-3480-4d96-881a-8c562b5fc6ab
-# ╟─4e26e9ec-b4f2-46f8-bada-945c00cb4907
+# ╠═4e26e9ec-b4f2-46f8-bada-945c00cb4907
 # ╟─a0be5567-9256-4c03-9a96-11d4d1973347
-# ╟─526cd197-9ec7-445a-9018-3163d3916e10
+# ╠═526cd197-9ec7-445a-9018-3163d3916e10
 # ╟─8d03de5e-d344-4efd-b9af-dd5391028780
 # ╠═4272e1f1-1c3b-439f-9406-5315a901587b
