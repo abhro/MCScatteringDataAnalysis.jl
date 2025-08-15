@@ -118,13 +118,6 @@ Choose which frames to plot:
 # ╔═╡ 9c7fc2ae-f6b5-4a4d-90ed-63967ea55200
 #plot_iter = 1
 
-# ╔═╡ d7d554cf-2f16-49e1-849d-25b5088e85ff
-md"""
-`plot_iter` = $(
-    @bind plot_iter NumberField(axes(CR_p_gdf_iter, 1))
-)
-"""
-
 # ╔═╡ c2b3d96a-216e-4abe-8b0f-625419ac072f
 #CR_e_gdf_iter[plot_iter]
 
@@ -133,6 +126,13 @@ md"""
 at plot_iter 1, there's a weird kick at the end. why?
 
 Dr. Warren suggestion: momentum splitting. to be investigated
+"""
+
+# ╔═╡ d7d554cf-2f16-49e1-849d-25b5088e85ff
+md"""
+`plot_iter` = $(
+    @bind plot_iter NumberField(axes(CR_p_gdf_iter, 1))
+)
 """
 
 # ╔═╡ 220c3ca5-e0b5-4f5c-86b0-e5d7cdd67558

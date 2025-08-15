@@ -122,12 +122,6 @@ const normalization = :pdf;
 # ╔═╡ 50b1a87f-49ff-4d93-aa6e-f042a87b875e
 const color_pf_p, color_sf_p, color_ISM_p, color_pf_e, color_sf_e, color_ISM_e = Makie.wong_colors();
 
-# ╔═╡ e8406a6a-ecc2-49d2-b67a-503b4ef5764b
-const proton_log_p_nat = keys(CR_p_gdf_momentum) .|> values .|> first;
-
-# ╔═╡ 589661b1-6a64-4db5-ac40-c1565c29c3cc
-const electron_log_p_nat = keys(CR_e_gdf_momentum) .|> values .|> first;
-
 # ╔═╡ 3bf64608-0fa2-4fcb-9782-fd7a8de47bda
 md"""
 ## Sample statistics
@@ -147,26 +141,6 @@ md"""
 md"""
 ### Skewness
 """
-
-# ╔═╡ adf24143-4be1-46c7-a63a-fe4dd490791d
-let
-    f = Figure()
-    ax = Axis(
-        f[1,1];
-        title = "Sample skewness vs momentum slice",
-        axis_properties...,
-        xlabel = "log p (nat)", ylabel = "γ",
-    )
-    # you've really gotta refactor this code
-    skewness_getter(gdf) = [skewness(df[!,:log_dNdp_cr_pf] |> skipmissing |> collect) for df in gdf]
-
-    scatterlines!(ax, proton_log_p_nat, skewness_getter(CR_p_gdf_momentum), color = color_pf_p, label = "protons, plasma frame"; markersize)
-    scatterlines!(ax, electron_log_p_nat, skewness_getter(CR_e_gdf_momentum), color = color_pf_e, label = "electrons, plasma frame"; markersize)
-
-    axislegend(ax, position = :cb)
-
-    f
-end
 
 # ╔═╡ 44cb6acf-7fee-4e3e-8253-d91e5a76299a
 md"""
@@ -189,6 +163,33 @@ md"""
 ## Histograms
 """
 
+# ╔═╡ e8406a6a-ecc2-49d2-b67a-503b4ef5764b
+const proton_log_p_nat = keys(CR_p_gdf_momentum) .|> values .|> first;
+
+# ╔═╡ 589661b1-6a64-4db5-ac40-c1565c29c3cc
+const electron_log_p_nat = keys(CR_e_gdf_momentum) .|> values .|> first;
+
+# ╔═╡ adf24143-4be1-46c7-a63a-fe4dd490791d
+let
+    f = Figure()
+    ax = Axis(
+        f[1,1];
+        title = "Sample skewness vs momentum slice",
+        axis_properties...,
+        xlabel = "log p (nat)", ylabel = "γ",
+        #yscale = log10,
+    )
+    # you've really gotta refactor this code
+    skewness_getter(gdf) = [skewness(df[!,:log_dNdp_cr_pf] |> skipmissing |> collect) for df in gdf]
+
+    scatterlines!(ax, proton_log_p_nat, skewness_getter(CR_p_gdf_momentum), color = color_pf_p, label = "protons, plasma frame"; markersize)
+    scatterlines!(ax, electron_log_p_nat, skewness_getter(CR_e_gdf_momentum), color = color_pf_e, label = "electrons, plasma frame"; markersize)
+
+    axislegend(ax, position = :lb)
+
+    f
+end
+
 # ╔═╡ 35710ad9-f2e4-487b-be19-c29500633726
 let
     idx_range = axes(CR_p_gdf_momentum,1)
@@ -199,14 +200,6 @@ let
     """ # should the proton_momentum_index variable be considered a leak here?
 end
 
-# ╔═╡ 71404de8-f8b2-4d26-b7d7-41064cae1447
-log_p_nat_at_slice = proton_log_p_nat[proton_momentum_index];
-
-# ╔═╡ 89bcb29b-0b1c-4e3a-91cb-282c05df2bc5
-md"""
-Value of proton momentum at slice: 10^$(log_p_nat_at_slice) *m*ₚ*c*
-"""
-
 # ╔═╡ d1c788a6-27ff-40d2-9bf4-1e7a4b6c48f3
 df = CR_p_gdf_momentum[proton_momentum_index];
 
@@ -216,6 +209,9 @@ data = AoG.data(df);
 # ╔═╡ 1333eaeb-8aae-49d5-aabc-3622b9d6ae35
 layer = data * map_layer * visual_layer;
 
+# ╔═╡ 71404de8-f8b2-4d26-b7d7-41064cae1447
+log_p_nat_at_slice = proton_log_p_nat[proton_momentum_index];
+
 # ╔═╡ 4979cc00-15c1-40da-b538-021a067d1065
 draw(
     layer;
@@ -224,6 +220,11 @@ draw(
         titlealign = :center,
     ),
 )
+
+# ╔═╡ 89bcb29b-0b1c-4e3a-91cb-282c05df2bc5
+md"""
+Value of proton momentum at slice: 10^$(log_p_nat_at_slice) *m*ₚ*c*
+"""
 
 # ╔═╡ ecf80697-b786-4b02-9563-f3d082383b76
 md"""
@@ -688,9 +689,9 @@ CR_gdfstats(CR_p_gdf_momentum)
 CR_gdfstats(CR_e_gdf_momentum)
 
 # ╔═╡ Cell order:
-# ╠═f1ee2cb0-8274-11ef-0826-f55183647219
 # ╟─a5526239-2f05-4618-8868-0f552855d574
 # ╟─cd809ca8-2cc4-435d-ab8b-b7b24fa40ed1
+# ╠═f1ee2cb0-8274-11ef-0826-f55183647219
 # ╠═7899ae97-fbc2-43e5-ac77-c6d725f0371e
 # ╠═b137e7fa-f2ce-4cb1-85d7-87078a9aa9cc
 # ╠═547aad6f-32db-405d-9886-a727f1591101
@@ -715,19 +716,13 @@ CR_gdfstats(CR_e_gdf_momentum)
 # ╠═f86707a1-9d79-4df8-8798-3f7ea1d1797c
 # ╠═377aaf8f-b909-4c42-bc77-912fd300c300
 # ╠═50b1a87f-49ff-4d93-aa6e-f042a87b875e
-# ╠═e8406a6a-ecc2-49d2-b67a-503b4ef5764b
-# ╠═589661b1-6a64-4db5-ac40-c1565c29c3cc
-# ╠═71404de8-f8b2-4d26-b7d7-41064cae1447
-# ╠═6c16fc5a-7113-4b6e-abf2-de1275cceda5
-# ╟─89bcb29b-0b1c-4e3a-91cb-282c05df2bc5
-# ╟─c9b9969c-2c7f-436e-b5a1-603138a4e196
 # ╟─3bf64608-0fa2-4fcb-9782-fd7a8de47bda
 # ╟─932c2a77-0198-4df4-a4bd-30d0bda93946
 # ╟─91bba2da-c925-4123-bb8a-c1f9be8619e9
 # ╟─5767b9ac-64c2-4d2f-ad42-961184c7edc7
 # ╟─b6ce51e5-b4ff-49eb-83db-ecf3e8a081ac
 # ╟─7495e7e9-3d50-4401-baef-d2e3c11e6b46
-# ╟─adf24143-4be1-46c7-a63a-fe4dd490791d
+# ╠═adf24143-4be1-46c7-a63a-fe4dd490791d
 # ╟─44cb6acf-7fee-4e3e-8253-d91e5a76299a
 # ╠═6d5eb940-6739-4781-9dda-7433cae3cf50
 # ╠═d1c788a6-27ff-40d2-9bf4-1e7a4b6c48f3
@@ -737,6 +732,12 @@ CR_gdfstats(CR_e_gdf_momentum)
 # ╠═1333eaeb-8aae-49d5-aabc-3622b9d6ae35
 # ╠═4979cc00-15c1-40da-b538-021a067d1065
 # ╟─ce8b1307-dc78-463b-9f41-04fe5dded525
+# ╠═e8406a6a-ecc2-49d2-b67a-503b4ef5764b
+# ╠═589661b1-6a64-4db5-ac40-c1565c29c3cc
+# ╠═71404de8-f8b2-4d26-b7d7-41064cae1447
+# ╠═6c16fc5a-7113-4b6e-abf2-de1275cceda5
+# ╟─89bcb29b-0b1c-4e3a-91cb-282c05df2bc5
+# ╟─c9b9969c-2c7f-436e-b5a1-603138a4e196
 # ╟─35710ad9-f2e4-487b-be19-c29500633726
 # ╟─ecf80697-b786-4b02-9563-f3d082383b76
 # ╟─4051e244-4c84-4983-8cb9-bc7f53daa9f6
