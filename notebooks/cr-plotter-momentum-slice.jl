@@ -412,13 +412,20 @@ md"""
 """
 
 # ╔═╡ e780481f-ffde-407f-8dff-bc289e0ceb40
-function fitdistribution(DT::Type{<:Distribution}, x::AbstractVector{Union{Missing,T}}) where {T}
+"""
+    fitdistribution(D, x::AbstractVector{Union{Missing,T}}) where {T}
+
+Fit a distribution of type `D` to a vector of samples `x`.
+`x` may contain `missing` values. However, if `x` contains _only_ `missing` values, `missing` is returned instead of a distribution.
+This function mainly exists as a wrapper around `Distribtuions.fit` to handle `missing` values.
+"""
+function fitdistribution(D::Type{<:Distribution}, x::AbstractVector{Union{Missing,T}}) where {T}
     x = collect(skipmissing(x))
     if isempty(x) # don't fit to a dataset with only missings
         return missing
     end
 
-    return Distributions.fit(DT{T}, x)
+    return Distributions.fit(D{T}, x)
 end
 
 # ╔═╡ 84d1d644-6a5b-44eb-ab4f-3b9b7171d6fe
@@ -761,6 +768,6 @@ CR_gdfstats(CR_e_gdf_momentum)
 # ╠═e8ab294c-0612-43c5-8b64-bb1ddec387ae
 # ╠═7f8c7cb4-8f33-43b8-93c8-8406d9986eef
 # ╟─8d03de5e-d344-4efd-b9af-dd5391028780
-# ╠═84d1d644-6a5b-44eb-ab4f-3b9b7171d6fe
 # ╠═e780481f-ffde-407f-8dff-bc289e0ceb40
+# ╠═84d1d644-6a5b-44eb-ab4f-3b9b7171d6fe
 # ╠═ea3f967e-770b-4879-bddd-8d3b497344bf
