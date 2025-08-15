@@ -254,7 +254,7 @@ md"""
 
 # ╔═╡ b32e6a33-af1a-4991-9d54-339dad07b3f9
 md"""
-Central moment generating function of BiNormal distribution:
+Central moment generating function of the bi-normal distribution:
 """
 
 # ╔═╡ 0535663e-5723-4a46-b63d-8e371553cdea

@@ -571,7 +571,7 @@ function unconstrained(λ)
 end
 
 # ╔═╡ 2df3f7c7-f196-4dae-a668-12c7116e91cb
-"""See the docstring for the BiNormal type (defines `λ(β)`)"""
+"""See the docstring for the `BiNormal` type (defines `λ(β)`)"""
 constrained(β::Real) = (2 + exp(-β))/(2 + 2exp(-β))
 
 # ╔═╡ d8ed7e8e-2dda-4eba-95ef-e7d7a772d20c
@@ -612,7 +612,7 @@ end
 plot(sciml_sol_dist)
 
 # ╔═╡ 2a2ef8bd-a181-47bb-a02d-9a1eab0de967
-BiNormalDistribution.componentpdfs(sciml_sol_dist, 3)
+BiNormalDistributions.componentpdfs(sciml_sol_dist, 3)
 
 # ╔═╡ Cell order:
 # ╠═f1ee2cb0-8274-11ef-0826-f55183647219

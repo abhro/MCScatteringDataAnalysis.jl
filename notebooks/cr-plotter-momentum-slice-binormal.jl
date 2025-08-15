@@ -596,7 +596,7 @@ CairoMakie.density(testset)
 ##density_maxes = findmaxima(testset_kde.density) |> peakproms
 
 # ╔═╡ b822d103-e6c1-4b76-86ea-84eb84736133
-testset_kde, density_maxes = BiNormalDistributions.histmaxes(testset, 2)
+testset_kde, density_maxes = BiNormalDistributions.kdemaxes(testset, 2)
 
 # ╔═╡ dbcc47ad-952e-475b-9657-f7fd280de743
 let
