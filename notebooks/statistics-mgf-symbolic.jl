@@ -270,7 +270,7 @@ md"""
 DtM_BN = Dt(mgf_BN) |> expand_derivatives;
 
 # ╔═╡ 19a1c7da-b60e-4d16-9c59-10e98540fbd6
-mean_binormal = substitute(DtM_BN, t=>0)
+const mean_binormal = substitute(DtM_BN, t=>0)
 
 # ╔═╡ 5b20f228-e334-44f3-8ac2-c5c6d8c6dc20
 md"""
