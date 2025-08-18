@@ -51,15 +51,16 @@ md"""
 ## Import packages
 """
 
+# ╔═╡ c3cedbde-37a4-473b-87e4-d60295362dba
+md"""
+## Configure notebook appearance
+"""
+
 # ╔═╡ b544df91-fe2d-4396-892c-7faea2edd141
 TableOfContents(depth = 6)
 
-# ╔═╡ 259697bd-dee5-432d-9377-a3d3c30b3564
-md"""
-Increase cell width
-"""
-
 # ╔═╡ 4415022a-54dc-4f3d-a651-f66ae63dd051
+# Increase cell width
 html"""<style>
 main {
     max-width: 80%;
@@ -288,8 +289,8 @@ let f = Figure()
 
     #hlines!(ax, 57.5)
 
-    xlims!(ax, 2, 5)
-    ylims!(ax, 57.25, 58.7)
+    #xlims!(ax, 2, 5)
+    #ylims!(ax, 57.25, 58.7)
     #axislegend(ax, position = :lb)
     f
 end
@@ -343,8 +344,8 @@ md"""
 # ╠═acbe8855-c586-46e3-a72b-a556df77b547
 # ╠═3791e767-dcf1-4f9d-909d-a7d08e4c5f9c
 # ╠═fe2b3846-c753-4685-8704-e6fb50624989
+# ╟─c3cedbde-37a4-473b-87e4-d60295362dba
 # ╠═b544df91-fe2d-4396-892c-7faea2edd141
-# ╟─259697bd-dee5-432d-9377-a3d3c30b3564
 # ╟─4415022a-54dc-4f3d-a651-f66ae63dd051
 # ╟─8dfe6f3c-f693-4c73-8152-8c43c1c1ff42
 # ╠═ee3eab6d-7913-4650-a5c3-aabf0747a58a

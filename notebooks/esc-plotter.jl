@@ -65,36 +65,14 @@ md"""
 # Plot data
 """
 
-# ╔═╡ 79b8174c-d208-41c8-80e5-13b3d60c09c1
-md"""
-# Constants and functions
-"""
-
-# ╔═╡ 08d4f031-7778-4a07-be1f-6b33c176e1c6
-function filter_sentinels(logp, logdNdp)
-    allowed_idx = logdNdp .!= -99
-    logp_allowed = logp[allowed_idx]
-    logdNdp_allowed = logdNdp[allowed_idx]
-
-    return (logp_allowed, logdNdp_allowed)
-end
-
-# ╔═╡ d609ab5f-9dca-4615-9041-b83c78548455
-function single_and_filter(logp, logdNdp)
-    logp = logp[begin:2:end]
-    logdNdp = logdNdp[begin:2:end]
-
-    return filter_sentinels(logp, logdNdp)
-end
-
 # ╔═╡ da1ab6df-120a-4afd-a532-70faaa10dcc4
 let f = Figure()
     ax1 = Axis(f[1,1], title = "dN/dp, escaping, upstream")
     ax2 = Axis(f[2,1], title = "dN/dp, escaping, downstream", xlabel = "log(p)")
 
-    for df in escdf
-        scatter!(ax1, single_and_filter(df.psd_mom_bounds_cgs, df.dNdp_esc_UpS_IF)..., label = "Upstream")
-        scatter!(ax2, single_and_filter(df.psd_mom_bounds_cgs, df.dNdp_esc_DwS_IF)..., label = "Downstream")
+    for df in groupby(escdf, [:initial_seed, :itr])
+        scatter!(ax1, df.log_p_cgs, df.log_dNdp_esc_UpS_IF, label = "Upstream")
+        scatter!(ax2, df.log_p_cgs, df.log_dNdp_esc_DwS_IF, label = "Downstream")
     end
 
     axislegend(ax1)
@@ -102,6 +80,17 @@ let f = Figure()
 
     f
 end
+
+# ╔═╡ 79b8174c-d208-41c8-80e5-13b3d60c09c1
+md"""
+# Constants and functions
+"""
+
+# ╔═╡ d609ab5f-9dca-4615-9041-b83c78548455
+
+
+# ╔═╡ 08d4f031-7778-4a07-be1f-6b33c176e1c6
+
 
 # ╔═╡ Cell order:
 # ╠═cd76c040-d2b5-11ef-29c3-8d8f9cb45061
