@@ -89,15 +89,16 @@ md"""
 ## Import packages
 """
 
+# ╔═╡ 334b4ffc-1c5d-4743-88fb-ab383a3e6f80
+md"""
+## Configure notebook appearance
+"""
+
 # ╔═╡ b544df91-fe2d-4396-892c-7faea2edd141
 TableOfContents(depth = 6)
 
-# ╔═╡ 259697bd-dee5-432d-9377-a3d3c30b3564
-md"""
-Increase cell width
-"""
-
 # ╔═╡ 4415022a-54dc-4f3d-a651-f66ae63dd051
+# Increase cell width
 html"""<style>
 main {
     max-width: 83%;
@@ -125,87 +126,15 @@ md"""
 # Plot Cosmic Ray data
 """
 
-# ╔═╡ 067dc6df-b9ef-45cf-a32f-128a5a5cfdb6
-begin
-    function printstats(io::IO, gdf)
-        headers = "p index | log p | nrows | # pf samples| # sf samples| # ISM samples"
-        splitter = "--------|-------|-------|-------------|-------------|--------------"
-        println(io, headers)
-        println(io, splitter)
-        for (i, df) in enumerate(gdf)
-            log_p = keys(gdf)[i] |> values |> first
+# ╔═╡ bfc6a515-8189-487b-be08-746d865a78ae
+md"""
+For protons
+"""
 
-            println(io, @sprintf("%-7i | %5.1f | %5i | %11i | %11i | %12i", i, log_p,
-                                    nrow(df),
-                                    count(!ismissing, df.log_dNdp_cr_pf),
-                                    count(!ismissing, df.log_dNdp_cr_sf),
-                                    count(!ismissing, df.log_dNdp_cr_ISM)))
-        end
-        println(io, splitter)
-        println(io, headers)
-    end
-    printstats(gdf) = printstats(stdout, gdf)
-end
-
-# ╔═╡ c16d7ba5-3272-4903-93eb-5ebf06511243
-with_terminal() do
-    println("For protons:")
-    println()
-    println()
-    printstats(CR_p_gdf_momentum)
-end
-
-# ╔═╡ 653d7f99-776e-495c-8200-5e9510648de3
-with_terminal() do
-    println("For electrons:")
-    println()
-    println()
-    printstats(CR_e_gdf_momentum)
-end
-
-# ╔═╡ 59a22149-3397-4e97-9f7b-5d502aacf293
-const markersize = 6;
-
-# ╔═╡ f91132bd-28af-4a6c-9a77-5c5b0ed4a08a
-const axis_properties = (xminorgridvisible = true, yminorgridvisible = true, xlabel = "log(dN/dp)");
-
-# ╔═╡ f86707a1-9d79-4df8-8798-3f7ea1d1797c
-const bins = 90;
-
-# ╔═╡ 377aaf8f-b909-4c42-bc77-912fd300c300
-const normalization = :pdf;
-
-# ╔═╡ 50b1a87f-49ff-4d93-aa6e-f042a87b875e
-const color_pf_p, color_sf_p, color_ISM_p, color_pf_e, color_sf_e, color_ISM_e = Makie.wong_colors();
-
-# ╔═╡ 6c16fc5a-7113-4b6e-abf2-de1275cceda5
-
-
-# ╔═╡ 35710ad9-f2e4-487b-be19-c29500633726
-let
-    idx_range = axes(CR_p_gdf_momentum,1)
-    binder = @bind proton_momentum_index NumberField(idx_range, default = 13)
-    min_idx, max_idx = extrema(idx_range)
-    md"""
-    Proton momentum slice to plot (index): $binder (min: $min_idx, max: $max_idx)
-    """ # should the proton_momentum_index variable be considered a leak here?
-end
-
-# ╔═╡ 71404de8-f8b2-4d26-b7d7-41064cae1447
-log_p_nat_at_slice = keys(CR_p_gdf_momentum)[proton_momentum_index] |> values |> first;
-
-# ╔═╡ 7be1e6da-0eb9-45e5-a4f9-bb6deedc3def
-let
-    idx_range = axes(CR_e_gdf_momentum,1)
-    binder = @bind electron_momentum_index NumberField(idx_range, default = 13)
-    min_idx, max_idx = extrema(idx_range)
-    md"""
-    Electron momentum slice to plot (index): $binder (min: $min_idx, max: $max_idx)
-    """ # should the electron_momentum_index variable be considered a leak here?
-end
-
-# ╔═╡ cef8f0a4-0967-4e86-bfde-7fa84c474e31
-log_p_nat_at_slice_e = keys(CR_p_gdf_momentum)[electron_momentum_index] |> values |> first;
+# ╔═╡ ea647872-9dc3-4fb9-9499-e396127703b2
+md"""
+For electrons:
+"""
 
 # ╔═╡ ecf80697-b786-4b02-9563-f3d082383b76
 md"""
@@ -214,124 +143,6 @@ Choose which frames to plot:
 - Shock frame: $(@bind do_plot_sf CheckBox(default=false))
 - ISM frame: $(@bind do_plot_ISM CheckBox(default=false))
 """
-
-# ╔═╡ 89bcb29b-0b1c-4e3a-91cb-282c05df2bc5
-md"""
-Value of proton momentum at slice: 10^$(log_p_nat_at_slice) _m_ₚ_c_
-"""
-
-# ╔═╡ ddc674f6-42c4-434c-8afb-c419f9752f4e
-md"""
-Value of electron momentum at slice: 10^$(log_p_nat_at_slice_e) *m*ₚ*c*
-"""
-
-# ╔═╡ 6d5eb940-6739-4781-9dda-7433cae3cf50
-Base.:*(x::Bool, l::AoG.Layer) = x ? l : AoG.zerolayer()
-
-# ╔═╡ 4051e244-4c84-4983-8cb9-bc7f53daa9f6
-let df = CR_p_gdf_momentum[proton_momentum_index]
-    f = Figure()
-    ax = Axis(
-        f[1,1];
-        xlabel = "log(dN/dp)", ylabel = "pdf",
-        title = "Histogram of protons dN/dp at p = 10^$log_p_nat_at_slice mₚc",
-        axis_properties...)
-
-    if do_plot_pf
-        N = df.log_dNdp_cr_pf |> skipmissing |> collect
-        !isempty(N) && stephist!(ax, N, label = "plasma frame"; bins, normalization, color = color_pf_p)
-    end
-
-    if do_plot_sf
-        N = df.log_dNdp_cr_sf |> skipmissing |> collect
-        !isempty(N) && hist!(ax, N, label = "shock frame"; bins, normalization, color = color_sf_p)
-    end
-    if do_plot_ISM
-        N = df.log_dNdp_cr_ISM |> skipmissing |> collect
-        !isempty(N) && hist!(ax, N, label = "ISM frame"; bins, normalization, color = color_ISM_p)
-    end
-
-    try
-        axislegend(ax)
-    catch e
-        # axislegend has no plots to work with, because the current index doesn't have any samples. stop it complaining.
-    end
-    f
-end
-
-# ╔═╡ 88822f52-aab8-4931-9091-1909da6c604b
-let df = CR_e_gdf_momentum[electron_momentum_index]
-    f = Figure()
-    ax = Axis(
-        f[1,1];
-        xlabel = "log(dN/dp)", ylabel = "pdf",
-        title = "Histogram of electrons dN/dp at p = 10^$log_p_nat_at_slice mₚc",
-        axis_properties...)
-
-    if do_plot_pf
-        N = df.log_dNdp_cr_pf |> skipmissing |> collect
-        !isempty(N) && stephist!(ax, N, label = "plasma frame"; bins, normalization, color = color_pf_e)
-    end
-
-    if do_plot_sf
-        N = df.log_dNdp_cr_sf |> skipmissing |> collect
-        !isempty(N) && stephist!(ax, N, label = "shock frame"; bins, normalization, color = color_sf_e)
-    end
-    if do_plot_ISM
-        N = df.log_dNdp_cr_ISM |> skipmissing |> collect
-        !isempty(N) && stephist!(ax, N, label = "ISM frame"; bins, normalization, color = color_ISM_e)
-    end
-
-    try
-        axislegend(ax)
-    catch e
-        # axislegend has no plots to work with, because the current index doesn't have any samples. stop it complaining.
-    end
-    f
-end
-
-# ╔═╡ b7a96870-784e-4ce0-830d-d245fc16e5f4
-let df = CR_p_gdf_momentum[proton_momentum_index]
-
-    f = Figure()
-    ax = Axis(
-        f[1,1];
-        title = "dN/dp of Cosmic rays (protons) against iteration, momentum slice",
-        xlabel = "Iteration", ylabel = "log(dN/dp)")
-
-    do_plot_pf && scatter!(ax, df.iter, df.log_dNdp_cr_pf, label = "plasma frame"; markersize, color = color_pf_p)
-    do_plot_sf && scatter!(ax, df.iter, df.log_dNdp_cr_sf, label = "shock frame"; markersize, color = color_sf_p)
-    do_plot_ISM && scatter!(ax, df.iter, df.log_dNdp_cr_ISM, label = "ISM frame"; markersize, color = color_ISM_p)
-
-    #xlims!(ax, -16, -3)
-    #ylims!(ax, -100, -98)
-    leg = axislegend(ax, position = :rb)
-    #leg.framevisible = false
-    #Legend(f[1,2], ax)
-    f
-end
-
-# ╔═╡ 4ac1798d-ec27-4571-9b2a-44cb432ef0d6
-let df = CR_p_gdf_momentum[electron_momentum_index]
-
-    f = Figure()
-    ax = Axis(
-        f[1,1];
-        #aspect = AxisAspect(1.2),
-        title = "dN/dp of Cosmic rays (electrons) against iteration, momentum slice",
-        #axis_properties...,
-        xlabel = "Iteration", ylabel = "log(dN/dp)")
-
-    do_plot_pf && scatter!(ax, df.iter, df.log_dNdp_cr_pf, label = "plasma frame"; markersize, color = color_pf_e)
-    do_plot_sf && scatter!(ax, df.iter, df.log_dNdp_cr_sf, label = "shock frame"; markersize, color = color_sf_e)
-    do_plot_ISM && scatter!(ax, df.iter, df.log_dNdp_cr_ISM, label = "ISM frame"; markersize, color = color_ISM_e)
-
-    #xlims!(ax, -16, -3)
-    #ylims!(ax, -100, -98)
-    axislegend(ax, position = :rb)
-    #Legend(f[1,2], ax)
-    f
-end
 
 # ╔═╡ f95a0d36-5dd8-4190-98c6-06e8be2ad840
 # ╠═╡ disabled = true
@@ -353,7 +164,9 @@ md"""
 Makie.update_theme!(colormap = Makie.wong_colors())
 
 # ╔═╡ 90e850f3-7b48-441a-92ab-1e1f6bf04e9a
-length(CR_p_gdf_momentum)
+md"""
+Pick a specific momentum index to work with
+"""
 
 # ╔═╡ 18ae83a7-98e2-4ef0-b21c-cac428146188
 testset_index = 67;
@@ -362,21 +175,10 @@ testset_index = 67;
 CR_p_gdf_momentum[testset_index]
 
 # ╔═╡ b63ff630-624b-4e9b-bc03-dc32fd691b05
-testset = CR_p_gdf_momentum[testset_index].log_dNdp_cr_pf |> skipmissing |> collect
+testset = CR_p_gdf_momentum[testset_index].log_dNdp_cr_pf |> skipmissing|> collect
 
 # ╔═╡ 96b36184-f98e-4b31-a2d5-1754bb40d84a
 filter(:log_dNdp_cr_pf => >(38.7), CR_p_gdf_momentum[testset_index])
-
-# ╔═╡ cf870504-0f29-4354-9a4a-76971459aeba
-let testset = filter(>(38.7), testset)
-    f = Figure()
-    ax = Axis(f[1,1]; axis_properties...)
-    hist!(ax, testset; bins, normalization = :pdf)
-    #hist(; bins, normalization = :pdf)
-    #xplt = range(extrema(testset)..., length = 1000)
-    #lines!(ax, xplt, pdf.(mixture_model_test, xplt) * 60)
-    f
-end
 
 # ╔═╡ 3596bac9-5797-40c6-a4da-cdcc1cc9a451
 testset
@@ -397,17 +199,6 @@ md"""
 
 # ╔═╡ d21499d1-f010-444a-96c2-1dee378496e7
 manual_bn = BiNormal(0.995, 38.212839223905315, 0.17, 38.95, 0.05)
-
-# ╔═╡ 0b1c1d4f-6ffd-423b-bf9b-31b229488038
-with_theme() do
-    f = Figure()
-    ax = Axis(f[1,1], title = "Fit after filtering out main distrib and manually adjusting λ"; axis_properties...)
-    stephist!(ax, testset, normalization = :pdf; bins, label = "step-hist of testset")
-    #plot!(ax, bn_tentative, label = "semi-Manual BiNormal")
-    plot!(ax, manual_bn, label = "Manual BiNormal")
-    axislegend(ax)
-    f
-end
 
 # ╔═╡ 247d55e1-c7a4-4ccc-bce3-694f4e46dc14
 md"""
@@ -437,20 +228,6 @@ q.weights |> Print
 # ╔═╡ 5e7c3b65-e786-487e-b311-1bc5ada975f2
 """Return array of each element being the center of adjacent elements"""
 centers(v) = (v[begin:end-1] + v[begin+1:end])/2;
-
-# ╔═╡ 4d245ac7-6329-457a-970e-8a8aa23775dc
-#let
-with_theme() do
-    f = Figure()
-    ax = Axis(f[1,1]; axis_properties...)
-    x = centers(only(q.edges))
-    lines!(ax, x, q.weights, label = "Histogram*, with bin centers")
-    modevalue, modeidx = findmax(q.weights)
-    @info "Got values" modevalue modeidx x[modeidx]
-    scatter!(ax, x[modeidx], modevalue, label = "Peak")
-    axislegend(ax)
-    f
-end
 
 # ╔═╡ 53fbfeb5-7993-453f-bd57-2d3c409ed46e
 q.edges
@@ -519,29 +296,6 @@ brute_fitted = fit_dist_to_histogram(testset)
 # ╔═╡ a97412e6-9681-4afa-8ceb-6f37f2f6dd0b
 brute_fit_dist = first(brute_fitted)
 
-# ╔═╡ 0aab1add-5285-4da7-b4eb-d1445b96b035
-brute_fit_dist.N₁ * brute_fit_dist.λ
-
-# ╔═╡ c305f828-96c5-4839-9524-6a890a5d68fa
-#let
-with_theme(Makie.theme(nothing)) do
-    f = Figure()
-    ax = Axis(f[1,1]; axis_properties...)
-    stephist!(ax, testset; bins, normalization = :pdf)
-    xplt = range(extrema(testset)..., length = 1000)
-    λ = brute_fit_dist.λ
-    @info λ
-    lines!(ax, xplt, brute_fit_dist, label = "Curve fit on histogram, parameter sweep")
-    ##lines!(ax, xplt, λ * pdf.(brute_fit_dist.N₁, xplt), label = "Normal 1st")
-    ##lines!(ax, xplt, (1-λ) * pdf(brute_fit_dist.N₂, xplt), label = "Normal 2nd")
-    ##lines!(ax, xplt, hist_curve_fit_distrib, label = "Curve fit on histogram, LsqFit.jl")
-    ax.xminorgridvisible = true
-    ax.yminorgridvisible = true
-    ##lines!(ax, xplt, pdf.(mixture_model_test, xplt))
-    axislegend(ax)
-    f
-end
-
 # ╔═╡ d72cc184-01ce-440d-90e3-6977f9b8af7e
 centers(q.edges |> only)
 
@@ -562,27 +316,6 @@ domain transformation:
 
 Takes constraints from ``λ ∈ [1/2, 1]`` to ``β ∈ ℝ``.
 """
-
-# ╔═╡ 7f0c2a67-1631-47d7-9d81-f87b44eab1c4
-function modelfunc(x, (β, μ₁, s₁, μ₂, s₂))
-    λ = (2 + exp(-β)) / (2 + 2exp(-β))
-    return pdf(BiNormal(λ, μ₁, s₁^2, μ₂, s₂^2), x)
-end
-
-# ╔═╡ 00f44bb7-7074-457c-aef8-566da755d748
-hist_curve_fit = let
-    x_data = centers(q.edges |> only)
-    LsqFit.curve_fit(
-        modelfunc, x_data, q.weights,
-        [1.0, mean(x_data), 1.0, mean(x_data), 1.0])
-end
-
-# ╔═╡ c8a9815e-ed1b-44de-8d8b-9aee518cfe4e
-hist_curve_fit_distrib = let
-    β, μ₁, s₁, μ₂, s₂ = hist_curve_fit.param
-    λ = (2 + exp(-β)) / (2 + 2exp(-β))
-    BiNormal(λ, μ₁, s₁^2, μ₂, s₂^2)
-end
 
 # ╔═╡ c1b47c6c-66ea-4014-9c04-8aa142449178
 md"""
@@ -619,33 +352,6 @@ testset_kde.x |> length
 
 # ╔═╡ 54c75433-c9e3-4d13-863e-3a1aa51f5e3e
 testset_kde.density |> length
-
-# ╔═╡ 7140dc51-55ca-437a-a6da-8812ffc35332
-kde_curve_fit = let
-    x_data = testset_kde.x
-    LsqFit.curve_fit(
-        modelfunc, testset_kde.x, testset_kde.density,
-        [1.0, mean(x_data), 1.0, mean(x_data), 1.0])
-end
-
-# ╔═╡ 78e6146f-74f1-4033-9a18-1e5f8cfdd8cd
-kde_curve_fit_distrib = let
-    β, μ₁, s₁, μ₂, s₂ = kde_curve_fit.param
-    λ = (2 + exp(-β)) / (2 + 2exp(-β))
-    BiNormal(λ, μ₁, s₁^2, μ₂, s₂^2)
-end
-
-# ╔═╡ 8572d3a4-405c-438c-9dfc-0d37222eee9b
-let f = Figure()
-    ax = Axis(f[1,1], xminorgridvisible = true, yminorgridvisible = true)
-    ##stephist!(ax, testset; bins, normalization = :pdf)
-    plot!(ax, testset_kde, label = "kde")
-    xplt = range(extrema(testset)..., length = 1000)
-    lines!(ax, xplt, kde_curve_fit_distrib, label = "Curve fit on kde, LsqFit.jl")
-    #lines!(ax, xplt, pdf.(mixture_model_test, xplt))
-    axislegend(ax)
-    f
-end
 
 # ╔═╡ 2f5f0461-0101-41fb-b785-4cd96d455476
 
@@ -720,6 +426,311 @@ function fitdistributions(DT::Type{<:Distribution}, gdf::GroupedDataFrame)
     (; sf, pf, ISM)
 end
 
+# ╔═╡ 602b1ccd-7cc5-48e2-bcff-6d2c00585e9b
+"""
+    CR_gdfstats(gdf)
+
+For a `GroupedDataFrame` of dN/dp values, compute various statistics grouped by momentum.
+"""
+function CR_gdfstats(gdf)
+    n = length(gdf)
+    log_p = zeros(n)
+    nrows = zeros(Int, n)
+    n_pf_samples = zeros(Int, n)
+    n_sf_samples = zeros(Int, n)
+    n_ISM_samples = zeros(Int, n)
+
+    for (i, df) in enumerate(gdf)
+        log_p[i] = keys(gdf)[i] |> values |> first
+        nrows[i] = nrow(df)
+        n_pf_samples[i] = count(!ismissing, df.log_dNdp_cr_pf)
+        n_sf_samples[i] = count(!ismissing, df.log_dNdp_cr_sf)
+        n_ISM_samples[i] = count(!ismissing, df.log_dNdp_cr_ISM)
+    end
+    return DataFrame(;
+        log_p,
+        nrows,
+        n_pf_samples,
+        n_sf_samples,
+        n_ISM_samples,
+    )
+end
+
+# ╔═╡ c5947192-0fa5-4063-8af2-74febf514b8b
+CR_gdfstats(CR_p_gdf_momentum)
+
+# ╔═╡ 60ee4f38-e85f-4a2d-b17c-579531588058
+CR_gdfstats(CR_e_gdf_momentum)
+
+# ╔═╡ 6d5eb940-6739-4781-9dda-7433cae3cf50
+Base.:*(x::Bool, l::AoG.Layer) = x ? l : AoG.zerolayer()
+
+# ╔═╡ 0aab1add-5285-4da7-b4eb-d1445b96b035
+brute_fit_dist.N₁ * brute_fit_dist.λ
+
+# ╔═╡ 7f0c2a67-1631-47d7-9d81-f87b44eab1c4
+function modelfunc(x, (β, μ₁, s₁, μ₂, s₂))
+    λ = (2 + exp(-β)) / (2 + 2exp(-β))
+    return pdf(BiNormal(λ, μ₁, s₁^2, μ₂, s₂^2), x)
+end
+
+# ╔═╡ 00f44bb7-7074-457c-aef8-566da755d748
+hist_curve_fit = let
+    x_data = centers(q.edges |> only)
+    LsqFit.curve_fit(
+        modelfunc, x_data, q.weights,
+        [1.0, mean(x_data), 1.0, mean(x_data), 1.0])
+end
+
+# ╔═╡ 7140dc51-55ca-437a-a6da-8812ffc35332
+kde_curve_fit = let
+    x_data = testset_kde.x
+    LsqFit.curve_fit(
+        modelfunc, testset_kde.x, testset_kde.density,
+        [1.0, mean(x_data), 1.0, mean(x_data), 1.0])
+end
+
+# ╔═╡ c8a9815e-ed1b-44de-8d8b-9aee518cfe4e
+hist_curve_fit_distrib = let
+    β, μ₁, s₁, μ₂, s₂ = hist_curve_fit.param
+    λ = (2 + exp(-β)) / (2 + 2exp(-β))
+    BiNormal(λ, μ₁, s₁^2, μ₂, s₂^2)
+end
+
+# ╔═╡ 78e6146f-74f1-4033-9a18-1e5f8cfdd8cd
+kde_curve_fit_distrib = let
+    β, μ₁, s₁, μ₂, s₂ = kde_curve_fit.param
+    λ = (2 + exp(-β)) / (2 + 2exp(-β))
+    BiNormal(λ, μ₁, s₁^2, μ₂, s₂^2)
+end
+
+# ╔═╡ 8572d3a4-405c-438c-9dfc-0d37222eee9b
+let f = Figure()
+    ax = Axis(f[1,1], xminorgridvisible = true, yminorgridvisible = true)
+    ##stephist!(ax, testset; bins, normalization = :pdf)
+    plot!(ax, testset_kde, label = "kde")
+    xplt = range(extrema(testset)..., length = 1000)
+    lines!(ax, xplt, kde_curve_fit_distrib, label = "Curve fit on kde, LsqFit.jl")
+    #lines!(ax, xplt, pdf.(mixture_model_test, xplt))
+    axislegend(ax)
+    f
+end
+
+# ╔═╡ 2f36a2d9-d9f5-4bf6-8fa4-c1a07532e8bb
+const proton_indices = axes(CR_p_gdf_momentum, 1);
+
+# ╔═╡ baf25a3a-0d13-409e-b5d9-5a1171da28b2
+const electron_indices = axes(CR_e_gdf_momentum, 1);
+
+# ╔═╡ 4e465b9b-b2a1-42c0-ab78-ea4f620dbe30
+const proton_index_binder = @bind proton_momentum_index NumberField(proton_indices, default = 13);
+
+# ╔═╡ 71404de8-f8b2-4d26-b7d7-41064cae1447
+log_p_nat_at_slice_p = keys(CR_p_gdf_momentum)[proton_momentum_index] |> values |> only;
+
+# ╔═╡ 35710ad9-f2e4-487b-be19-c29500633726
+md"""
+Proton momentum slice to plot (index): $(proton_index_binder) (min: $(minimum(proton_indices)), max: $(maximum(proton_indices)))
+
+Value of proton momentum at slice: 10^$(log_p_nat_at_slice_p) _m_ₚ_c_
+"""
+
+# ╔═╡ c21810ac-c7d7-4faf-8b2d-8985adb268da
+const electron_index_binder = @bind electron_momentum_index NumberField(electron_indices, default = 13);
+
+# ╔═╡ cef8f0a4-0967-4e86-bfde-7fa84c474e31
+log_p_nat_at_slice_e = keys(CR_p_gdf_momentum)[electron_momentum_index] |> values |> only;
+
+# ╔═╡ 7be1e6da-0eb9-45e5-a4f9-bb6deedc3def
+md"""
+Electron momentum slice to plot (index): $electron_index_binder (min: $(minimum(electron_indices)), max: $(maximum(electron_indices)))
+
+Value of electron momentum at slice: 10^$(log_p_nat_at_slice_e) *m*ₚ*c*
+"""
+
+# ╔═╡ 59a22149-3397-4e97-9f7b-5d502aacf293
+const markersize = 6;
+
+# ╔═╡ f91132bd-28af-4a6c-9a77-5c5b0ed4a08a
+const axis_properties = (xminorgridvisible = true, yminorgridvisible = true, xlabel = "log(dN/dp)");
+
+# ╔═╡ 4d245ac7-6329-457a-970e-8a8aa23775dc
+#let
+with_theme() do
+    f = Figure()
+    ax = Axis(f[1,1]; axis_properties...)
+    x = centers(only(q.edges))
+    lines!(ax, x, q.weights, label = "Histogram*, with bin centers")
+    modevalue, modeidx = findmax(q.weights)
+    @info "Got values" modevalue modeidx x[modeidx]
+    scatter!(ax, x[modeidx], modevalue, label = "Peak")
+    axislegend(ax)
+    f
+end
+
+# ╔═╡ f86707a1-9d79-4df8-8798-3f7ea1d1797c
+const bins = 90;
+
+# ╔═╡ cf870504-0f29-4354-9a4a-76971459aeba
+let testset = filter(>(38.7), testset)
+    f = Figure()
+    ax = Axis(f[1,1]; axis_properties...)
+    hist!(ax, testset; bins, normalization = :pdf)
+    #hist(; bins, normalization = :pdf)
+    #xplt = range(extrema(testset)..., length = 1000)
+    #lines!(ax, xplt, pdf.(mixture_model_test, xplt) * 60)
+    f
+end
+
+# ╔═╡ 0b1c1d4f-6ffd-423b-bf9b-31b229488038
+with_theme() do
+    f = Figure()
+    ax = Axis(f[1,1], title = "Fit after filtering out main distrib and manually adjusting λ"; axis_properties...)
+    stephist!(ax, testset, normalization = :pdf; bins, label = "Test set")
+    xs = range(extrema(testset)..., length=1000)
+    #plot!(ax, xs, bn_tentative, label = "semi-Manual BiNormal")
+    plot!(ax, xs, manual_bn, label = "Manual BiNormal", linewidth=1, color = :orange)
+    axislegend(ax)
+    f
+end
+
+# ╔═╡ c305f828-96c5-4839-9524-6a890a5d68fa
+#let
+with_theme(Makie.theme(nothing)) do
+    f = Figure()
+    ax = Axis(f[1,1]; axis_properties...)
+    stephist!(ax, testset; bins, normalization = :pdf)
+    xplt = range(extrema(testset)..., length = 1000)
+    λ = brute_fit_dist.λ
+    @info λ
+    lines!(ax, xplt, brute_fit_dist, label = "Curve fit on histogram, parameter sweep")
+    ##lines!(ax, xplt, λ * pdf.(brute_fit_dist.N₁, xplt), label = "Normal 1st")
+    ##lines!(ax, xplt, (1-λ) * pdf(brute_fit_dist.N₂, xplt), label = "Normal 2nd")
+    ##lines!(ax, xplt, hist_curve_fit_distrib, label = "Curve fit on histogram, LsqFit.jl")
+    ax.xminorgridvisible = true
+    ax.yminorgridvisible = true
+    ##lines!(ax, xplt, pdf.(mixture_model_test, xplt))
+    axislegend(ax)
+    f
+end
+
+# ╔═╡ 377aaf8f-b909-4c42-bc77-912fd300c300
+const normalization = :pdf;
+
+# ╔═╡ 50b1a87f-49ff-4d93-aa6e-f042a87b875e
+const color_pf_p, color_sf_p, color_ISM_p, color_pf_e, color_sf_e, color_ISM_e = Makie.wong_colors();
+
+# ╔═╡ 4051e244-4c84-4983-8cb9-bc7f53daa9f6
+let df = CR_p_gdf_momentum[proton_momentum_index]
+    f = Figure()
+    ax = Axis(
+        f[1,1];
+        xlabel = "log(dN/dp)", ylabel = "pdf",
+        title = "Histogram of protons dN/dp at p = 10^$log_p_nat_at_slice_p mₚc",
+        axis_properties...)
+
+    if do_plot_pf
+        N = df.log_dNdp_cr_pf |> skipmissing |> collect
+        !isempty(N) && stephist!(ax, N, label = "plasma frame"; bins, normalization, color = color_pf_p)
+    end
+
+    if do_plot_sf
+        N = df.log_dNdp_cr_sf |> skipmissing |> collect
+        !isempty(N) && stephist!(ax, N, label = "shock frame"; bins, normalization, color = color_sf_p)
+    end
+    if do_plot_ISM
+        N = df.log_dNdp_cr_ISM |> skipmissing |> collect
+        !isempty(N) && stephist!(ax, N, label = "ISM frame"; bins, normalization, color = color_ISM_p)
+    end
+
+    try
+        axislegend(ax)
+    catch e
+        # axislegend has no plots to work with, because the current index doesn't have any samples. stop it complaining.
+    end
+    f
+end
+
+# ╔═╡ 88822f52-aab8-4931-9091-1909da6c604b
+let df = CR_e_gdf_momentum[electron_momentum_index]
+    f = Figure()
+    ax = Axis(
+        f[1,1];
+        xlabel = "log(dN/dp)", ylabel = "pdf",
+        title = "Histogram of electrons dN/dp at p = 10^$log_p_nat_at_slice_e mₚc",
+        axis_properties...)
+
+    if do_plot_pf
+        N = df.log_dNdp_cr_pf |> skipmissing |> collect
+        !isempty(N) && stephist!(ax, N, label = "plasma frame"; bins, normalization, color = color_pf_e)
+    end
+
+    if do_plot_sf
+        N = df.log_dNdp_cr_sf |> skipmissing |> collect
+        !isempty(N) && stephist!(ax, N, label = "shock frame"; bins, normalization, color = color_sf_e)
+    end
+    if do_plot_ISM
+        N = df.log_dNdp_cr_ISM |> skipmissing |> collect
+        !isempty(N) && stephist!(ax, N, label = "ISM frame"; bins, normalization, color = color_ISM_e)
+    end
+
+    try
+        axislegend(ax)
+    catch e
+        # axislegend has no plots to work with, because the current index doesn't have any samples. stop it complaining.
+    end
+    f
+end
+
+# ╔═╡ b7a96870-784e-4ce0-830d-d245fc16e5f4
+# ╠═╡ disabled = true
+#=╠═╡
+let df = CR_p_gdf_momentum[proton_momentum_index]
+
+    f = Figure()
+    ax = Axis(
+        f[1,1];
+        title = "dN/dp of Cosmic rays (protons) against iteration, momentum slice",
+        xlabel = "Iteration", ylabel = "log(dN/dp)")
+
+    do_plot_pf && scatter!(ax, df.iter, df.log_dNdp_cr_pf, label = "plasma frame"; markersize, color = color_pf_p)
+    do_plot_sf && scatter!(ax, df.iter, df.log_dNdp_cr_sf, label = "shock frame"; markersize, color = color_sf_p)
+    do_plot_ISM && scatter!(ax, df.iter, df.log_dNdp_cr_ISM, label = "ISM frame"; markersize, color = color_ISM_p)
+
+    #xlims!(ax, -16, -3)
+    #ylims!(ax, -100, -98)
+    leg = axislegend(ax, position = :rb)
+    #leg.framevisible = false
+    #Legend(f[1,2], ax)
+    f
+end
+  ╠═╡ =#
+
+# ╔═╡ 4ac1798d-ec27-4571-9b2a-44cb432ef0d6
+# ╠═╡ disabled = true
+#=╠═╡
+let df = CR_p_gdf_momentum[electron_momentum_index]
+
+    f = Figure()
+    ax = Axis(
+        f[1,1];
+        #aspect = AxisAspect(1.2),
+        title = "dN/dp of Cosmic rays (electrons) against iteration, momentum slice",
+        #axis_properties...,
+        xlabel = "Iteration", ylabel = "log(dN/dp)")
+
+    do_plot_pf && scatter!(ax, df.iter, df.log_dNdp_cr_pf, label = "plasma frame"; markersize, color = color_pf_e)
+    do_plot_sf && scatter!(ax, df.iter, df.log_dNdp_cr_sf, label = "shock frame"; markersize, color = color_sf_e)
+    do_plot_ISM && scatter!(ax, df.iter, df.log_dNdp_cr_ISM, label = "ISM frame"; markersize, color = color_ISM_e)
+
+    #xlims!(ax, -16, -3)
+    #ylims!(ax, -100, -98)
+    axislegend(ax, position = :rb)
+    #Legend(f[1,2], ax)
+    f
+end
+  ╠═╡ =#
+
 # ╔═╡ Cell order:
 # ╠═f1ee2cb0-8274-11ef-0826-f55183647219
 # ╟─a5526239-2f05-4618-8868-0f552855d574
@@ -731,31 +742,21 @@ end
 # ╠═40efcd80-db38-4db3-a193-6e65ee5c4367
 # ╠═3791e767-dcf1-4f9d-909d-a7d08e4c5f9c
 # ╠═fe2b3846-c753-4685-8704-e6fb50624989
+# ╟─334b4ffc-1c5d-4743-88fb-ab383a3e6f80
 # ╠═b544df91-fe2d-4396-892c-7faea2edd141
-# ╟─259697bd-dee5-432d-9377-a3d3c30b3564
 # ╟─4415022a-54dc-4f3d-a651-f66ae63dd051
 # ╟─8dfe6f3c-f693-4c73-8152-8c43c1c1ff42
 # ╠═c159f801-b129-4919-85ef-29eedf977f14
 # ╠═bdb9591b-b7ac-47e6-98bc-f18921bb64f9
 # ╠═3777306e-eb41-413b-80a9-72cdc0228a94
 # ╟─628130bf-da25-4799-8e5e-3d2db15b1e49
-# ╟─067dc6df-b9ef-45cf-a32f-128a5a5cfdb6
-# ╟─c16d7ba5-3272-4903-93eb-5ebf06511243
-# ╟─653d7f99-776e-495c-8200-5e9510648de3
-# ╠═59a22149-3397-4e97-9f7b-5d502aacf293
-# ╠═f91132bd-28af-4a6c-9a77-5c5b0ed4a08a
-# ╠═f86707a1-9d79-4df8-8798-3f7ea1d1797c
-# ╠═377aaf8f-b909-4c42-bc77-912fd300c300
-# ╠═50b1a87f-49ff-4d93-aa6e-f042a87b875e
-# ╠═71404de8-f8b2-4d26-b7d7-41064cae1447
-# ╠═cef8f0a4-0967-4e86-bfde-7fa84c474e31
-# ╟─6c16fc5a-7113-4b6e-abf2-de1275cceda5
+# ╟─bfc6a515-8189-487b-be08-746d865a78ae
+# ╟─c5947192-0fa5-4063-8af2-74febf514b8b
+# ╟─ea647872-9dc3-4fb9-9499-e396127703b2
+# ╟─60ee4f38-e85f-4a2d-b17c-579531588058
 # ╟─35710ad9-f2e4-487b-be19-c29500633726
 # ╟─7be1e6da-0eb9-45e5-a4f9-bb6deedc3def
 # ╟─ecf80697-b786-4b02-9563-f3d082383b76
-# ╟─89bcb29b-0b1c-4e3a-91cb-282c05df2bc5
-# ╟─ddc674f6-42c4-434c-8afb-c419f9752f4e
-# ╠═6d5eb940-6739-4781-9dda-7433cae3cf50
 # ╟─4051e244-4c84-4983-8cb9-bc7f53daa9f6
 # ╟─88822f52-aab8-4931-9091-1909da6c604b
 # ╟─b7a96870-784e-4ce0-830d-d245fc16e5f4
@@ -765,7 +766,7 @@ end
 # ╟─f3132403-113d-4b30-9fd0-379d28ade3c7
 # ╠═f3212b13-682f-4be4-865b-fd0f1b450aa4
 # ╠═75e49b40-bff0-48f5-ab57-28b185f63cc9
-# ╠═90e850f3-7b48-441a-92ab-1e1f6bf04e9a
+# ╟─90e850f3-7b48-441a-92ab-1e1f6bf04e9a
 # ╠═18ae83a7-98e2-4ef0-b21c-cac428146188
 # ╠═e0cc631f-28a1-42db-84fc-9e7dcc9387bf
 # ╠═b63ff630-624b-4e9b-bc03-dc32fd691b05
@@ -832,3 +833,16 @@ end
 # ╟─8d03de5e-d344-4efd-b9af-dd5391028780
 # ╠═84d1d644-6a5b-44eb-ab4f-3b9b7171d6fe
 # ╠═e780481f-ffde-407f-8dff-bc289e0ceb40
+# ╠═602b1ccd-7cc5-48e2-bcff-6d2c00585e9b
+# ╠═6d5eb940-6739-4781-9dda-7433cae3cf50
+# ╠═71404de8-f8b2-4d26-b7d7-41064cae1447
+# ╠═cef8f0a4-0967-4e86-bfde-7fa84c474e31
+# ╠═2f36a2d9-d9f5-4bf6-8fa4-c1a07532e8bb
+# ╠═baf25a3a-0d13-409e-b5d9-5a1171da28b2
+# ╠═4e465b9b-b2a1-42c0-ab78-ea4f620dbe30
+# ╠═c21810ac-c7d7-4faf-8b2d-8985adb268da
+# ╠═59a22149-3397-4e97-9f7b-5d502aacf293
+# ╠═f91132bd-28af-4a6c-9a77-5c5b0ed4a08a
+# ╠═f86707a1-9d79-4df8-8798-3f7ea1d1797c
+# ╠═377aaf8f-b909-4c42-bc77-912fd300c300
+# ╠═50b1a87f-49ff-4d93-aa6e-f042a87b875e
