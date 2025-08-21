@@ -169,38 +169,6 @@ md"""
 ## Histograms
 """
 
-# ╔═╡ 32edc221-e586-4510-9427-977b22f62f6c
-md"""
-Vector of momentum slices
-"""
-
-# ╔═╡ e8406a6a-ecc2-49d2-b67a-503b4ef5764b
-const proton_log_p_nat = keys(CR_p_gdf_momentum) .|> values .|> first;
-
-# ╔═╡ 589661b1-6a64-4db5-ac40-c1565c29c3cc
-const electron_log_p_nat = keys(CR_e_gdf_momentum) .|> values .|> first;
-
-# ╔═╡ adf24143-4be1-46c7-a63a-fe4dd490791d
-let
-    f = Figure()
-    ax = Axis(
-        f[1,1];
-        title = "Sample skewness vs momentum slice",
-        axis_properties...,
-        xlabel = "log p (nat)", ylabel = "γ",
-        #yscale = log10,
-    )
-    # you've really gotta refactor this code
-    skewness_getter(gdf) = [skewness(df[!,:log_dNdp_cr_pf] |> skipmissing |> collect) for df in gdf]
-
-    scatterlines!(ax, proton_log_p_nat, skewness_getter(CR_p_gdf_momentum), color = color_pf_p, label = "protons, plasma frame"; markersize)
-    scatterlines!(ax, electron_log_p_nat, skewness_getter(CR_e_gdf_momentum), color = color_pf_e, label = "electrons, plasma frame"; markersize)
-
-    axislegend(ax, position = :lb)
-
-    f
-end
-
 # ╔═╡ 35710ad9-f2e4-487b-be19-c29500633726
 let
     idx_range = axes(CR_p_gdf_momentum,1)
@@ -220,23 +188,6 @@ data = AoG.data(df);
 # ╔═╡ 1333eaeb-8aae-49d5-aabc-3622b9d6ae35
 layer = data * map_layer * visual_layer;
 
-# ╔═╡ 71404de8-f8b2-4d26-b7d7-41064cae1447
-log_p_nat_at_slice = proton_log_p_nat[proton_momentum_index];
-
-# ╔═╡ 4979cc00-15c1-40da-b538-021a067d1065
-draw(
-    layer;
-    figure = (;
-        title = "Histogram of protons dN/dp at p = 10^$log_p_nat_at_slice mₚc",
-        titlealign = :center,
-    ),
-)
-
-# ╔═╡ 89bcb29b-0b1c-4e3a-91cb-282c05df2bc5
-md"""
-Value of proton momentum at slice: 10^$(log_p_nat_at_slice) *m*ₚ*c*
-"""
-
 # ╔═╡ ecf80697-b786-4b02-9563-f3d082383b76
 md"""
 Choose which frames to plot:
@@ -254,14 +205,6 @@ let
     Electron momentum slice to plot (index): $binder (min: $min_idx, max: $max_idx)
     """ # should the electron_momentum_index variable be considered a leak here?
 end
-
-# ╔═╡ 6c16fc5a-7113-4b6e-abf2-de1275cceda5
-log_p_nat_at_slice_e = electron_log_p_nat[electron_momentum_index];
-
-# ╔═╡ c9b9969c-2c7f-436e-b5a1-603138a4e196
-md"""
-Value of electron momentum at slice: 10^$(log_p_nat_at_slice_e) *m*ₚ*c*
-"""
 
 # ╔═╡ 9ea7a3a4-987d-416d-88d1-672e3cce23c5
 md"""
@@ -402,25 +345,6 @@ sw_scores_e = let
     arr
 end;
 
-# ╔═╡ a49ff5ab-6077-4bb2-b694-6f3662982745
-let
-    f = Figure()
-    ax = Axis(
-        f[1,1];
-        title = "Shapiro–Wilk p-value vs momentum slice",
-        axis_properties...,
-        xlabel = "log p (nat)",
-        yscale = p_val_yscale,
-    )
-
-    scatterlines!(ax, proton_log_p_nat, passmissing(pvalue).(sw_scores_p), color = color_pf_p, label = "protons, plasma frame"; markersize)
-    scatterlines!(ax, electron_log_p_nat, passmissing(pvalue).(sw_scores_e), color = color_pf_e, label = "electrons, plasma frame"; markersize)
-
-    axislegend(ax, position = plot_p_values_in_logscale ? :cb : :lt)
-
-    f
-end
-
 # ╔═╡ 2ab2979f-1ad4-4168-b59c-a25e57d4826a
 md"""
 ## Kolmogorov–Smirnov test
@@ -473,11 +397,92 @@ function fitdistributions(DT::Type{<:Distribution}, gdf::GroupedDataFrame)
     (; sf, pf, ISM)
 end
 
-# ╔═╡ c507291a-479c-4fa3-8956-0f841391c23f
-centers(v) = (v[begin:end-1] + v[begin+1:end])/2;
-
 # ╔═╡ e6b9701d-3d27-4c0c-b0b9-9879527f369c
 normal_distrib_protons = fitdistributions(Normal, CR_p_gdf_momentum)
+
+# ╔═╡ 2e79471f-3430-4b1c-91fe-80434de63cb2
+ad_scores_p = let
+    arr = []
+    for (df, dist) in zip(CR_p_gdf_momentum, normal_distrib_protons.pf)
+        if ismissing(dist)
+            push!(arr, missing)
+            continue
+        end
+        score = OneSampleADTest(collect(skipmissing(df.log_dNdp_cr_pf)), dist)
+        push!(arr, score)
+    end
+    arr
+end;
+
+# ╔═╡ e8ab294c-0612-43c5-8b64-bb1ddec387ae
+pf_scores = let
+    arr = []
+    for (df, dist) in zip(CR_p_gdf_momentum, normal_distrib_protons.pf)
+        if ismissing(dist)
+            push!(arr, missing)
+            continue
+        end
+        score = ExactOneSampleKSTest(collect(skipmissing(df.log_dNdp_cr_pf)), dist)
+        push!(arr, score)
+    end
+    arr
+end
+
+# ╔═╡ e75ea9c0-59ca-4097-b4f6-6a3af04dc308
+normal_distrib_electrons = fitdistributions(Normal, CR_e_gdf_momentum)
+
+# ╔═╡ bd8f636c-6033-434e-a220-a07397679431
+ad_scores_e = let
+    arr = []
+    for (df, dist) in zip(CR_e_gdf_momentum, normal_distrib_electrons.pf)
+        if ismissing(dist)
+            push!(arr, missing)
+            continue
+        end
+        score = OneSampleADTest(collect(skipmissing(df.log_dNdp_cr_pf)), dist)
+        push!(arr, score)
+    end
+    arr
+end;
+
+# ╔═╡ ea3f967e-770b-4879-bddd-8d3b497344bf
+"""
+    CR_gdfstats(gdf)
+
+For a `GroupedDataFrame` of dN/dp values, compute various statistics grouped by momentum.
+"""
+function CR_gdfstats(gdf)
+    n = length(gdf)
+    log_p = zeros(n)
+    nrows = zeros(Int, n)
+    n_pf_samples = zeros(Int, n)
+    n_sf_samples = zeros(Int, n)
+    n_ISM_samples = zeros(Int, n)
+
+    for (i, df) in enumerate(gdf)
+        log_p[i] = keys(gdf)[i] |> values |> first
+        nrows[i] = nrow(df)
+        n_pf_samples[i] = count(!ismissing, df.log_dNdp_cr_pf)
+        n_sf_samples[i] = count(!ismissing, df.log_dNdp_cr_sf)
+        n_ISM_samples[i] = count(!ismissing, df.log_dNdp_cr_ISM)
+    end
+    return DataFrame(;
+        log_p,
+        nrows,
+        n_pf_samples,
+        n_sf_samples,
+        n_ISM_samples,
+    )
+end
+
+# ╔═╡ a36ea9cf-176f-40bd-8577-cc2ea8db64af
+CR_gdfstats(CR_p_gdf_momentum)
+
+# ╔═╡ d85427f4-86ed-4c04-980a-a4152b5875e8
+CR_gdfstats(CR_e_gdf_momentum)
+
+# ╔═╡ c507291a-479c-4fa3-8956-0f841391c23f
+centers(v) = (v[begin:end-1] + v[begin+1:end])/2;
 
 # ╔═╡ 222df0cb-0760-48a2-902e-91d32e451a11
 sse_scores_p = let
@@ -537,6 +542,31 @@ function SSE_hist(occurrences, dist)
     score = norm(hist_y - dist_y)
     return score
 end
+
+# ╔═╡ 32edc221-e586-4510-9427-977b22f62f6c
+md"""
+Vector of momentum slices
+"""
+
+# ╔═╡ e8406a6a-ecc2-49d2-b67a-503b4ef5764b
+const proton_log_p_nat = keys(CR_p_gdf_momentum) .|> values .|> first;
+
+# ╔═╡ 71404de8-f8b2-4d26-b7d7-41064cae1447
+log_p_nat_at_slice = proton_log_p_nat[proton_momentum_index];
+
+# ╔═╡ 4979cc00-15c1-40da-b538-021a067d1065
+draw(
+    layer;
+    figure = (;
+        title = "Histogram of protons dN/dp at p = 10^$log_p_nat_at_slice mₚc",
+        titlealign = :center,
+    ),
+)
+
+# ╔═╡ 89bcb29b-0b1c-4e3a-91cb-282c05df2bc5
+md"""
+Value of proton momentum at slice: 10^$(log_p_nat_at_slice) *m*ₚ*c*
+"""
 
 # ╔═╡ 4051e244-4c84-4983-8cb9-bc7f53daa9f6
 let df = CR_p_gdf_momentum[proton_momentum_index], distribs = normal_distrib_protons
@@ -601,36 +631,8 @@ let
     f
 end
 
-# ╔═╡ 2e79471f-3430-4b1c-91fe-80434de63cb2
-ad_scores_p = let
-    arr = []
-    for (df, dist) in zip(CR_p_gdf_momentum, normal_distrib_protons.pf)
-        if ismissing(dist)
-            push!(arr, missing)
-            continue
-        end
-        score = OneSampleADTest(collect(skipmissing(df.log_dNdp_cr_pf)), dist)
-        push!(arr, score)
-    end
-    arr
-end;
-
-# ╔═╡ e8ab294c-0612-43c5-8b64-bb1ddec387ae
-pf_scores = let
-    arr = []
-    for (df, dist) in zip(CR_p_gdf_momentum, normal_distrib_protons.pf)
-        if ismissing(dist)
-            push!(arr, missing)
-            continue
-        end
-        score = ExactOneSampleKSTest(collect(skipmissing(df.log_dNdp_cr_pf)), dist)
-        push!(arr, score)
-    end
-    arr
-end
-
-# ╔═╡ e75ea9c0-59ca-4097-b4f6-6a3af04dc308
-normal_distrib_electrons = fitdistributions(Normal, CR_e_gdf_momentum)
+# ╔═╡ 589661b1-6a64-4db5-ac40-c1565c29c3cc
+const electron_log_p_nat = keys(CR_e_gdf_momentum) .|> values .|> first;
 
 # ╔═╡ 91bba2da-c925-4123-bb8a-c1f9be8619e9
 let
@@ -674,6 +676,35 @@ let
 
     f
 end
+
+# ╔═╡ adf24143-4be1-46c7-a63a-fe4dd490791d
+let
+    f = Figure()
+    ax = Axis(
+        f[1,1];
+        title = "Sample skewness vs momentum slice",
+        axis_properties...,
+        xlabel = "log p (nat)", ylabel = "γ",
+        #yscale = log10,
+    )
+    # you've really gotta refactor this code
+    skewness_getter(gdf) = [skewness(df[!,:log_dNdp_cr_pf] |> skipmissing |> collect) for df in gdf]
+
+    scatterlines!(ax, proton_log_p_nat, skewness_getter(CR_p_gdf_momentum), color = color_pf_p, label = "protons, plasma frame"; markersize)
+    scatterlines!(ax, electron_log_p_nat, skewness_getter(CR_e_gdf_momentum), color = color_pf_e, label = "electrons, plasma frame"; markersize)
+
+    axislegend(ax, position = :lb)
+
+    f
+end
+
+# ╔═╡ 6c16fc5a-7113-4b6e-abf2-de1275cceda5
+log_p_nat_at_slice_e = electron_log_p_nat[electron_momentum_index];
+
+# ╔═╡ c9b9969c-2c7f-436e-b5a1-603138a4e196
+md"""
+Value of electron momentum at slice: 10^$(log_p_nat_at_slice_e) *m*ₚ*c*
+"""
 
 # ╔═╡ 88822f52-aab8-4931-9091-1909da6c604b
 let df = CR_e_gdf_momentum[electron_momentum_index], distribs = normal_distrib_electrons
@@ -738,20 +769,6 @@ let
     f
 end
 
-# ╔═╡ bd8f636c-6033-434e-a220-a07397679431
-ad_scores_e = let
-    arr = []
-    for (df, dist) in zip(CR_e_gdf_momentum, normal_distrib_electrons.pf)
-        if ismissing(dist)
-            push!(arr, missing)
-            continue
-        end
-        score = OneSampleADTest(collect(skipmissing(df.log_dNdp_cr_pf)), dist)
-        push!(arr, score)
-    end
-    arr
-end;
-
 # ╔═╡ cee91c99-adc0-4185-a7c3-e2164b95a003
 let
     f = Figure()
@@ -771,41 +788,24 @@ let
     f
 end
 
-# ╔═╡ ea3f967e-770b-4879-bddd-8d3b497344bf
-"""
-    CR_gdfstats(gdf)
-
-For a `GroupedDataFrame` of dN/dp values, compute various statistics grouped by momentum.
-"""
-function CR_gdfstats(gdf)
-    n = length(gdf)
-    log_p = zeros(n)
-    nrows = zeros(Int, n)
-    n_pf_samples = zeros(Int, n)
-    n_sf_samples = zeros(Int, n)
-    n_ISM_samples = zeros(Int, n)
-
-    for (i, df) in enumerate(gdf)
-        log_p[i] = keys(gdf)[i] |> values |> first
-        nrows[i] = nrow(df)
-        n_pf_samples[i] = count(!ismissing, df.log_dNdp_cr_pf)
-        n_sf_samples[i] = count(!ismissing, df.log_dNdp_cr_sf)
-        n_ISM_samples[i] = count(!ismissing, df.log_dNdp_cr_ISM)
-    end
-    return DataFrame(;
-        log_p,
-        nrows,
-        n_pf_samples,
-        n_sf_samples,
-        n_ISM_samples,
+# ╔═╡ a49ff5ab-6077-4bb2-b694-6f3662982745
+let
+    f = Figure()
+    ax = Axis(
+        f[1,1];
+        title = "Shapiro–Wilk p-value vs momentum slice",
+        axis_properties...,
+        xlabel = "log p (nat)",
+        yscale = p_val_yscale,
     )
+
+    scatterlines!(ax, proton_log_p_nat, passmissing(pvalue).(sw_scores_p), color = color_pf_p, label = "protons, plasma frame"; markersize)
+    scatterlines!(ax, electron_log_p_nat, passmissing(pvalue).(sw_scores_e), color = color_pf_e, label = "electrons, plasma frame"; markersize)
+
+    axislegend(ax, position = plot_p_values_in_logscale ? :cb : :lt)
+
+    f
 end
-
-# ╔═╡ a36ea9cf-176f-40bd-8577-cc2ea8db64af
-CR_gdfstats(CR_p_gdf_momentum)
-
-# ╔═╡ d85427f4-86ed-4c04-980a-a4152b5875e8
-CR_gdfstats(CR_e_gdf_momentum)
 
 # ╔═╡ Cell order:
 # ╟─a5526239-2f05-4618-8868-0f552855d574
