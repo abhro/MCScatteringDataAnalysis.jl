@@ -15,12 +15,12 @@ ENINJ     1.0E3                 Injection energy[keV] and min PSD limit if "INDS
 INJWT       1                   How to assign initial weights.  1 = equal by particle, 2 = equal by bin
 ENMAX    0 0 1.0E+10            Max particle energy as Emax[keV], Emax/nuc[keV/aa], pmax/(m_pc).  1st nonzero value used.  Also used in setting PSD
 GYFAC       1                   Gyrofactor, i.e. MFP = gyrofac*gyroradius.  Ignored if "NWFRG" = 66
-BMAGZ    1.0E-5                 Far UpS magnetic field in Gauss
-THTBZ       0                   UpS angle[deg] between B-field and shock normal
+BMAGZ    1.0E-5                 Far upstream magnetic field in Gauss
+THTBZ       0                   Upstream angle[deg] between B-field and shock normal
 XGDUP      -1.0E7               Start of grid[rg0].  Can not be closer than UpS FEB.
-XGDDW      10                   DwS limit of grid[rg0]
-FEBUP   -1.0E2  0               UpS FEB, in [rg0] or [pc].  1st non-zero value used.  Must be negative.
-FEBDW    0.0    0               DwS FEB, in [rg0] or [pc].  1st non-zero value used.  Must be positive if included; set <= 0 otherwise.
+XGDDW      10                   Downstream limit of grid[rg0]
+FEBUP   -1.0E2  0               Upstream FEB, in [rg0] or [pc].  1st non-zero value used.  Must be negative.
+FEBDW    0.0    0               Downstream FEB, in [rg0] or [pc].  1st non-zero value used.  Must be positive if included; set <= 0 otherwise.
 NSPEC       0                   Number of x-positions [rg0] where particle spectrum is calculated
 DNDPS      66                   Enter "66" to write a separate dNdp for each iteration
 NWFRG       0                   Enter "66" to define custom f(r_g) in subr "scattering"; else = eta_mfp*r_g
@@ -83,9 +83,9 @@ SMMOE       0                   For profile iteration, = 0 uses only mom. flux e
 SMPFP       0                   For profile iteration, = 0 uses only flux to find pressure, = 1 only PSD data.  Must be in [0,1]
 RCOMP      -1                   Target compression ratio.  = -1 to use R-H value of 3.0583
 OLDIN       0                   Enter "66" to read in old profile from "mc_grid_old.dat"
-OLDDT    1300  5 100            If reading old profile, # lines to skip, # profiles to average, # lines per profile
-AGEMX   3.15E11                 Maximum allowed CR age (sec, explosion frame).  Ignored if <= 0
-TCUTS                           List of time cutoffs to use for tracking particles.
+OLDDT    1300  5 100            If reading old profile, number of lines to skip, number of profiles to average, number of lines per profile
+AGEMX   3.15E11                 Maximum allowed cosmic ray age (sec, explosion frame).  Ignored if <= 0
+TCUTS                           List of time cutoffs to use for tracking particles
     1E03                          tcut  1
     1E04                          tcut  2
     1E05                          tcut  3
@@ -97,8 +97,8 @@ TCUTS                           List of time cutoffs to use for tracking particl
     1E11                          tcut  9
     3E13                          tcut  10
     -1                            tcut  11
-RETRO      66                   Enter "66" to use retro time calc DwS.  Ignored if "AGEMX" < 0
-FPUSH      66                   Enter "66" for fast Ups transport
+RETRO      66                   Enter "66" to use retro time calc downstream.  Ignored if "AGEMX" < 0
+FPUSH      66                   Enter "66" for fast upstream transport
 FPSTP      -1                   UpS x position[rg0] where PROTON fast transport stops
 ARTSM       0 0                 Artificial smoothing: start position[rg0], scale factor.  Ignored if 1st input >= 0
 EMNFP   1.0E4                   Kinetic energy[keV] below which electrons have constant mfp.  Ignored if <= 0
@@ -107,8 +107,8 @@ PHOTN       0                   Enter "66" to calculate photon production
 JETRD   0.438                   Jet shock radius[pc] used for normalizing photon production.  Ignored if "PHOTN" != 66
 JETFR       0 5                 Frac of sphere producing CRs, or jet open ang[deg].  1st non-zero value used.  Ignored if "PHOTN" != 66
 JETDS   1.0E6                   Distance from jet to observer[kpc].  Used to calc photon fluxes & CMB parameters
-ENXFR     0.1                   Fraction of ion energy Xferred to electrons at 1st shock crossing. Must be [0,1]; 0 to ignore
-NSHLS       5 2                 Number of UpS & DwS shells for photon emission.  Ignored if "PHOTN" != 66
+ENXFR     0.1                   Fraction of ion energy transferred to electrons at 1st shock crossing. Must be [0,1]; 0 to ignore
+NSHLS       5 2                 Number of upstream & downstream shells for photon emission.  Ignored if "PHOTN" != 66
 BTRBF       1                   Fraction of compressed B turb to use in scattering & losses.  Must be in [0,1].  0 means ignore
 BAMPF       1                   Amplification factor to use for B field.  1.0 means no amp
 NWEPB      66                   Enter "66" to define custom epsilon_B on grid; else = B(x) controlled by "BTRBF" and "BAMPF"
