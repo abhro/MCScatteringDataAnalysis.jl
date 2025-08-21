@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.20.15
+# v0.20.16
 
 using Markdown
 using InteractiveUtils
@@ -143,6 +143,55 @@ Choose which frames to plot:
 - Shock frame: $(@bind do_plot_sf CheckBox(default=false))
 - ISM frame: $(@bind do_plot_ISM CheckBox(default=false))
 """
+
+# ╔═╡ b7a96870-784e-4ce0-830d-d245fc16e5f4
+# ╠═╡ disabled = true
+#=╠═╡
+let df = CR_p_gdf_momentum[proton_momentum_index]
+
+    f = Figure()
+    ax = Axis(
+        f[1,1];
+        title = "dN/dp of Cosmic rays (protons) against iteration, momentum slice",
+        xlabel = "Iteration", ylabel = "log(dN/dp)")
+
+    do_plot_pf && scatter!(ax, df.iter, df.log_dNdp_cr_pf, label = "plasma frame"; markersize, color = color_pf_p)
+    do_plot_sf && scatter!(ax, df.iter, df.log_dNdp_cr_sf, label = "shock frame"; markersize, color = color_sf_p)
+    do_plot_ISM && scatter!(ax, df.iter, df.log_dNdp_cr_ISM, label = "ISM frame"; markersize, color = color_ISM_p)
+
+    #xlims!(ax, -16, -3)
+    #ylims!(ax, -100, -98)
+    leg = axislegend(ax, position = :rb)
+    #leg.framevisible = false
+    #Legend(f[1,2], ax)
+    f
+end
+  ╠═╡ =#
+
+# ╔═╡ 4ac1798d-ec27-4571-9b2a-44cb432ef0d6
+# ╠═╡ disabled = true
+#=╠═╡
+let df = CR_p_gdf_momentum[electron_momentum_index]
+
+    f = Figure()
+    ax = Axis(
+        f[1,1];
+        #aspect = AxisAspect(1.2),
+        title = "dN/dp of Cosmic rays (electrons) against iteration, momentum slice",
+        #axis_properties...,
+        xlabel = "Iteration", ylabel = "log(dN/dp)")
+
+    do_plot_pf && scatter!(ax, df.iter, df.log_dNdp_cr_pf, label = "plasma frame"; markersize, color = color_pf_e)
+    do_plot_sf && scatter!(ax, df.iter, df.log_dNdp_cr_sf, label = "shock frame"; markersize, color = color_sf_e)
+    do_plot_ISM && scatter!(ax, df.iter, df.log_dNdp_cr_ISM, label = "ISM frame"; markersize, color = color_ISM_e)
+
+    #xlims!(ax, -16, -3)
+    #ylims!(ax, -100, -98)
+    axislegend(ax, position = :rb)
+    #Legend(f[1,2], ax)
+    f
+end
+  ╠═╡ =#
 
 # ╔═╡ f95a0d36-5dd8-4190-98c6-06e8be2ad840
 # ╠═╡ disabled = true
@@ -681,55 +730,6 @@ let df = CR_e_gdf_momentum[electron_momentum_index]
     end
     f
 end
-
-# ╔═╡ b7a96870-784e-4ce0-830d-d245fc16e5f4
-# ╠═╡ disabled = true
-#=╠═╡
-let df = CR_p_gdf_momentum[proton_momentum_index]
-
-    f = Figure()
-    ax = Axis(
-        f[1,1];
-        title = "dN/dp of Cosmic rays (protons) against iteration, momentum slice",
-        xlabel = "Iteration", ylabel = "log(dN/dp)")
-
-    do_plot_pf && scatter!(ax, df.iter, df.log_dNdp_cr_pf, label = "plasma frame"; markersize, color = color_pf_p)
-    do_plot_sf && scatter!(ax, df.iter, df.log_dNdp_cr_sf, label = "shock frame"; markersize, color = color_sf_p)
-    do_plot_ISM && scatter!(ax, df.iter, df.log_dNdp_cr_ISM, label = "ISM frame"; markersize, color = color_ISM_p)
-
-    #xlims!(ax, -16, -3)
-    #ylims!(ax, -100, -98)
-    leg = axislegend(ax, position = :rb)
-    #leg.framevisible = false
-    #Legend(f[1,2], ax)
-    f
-end
-  ╠═╡ =#
-
-# ╔═╡ 4ac1798d-ec27-4571-9b2a-44cb432ef0d6
-# ╠═╡ disabled = true
-#=╠═╡
-let df = CR_p_gdf_momentum[electron_momentum_index]
-
-    f = Figure()
-    ax = Axis(
-        f[1,1];
-        #aspect = AxisAspect(1.2),
-        title = "dN/dp of Cosmic rays (electrons) against iteration, momentum slice",
-        #axis_properties...,
-        xlabel = "Iteration", ylabel = "log(dN/dp)")
-
-    do_plot_pf && scatter!(ax, df.iter, df.log_dNdp_cr_pf, label = "plasma frame"; markersize, color = color_pf_e)
-    do_plot_sf && scatter!(ax, df.iter, df.log_dNdp_cr_sf, label = "shock frame"; markersize, color = color_sf_e)
-    do_plot_ISM && scatter!(ax, df.iter, df.log_dNdp_cr_ISM, label = "ISM frame"; markersize, color = color_ISM_e)
-
-    #xlims!(ax, -16, -3)
-    #ylims!(ax, -100, -98)
-    axislegend(ax, position = :rb)
-    #Legend(f[1,2], ax)
-    f
-end
-  ╠═╡ =#
 
 # ╔═╡ Cell order:
 # ╠═f1ee2cb0-8274-11ef-0826-f55183647219

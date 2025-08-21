@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.20.15
+# v0.20.16
 
 using Markdown
 using InteractiveUtils
@@ -258,6 +258,8 @@ md"""
 """
 
 # ╔═╡ b7a96870-784e-4ce0-830d-d245fc16e5f4
+# ╠═╡ disabled = true
+#=╠═╡
 let df = CR_p_gdf_momentum[proton_momentum_index]
 
     f = Figure()
@@ -277,8 +279,11 @@ let df = CR_p_gdf_momentum[proton_momentum_index]
     #Legend(f[1,2], ax)
     f
 end
+  ╠═╡ =#
 
 # ╔═╡ 4ac1798d-ec27-4571-9b2a-44cb432ef0d6
+# ╠═╡ disabled = true
+#=╠═╡
 let df = CR_p_gdf_momentum[electron_momentum_index]
 
     f = Figure()
@@ -299,6 +304,7 @@ let df = CR_p_gdf_momentum[electron_momentum_index]
     #Legend(f[1,2], ax)
     f
 end
+  ╠═╡ =#
 
 # ╔═╡ f95a0d36-5dd8-4190-98c6-06e8be2ad840
 # ╠═╡ disabled = true
