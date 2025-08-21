@@ -27,11 +27,10 @@ using Distributions
 
 # ╔═╡ 547aad6f-32db-405d-9886-a727f1591101
 begin
-    using Makie
-    using AlgebraOfGraphics
-    import AlgebraOfGraphics as AoG
     using CairoMakie
     #using WGLMakie
+    using AlgebraOfGraphics
+    import AlgebraOfGraphics as AoG
 end
 
 # ╔═╡ 7a050dc5-7772-4933-959f-bf4fb478fc7d
