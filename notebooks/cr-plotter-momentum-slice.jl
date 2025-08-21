@@ -410,9 +410,6 @@ md"""
 ## Kolmogorov–Smirnov test
 """
 
-# ╔═╡ 08542eea-964a-4f1d-aae5-2b50a628588a
-# TODO: plot Kolmogorov--Smirnov test results
-
 # ╔═╡ 8d03de5e-d344-4efd-b9af-dd5391028780
 md"""
 # Constants and functions
@@ -504,6 +501,25 @@ let df = CR_p_gdf_momentum[proton_momentum_index], distribs = normal_distrib_pro
     catch e
         # axislegend has no plots to work with, because the current index doesn't have any samples. stop it complaining.
     end
+    f
+end
+
+# ╔═╡ 08542eea-964a-4f1d-aae5-2b50a628588a
+let
+    f = Figure()
+    ax = Axis(
+        f[1,1];
+        title = "Kolmogorov–Smirnov p-value vs momentum slice",
+        axis_properties...,
+        xlabel = "log p (nat)",
+        yscale = p_val_yscale,
+    )
+
+    scatterlines!(ax, proton_log_p_nat, passmissing(pvalue).(pf_scores), color = color_pf_p, label = "protons, plasma frame"; markersize)
+    # scatterlines!(ax, electron_log_p_nat, passmissing(pvalue).(sw_scores_e), color = color_pf_e, label = "electrons, plasma frame"; markersize)
+
+    axislegend(ax, position = plot_p_values_in_logscale ? :cb : :lt)
+
     f
 end
 
@@ -772,7 +788,7 @@ CR_gdfstats(CR_e_gdf_momentum)
 # ╟─a2dca585-2b84-4958-8ba6-af51602c4d8a
 # ╟─ec6883c9-b6bb-4e7e-bd6d-e65d6e06144d
 # ╟─2ab2979f-1ad4-4168-b59c-a25e57d4826a
-# ╠═08542eea-964a-4f1d-aae5-2b50a628588a
+# ╟─08542eea-964a-4f1d-aae5-2b50a628588a
 # ╠═e8ab294c-0612-43c5-8b64-bb1ddec387ae
 # ╟─8d03de5e-d344-4efd-b9af-dd5391028780
 # ╠═e780481f-ffde-407f-8dff-bc289e0ceb40
