@@ -163,6 +163,11 @@ md"""
 ## Histograms
 """
 
+# ╔═╡ 32edc221-e586-4510-9427-977b22f62f6c
+md"""
+Vector of momentum slices
+"""
+
 # ╔═╡ e8406a6a-ecc2-49d2-b67a-503b4ef5764b
 const proton_log_p_nat = keys(CR_p_gdf_momentum) .|> values .|> first;
 
@@ -754,8 +759,6 @@ CR_gdfstats(CR_e_gdf_momentum)
 # ╠═1333eaeb-8aae-49d5-aabc-3622b9d6ae35
 # ╠═4979cc00-15c1-40da-b538-021a067d1065
 # ╟─ce8b1307-dc78-463b-9f41-04fe5dded525
-# ╠═e8406a6a-ecc2-49d2-b67a-503b4ef5764b
-# ╠═589661b1-6a64-4db5-ac40-c1565c29c3cc
 # ╠═71404de8-f8b2-4d26-b7d7-41064cae1447
 # ╠═6c16fc5a-7113-4b6e-abf2-de1275cceda5
 # ╟─89bcb29b-0b1c-4e3a-91cb-282c05df2bc5
@@ -794,3 +797,6 @@ CR_gdfstats(CR_e_gdf_momentum)
 # ╠═e780481f-ffde-407f-8dff-bc289e0ceb40
 # ╠═84d1d644-6a5b-44eb-ab4f-3b9b7171d6fe
 # ╠═ea3f967e-770b-4879-bddd-8d3b497344bf
+# ╟─32edc221-e586-4510-9427-977b22f62f6c
+# ╠═e8406a6a-ecc2-49d2-b67a-503b4ef5764b
+# ╠═589661b1-6a64-4db5-ac40-c1565c29c3cc
