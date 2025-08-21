@@ -48,6 +48,12 @@ using Printf
 # ╔═╡ fd47dab7-426c-44fc-8038-00e378324e41
 using HypothesisTests
 
+# ╔═╡ 49902e99-870d-4d19-afb0-1de612c185df
+using StatsBase
+
+# ╔═╡ 4ac32bef-af81-4f7e-8e97-7eac4dd2bf69
+using LinearAlgebra
+
 # ╔═╡ a5526239-2f05-4618-8868-0f552855d574
 md"""
 # Preamble
@@ -351,6 +357,11 @@ $(
 # ╔═╡ 04dad413-0dc0-4ceb-81c2-e208ef082f38
 p_val_yscale = plot_p_values_in_logscale ? log10 : identity;
 
+# ╔═╡ 94a91acd-a878-4c3c-9716-8bed60bf8c6c
+md"""
+## Sum of squared residuals
+"""
+
 # ╔═╡ 98675d19-3b1b-4be0-9e48-ab0ffd019647
 md"""
 ## Anderson–Darling test
@@ -462,8 +473,70 @@ function fitdistributions(DT::Type{<:Distribution}, gdf::GroupedDataFrame)
     (; sf, pf, ISM)
 end
 
+# ╔═╡ c507291a-479c-4fa3-8956-0f841391c23f
+centers(v) = (v[begin:end-1] + v[begin+1:end])/2;
+
 # ╔═╡ e6b9701d-3d27-4c0c-b0b9-9879527f369c
 normal_distrib_protons = fitdistributions(Normal, CR_p_gdf_momentum)
+
+# ╔═╡ 222df0cb-0760-48a2-902e-91d32e451a11
+sse_scores_p = let
+    arr = []
+    for (df, dist) in zip(CR_p_gdf_momentum, normal_distrib_protons.pf)
+        if ismissing(dist)
+            push!(arr, missing)
+            continue
+        end
+        log_dNdp = collect(skipmissing(df.log_dNdp_cr_pf))
+        histogram = normalize(fit(Histogram, log_dNdp); mode=:pdf)
+
+        x = histogram.edges |> only |> centers
+        hist_y = histogram.weights
+        normal_y = pdf.(dist, x)
+        score = norm(hist_y - normal_y)
+        push!(arr, score)
+    end
+    arr
+end;
+
+# ╔═╡ cbea4ff4-b132-4abb-97c6-e406a339ced6
+sse_scores_e = let
+    arr = []
+    for (df, dist) in zip(CR_e_gdf_momentum, normal_distrib_electrons.pf)
+        if ismissing(dist)
+            push!(arr, missing)
+            continue
+        end
+        log_dNdp = collect(skipmissing(df.log_dNdp_cr_pf))
+        histogram = normalize(fit(Histogram, log_dNdp); mode=:pdf)
+
+        x = histogram.edges |> only |> centers
+        hist_y = histogram.weights
+        normal_y = pdf.(dist, x)
+        score = norm(hist_y - normal_y)
+        push!(arr, score)
+    end
+    arr
+end;
+
+# ╔═╡ 22a91877-4339-4e6b-8f7d-0e5a80dc7c74
+"""
+    SSE_hist(occurrences, dist)
+
+Given a list of `occurences`, and a pre-fit distribution `dist`,
+compute the L2-norm of errors of the histogram and the pdf of `dist`.
+The `pdf` is evaluated at the center of each bin.
+"""
+function SSE_hist(occurrences, dist)
+    occurrences = collect(skipmissing(occurrences))
+    histogram = normalize(fit(Histogram, occurrences); mode=:pdf)
+
+    x = histogram.edges |> only |> centers
+    hist_y = histogram.weights
+    dist_y = pdf.(dist, x)
+    score = norm(hist_y - dist_y)
+    return score
+end
 
 # ╔═╡ 4051e244-4c84-4983-8cb9-bc7f53daa9f6
 let df = CR_p_gdf_momentum[proton_momentum_index], distribs = normal_distrib_protons
@@ -646,6 +719,25 @@ let df = CR_e_gdf_momentum[electron_momentum_index], distribs = normal_distrib_e
     f
 end
 
+# ╔═╡ e7a26d10-0e00-444d-a8f9-27874a8f821e
+let
+    f = Figure()
+    ax = Axis(
+        f[1,1];
+        title = "Sum-of-Squared-Errors vs momentum slice",
+        axis_properties...,
+        xlabel = "log p (nat)",
+        yscale = p_val_yscale,
+    )
+
+    scatterlines!(ax, proton_log_p_nat, sse_scores_p, color = color_pf_p, label = "protons, plasma frame"; markersize)
+    scatterlines!(ax, electron_log_p_nat, sse_scores_e, color = color_pf_e, label = "electrons, plasma frame"; markersize)
+
+    axislegend(ax, position = plot_p_values_in_logscale ? :cb : :ct)
+
+    f
+end
+
 # ╔═╡ bd8f636c-6033-434e-a220-a07397679431
 ad_scores_e = let
     arr = []
@@ -782,6 +874,12 @@ CR_gdfstats(CR_e_gdf_momentum)
 # ╠═fd47dab7-426c-44fc-8038-00e378324e41
 # ╟─79dc57bb-d66d-4608-a775-9dfc58af1995
 # ╟─04dad413-0dc0-4ceb-81c2-e208ef082f38
+# ╟─94a91acd-a878-4c3c-9716-8bed60bf8c6c
+# ╠═49902e99-870d-4d19-afb0-1de612c185df
+# ╠═4ac32bef-af81-4f7e-8e97-7eac4dd2bf69
+# ╟─e7a26d10-0e00-444d-a8f9-27874a8f821e
+# ╟─222df0cb-0760-48a2-902e-91d32e451a11
+# ╟─cbea4ff4-b132-4abb-97c6-e406a339ced6
 # ╟─98675d19-3b1b-4be0-9e48-ab0ffd019647
 # ╟─cee91c99-adc0-4185-a7c3-e2164b95a003
 # ╟─2e79471f-3430-4b1c-91fe-80434de63cb2
@@ -797,6 +895,8 @@ CR_gdfstats(CR_e_gdf_momentum)
 # ╠═e780481f-ffde-407f-8dff-bc289e0ceb40
 # ╠═84d1d644-6a5b-44eb-ab4f-3b9b7171d6fe
 # ╠═ea3f967e-770b-4879-bddd-8d3b497344bf
+# ╠═22a91877-4339-4e6b-8f7d-0e5a80dc7c74
+# ╠═c507291a-479c-4fa3-8956-0f841391c23f
 # ╟─32edc221-e586-4510-9427-977b22f62f6c
 # ╠═e8406a6a-ecc2-49d2-b67a-503b4ef5764b
 # ╠═589661b1-6a64-4db5-ac40-c1565c29c3cc
