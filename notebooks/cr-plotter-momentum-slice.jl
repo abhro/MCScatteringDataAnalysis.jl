@@ -53,6 +53,9 @@ using StatsBase
 # ╔═╡ 4ac32bef-af81-4f7e-8e97-7eac4dd2bf69
 using LinearAlgebra
 
+# ╔═╡ 59e1cd4d-6f38-4260-8955-159f21347fc6
+using LsqFit
+
 # ╔═╡ a5526239-2f05-4618-8868-0f552855d574
 md"""
 # Preamble
@@ -129,6 +132,9 @@ const axis_properties = (xminorgridvisible = true, yminorgridvisible = true, xla
 
 # ╔═╡ f86707a1-9d79-4df8-8798-3f7ea1d1797c
 const bins = 90;
+
+# ╔═╡ 29ec59ad-0e22-462a-ab6d-2065a56fc001
+x, y = get_hist(logdNdp; nbins=bins)
 
 # ╔═╡ 377aaf8f-b909-4c42-bc77-912fd300c300
 const normalization = :pdf;
@@ -328,6 +334,47 @@ md"""
 ## Root-sum-squared errors
 """
 
+# ╔═╡ b0d555b3-5087-4405-8343-ce304d482ca9
+custom_dist = Normal(32.5, 0.5)
+
+# ╔═╡ 5dc367ca-2882-4b98-8f29-2b5390426a9b
+logdNdp = CR_p_gdf_momentum[proton_momentum_index].log_dNdp_cr_pf |> skipmissing |> collect;
+
+# ╔═╡ 5ed80ffc-6ad3-4958-9a0d-8944c18f4570
+# ╠═╡ disabled = true
+#=╠═╡
+log_dNdp_pf = let
+    arr = []
+    for df in CR_p_gdf_momentum
+        push!(arr, df.log_dNdp_cr_pf |> skipmissing |> collect)
+    end
+    Vector{Vector{Float64}}(arr)
+end
+  ╠═╡ =#
+
+# ╔═╡ b9e9fef0-b949-411e-8500-5ecd1dec0390
+#=╠═╡
+open("log_dNdp.txt", "w") do f
+    println.(f, log_dNdp_pf)
+end
+  ╠═╡ =#
+
+# ╔═╡ 5ab05dc9-3a98-4297-a47b-c4e0111b8c51
+SSE_hist(logdNdp, custom_dist)
+
+# ╔═╡ 89f8d7a8-ea2e-4906-9460-da16154b0404
+sum(logpdf.(custom_dist, logdNdp))
+
+# ╔═╡ 91733807-63bc-47f6-9252-1bbef55fc5ec
+#=╠═╡
+@. model(t, (μ, σ)) = exp((t - μ)^2 / (2σ^2))
+  ╠═╡ =#
+
+# ╔═╡ 85bb106c-0463-4723-8b75-8ff919ba903a
+#=╠═╡
+fit = curve_fit(model, x, y, [3.4, 2.5])# [mean(logdNdp) - 3, std(logdNdp) - 5])
+  ╠═╡ =#
+
 # ╔═╡ 98675d19-3b1b-4be0-9e48-ab0ffd019647
 md"""
 ## Anderson–Darling test
@@ -411,10 +458,13 @@ pf_scores = let
         push!(arr, score)
     end
     arr
-end
+end;
+
 # ╔═╡ 5bbd6e99-87e1-401c-a09e-065e2d426370
 SSE_hist(logdNdp, fitted_dist)
 
+# ╔═╡ 55d8c831-27e6-4914-a836-7a05281e8fb3
+sum(logpdf.(fitted_dist, logdNdp))
 
 # ╔═╡ e75ea9c0-59ca-4097-b4f6-6a3af04dc308
 normal_distrib_electrons = fitdistributions(Normal, CR_e_gdf_momentum)
@@ -469,6 +519,8 @@ sse_scores_e = let
     arr
 end;
 
+# ╔═╡ 32f07cd2-f62f-41e0-9211-8ac333bdd98d
+sse_scores_p |> skipmissing |> findmax
 
 # ╔═╡ 32edc221-e586-4510-9427-977b22f62f6c
 md"""
@@ -497,6 +549,37 @@ draw(
 md"""
 Value of proton momentum at slice: 10^$(log_p_nat_at_slice) *m*ₚ*c*
 """
+
+# ╔═╡ 95040e95-2eb6-43e5-8573-e79109c545e6
+let df = CR_p_gdf_momentum[proton_momentum_index], distribs = normal_distrib_protons
+    f = Figure()
+    ax = Axis(
+        f[1,1];
+        xlabel = "log(dN/dp)", ylabel = "pdf",
+        title = "Histogram of protons dN/dp at p = 10^$log_p_nat_at_slice mₚc",
+        axis_properties...)
+
+    if do_plot_pf
+        N = df.log_dNdp_cr_pf |> skipmissing |> collect
+        if !isempty(N)
+            x, y = get_hist(N; nbins=bins)
+            # lines!(ax, x, y, label = "bin-centered \"histogram\"")
+            stephist!(ax, N, label = "data"; bins, normalization, color = :teal, linewidth = 0.5)
+        end
+        distrib = distribs.pf[proton_momentum_index]
+        if !ismissing(distrib)
+            plot!(ax, x, distrib, label = @sprintf("MLE fit 𝒩 (%.2f, %.2f)", params(distrib)...), color = :indianred, linewidth = 1)
+        end
+        plot!(ax, x, custom_dist, label = @sprintf("custom 𝒩 (%.2f, %.2f)", params(custom_dist)...), color = :orange, linewidth = 1)
+    end
+
+    try
+        axislegend(ax)
+    catch e
+        # axislegend has no plots to work with, because the current index doesn't have any samples. stop it complaining.
+    end
+    f
+end
 
 # ╔═╡ 4051e244-4c84-4983-8cb9-bc7f53daa9f6
 # ╠═╡ disabled = true
@@ -784,7 +867,7 @@ end
 # ╟─5767b9ac-64c2-4d2f-ad42-961184c7edc7
 # ╟─b6ce51e5-b4ff-49eb-83db-ecf3e8a081ac
 # ╟─7495e7e9-3d50-4401-baef-d2e3c11e6b46
-# ╠═adf24143-4be1-46c7-a63a-fe4dd490791d
+# ╟─adf24143-4be1-46c7-a63a-fe4dd490791d
 # ╟─44cb6acf-7fee-4e3e-8253-d91e5a76299a
 # ╠═6d5eb940-6739-4781-9dda-7433cae3cf50
 # ╠═d1c788a6-27ff-40d2-9bf4-1e7a4b6c48f3
@@ -812,16 +895,29 @@ end
 # ╠═e6b9701d-3d27-4c0c-b0b9-9879527f369c
 # ╠═e75ea9c0-59ca-4097-b4f6-6a3af04dc308
 # ╟─da107273-c428-4c68-80a9-8f82cb211497
+# ╠═49902e99-870d-4d19-afb0-1de612c185df
+# ╠═4ac32bef-af81-4f7e-8e97-7eac4dd2bf69
 # ╟─f330af91-60a6-46ac-bdc5-ec49c216fccb
 # ╠═fd47dab7-426c-44fc-8038-00e378324e41
 # ╟─79dc57bb-d66d-4608-a775-9dfc58af1995
 # ╟─04dad413-0dc0-4ceb-81c2-e208ef082f38
 # ╟─94a91acd-a878-4c3c-9716-8bed60bf8c6c
-# ╠═49902e99-870d-4d19-afb0-1de612c185df
-# ╠═4ac32bef-af81-4f7e-8e97-7eac4dd2bf69
 # ╟─e7a26d10-0e00-444d-a8f9-27874a8f821e
+# ╠═b0d555b3-5087-4405-8343-ce304d482ca9
 # ╠═54452e38-227e-4d06-ae74-7347aae2c021
+# ╠═5dc367ca-2882-4b98-8f29-2b5390426a9b
+# ╠═5ed80ffc-6ad3-4958-9a0d-8944c18f4570
+# ╠═b9e9fef0-b949-411e-8500-5ecd1dec0390
+# ╠═5ab05dc9-3a98-4297-a47b-c4e0111b8c51
 # ╠═5bbd6e99-87e1-401c-a09e-065e2d426370
+# ╠═89f8d7a8-ea2e-4906-9460-da16154b0404
+# ╠═55d8c831-27e6-4914-a836-7a05281e8fb3
+# ╠═29ec59ad-0e22-462a-ab6d-2065a56fc001
+# ╠═59e1cd4d-6f38-4260-8955-159f21347fc6
+# ╠═91733807-63bc-47f6-9252-1bbef55fc5ec
+# ╠═85bb106c-0463-4723-8b75-8ff919ba903a
+# ╠═95040e95-2eb6-43e5-8573-e79109c545e6
+# ╠═32f07cd2-f62f-41e0-9211-8ac333bdd98d
 # ╟─222df0cb-0760-48a2-902e-91d32e451a11
 # ╟─cbea4ff4-b132-4abb-97c6-e406a339ced6
 # ╟─98675d19-3b1b-4be0-9e48-ab0ffd019647
