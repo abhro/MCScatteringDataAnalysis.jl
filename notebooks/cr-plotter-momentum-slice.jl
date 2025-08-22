@@ -162,15 +162,24 @@ md"""
 """
 
 # ╔═╡ 6d5eb940-6739-4781-9dda-7433cae3cf50
+# ╠═╡ disabled = true
+#=╠═╡
 Base.:*(x::Bool, l::AoG.Layer) = x ? l : AoG.zerolayer()
+  ╠═╡ =#
 
 # ╔═╡ 2f44c2c5-7fc6-4c93-be6e-0cffb863afd4
+# ╠═╡ disabled = true
+#=╠═╡
 visual_layer = AoG.histogram(Stairs; bins, normalization);
+  ╠═╡ =#
 
 # ╔═╡ b15d71e1-ac37-422e-98f0-a0a03238fe35
+# ╠═╡ disabled = true
+#=╠═╡
 map_layer = AoG.mapping(
     [:log_dNdp_cr_pf, :log_dNdp_cr_sf, :log_dNdp_cr_ISM],
     color = dims(1) => renamer(["Plasma frame", "Shock frame", "ISM frame"]));
+  ╠═╡ =#
 
 # ╔═╡ ce8b1307-dc78-463b-9f41-04fe5dded525
 md"""
@@ -188,13 +197,22 @@ let
 end
 
 # ╔═╡ d1c788a6-27ff-40d2-9bf4-1e7a4b6c48f3
+# ╠═╡ disabled = true
+#=╠═╡
 df = CR_p_gdf_momentum[proton_momentum_index];
+  ╠═╡ =#
 
 # ╔═╡ aa3a5985-3d14-4e6e-b2b2-5f7f731c3336
+# ╠═╡ disabled = true
+#=╠═╡
 data = AoG.data(df);
+  ╠═╡ =#
 
 # ╔═╡ 1333eaeb-8aae-49d5-aabc-3622b9d6ae35
+# ╠═╡ disabled = true
+#=╠═╡
 layer = data * map_layer * visual_layer;
+  ╠═╡ =#
 
 # ╔═╡ ecf80697-b786-4b02-9563-f3d082383b76
 md"""
@@ -283,9 +301,6 @@ describe(pcutdf)
 md"""
 # Normal distribution inference
 """
-
-# ╔═╡ f3212b13-682f-4be4-865b-fd0f1b450aa4
-Makie.update_theme!(colormap = Makie.wong_colors())
 
 # ╔═╡ da107273-c428-4c68-80a9-8f82cb211497
 md"""
@@ -466,6 +481,8 @@ const proton_log_p_nat = keys(CR_p_gdf_momentum) .|> values .|> first;
 log_p_nat_at_slice = proton_log_p_nat[proton_momentum_index];
 
 # ╔═╡ 4979cc00-15c1-40da-b538-021a067d1065
+# ╠═╡ disabled = true
+#=╠═╡
 draw(
     layer;
     figure = (;
@@ -473,6 +490,7 @@ draw(
         titlealign = :center,
     ),
 )
+  ╠═╡ =#
 
 # ╔═╡ 89bcb29b-0b1c-4e3a-91cb-282c05df2bc5
 md"""
@@ -480,6 +498,8 @@ Value of proton momentum at slice: 10^$(log_p_nat_at_slice) *m*ₚ*c*
 """
 
 # ╔═╡ 4051e244-4c84-4983-8cb9-bc7f53daa9f6
+# ╠═╡ disabled = true
+#=╠═╡
 let df = CR_p_gdf_momentum[proton_momentum_index], distribs = normal_distrib_protons
     f = Figure()
     ax = Axis(
@@ -522,6 +542,7 @@ let df = CR_p_gdf_momentum[proton_momentum_index], distribs = normal_distrib_pro
     end
     f
 end
+  ╠═╡ =#
 
 # ╔═╡ 08542eea-964a-4f1d-aae5-2b50a628588a
 let
@@ -546,6 +567,8 @@ end
 const electron_log_p_nat = keys(CR_e_gdf_momentum) .|> values .|> first;
 
 # ╔═╡ 91bba2da-c925-4123-bb8a-c1f9be8619e9
+# ╠═╡ disabled = true
+#=╠═╡
 let
     f = Figure()
     ax = Axis(
@@ -565,8 +588,11 @@ let
 
     f
 end
+  ╠═╡ =#
 
 # ╔═╡ b6ce51e5-b4ff-49eb-83db-ecf3e8a081ac
+# ╠═╡ disabled = true
+#=╠═╡
 let
     f = Figure()
     ax = Axis(
@@ -587,8 +613,11 @@ let
 
     f
 end
+  ╠═╡ =#
 
 # ╔═╡ adf24143-4be1-46c7-a63a-fe4dd490791d
+# ╠═╡ disabled = true
+#=╠═╡
 let
     f = Figure()
     ax = Axis(
@@ -608,6 +637,7 @@ let
 
     f
 end
+  ╠═╡ =#
 
 # ╔═╡ 6c16fc5a-7113-4b6e-abf2-de1275cceda5
 log_p_nat_at_slice_e = electron_log_p_nat[electron_momentum_index];
@@ -618,6 +648,8 @@ Value of electron momentum at slice: 10^$(log_p_nat_at_slice_e) *m*ₚ*c*
 """
 
 # ╔═╡ 88822f52-aab8-4931-9091-1909da6c604b
+# ╠═╡ disabled = true
+#=╠═╡
 let df = CR_e_gdf_momentum[electron_momentum_index], distribs = normal_distrib_electrons
     f = Figure()
     ax = Axis(
@@ -660,6 +692,7 @@ let df = CR_e_gdf_momentum[electron_momentum_index], distribs = normal_distrib_e
     end
     f
 end
+  ╠═╡ =#
 
 # ╔═╡ e7a26d10-0e00-444d-a8f9-27874a8f821e
 let
@@ -780,7 +813,6 @@ end
 # ╠═f95a0d36-5dd8-4190-98c6-06e8be2ad840
 # ╠═b88ef78f-6d6f-4b38-a9af-6da4f540f8c3
 # ╟─f3132403-113d-4b30-9fd0-379d28ade3c7
-# ╠═f3212b13-682f-4be4-865b-fd0f1b450aa4
 # ╠═e6b9701d-3d27-4c0c-b0b9-9879527f369c
 # ╠═e75ea9c0-59ca-4097-b4f6-6a3af04dc308
 # ╟─da107273-c428-4c68-80a9-8f82cb211497
