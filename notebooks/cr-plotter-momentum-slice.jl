@@ -308,7 +308,7 @@ p_val_yscale = plot_p_values_in_logscale ? log10 : identity;
 
 # ╔═╡ 94a91acd-a878-4c3c-9716-8bed60bf8c6c
 md"""
-## Sum of squared residuals
+## Root-sum-squared errors
 """
 
 # ╔═╡ 98675d19-3b1b-4be0-9e48-ab0ffd019647
