@@ -383,6 +383,7 @@ fitted_dist = normal_distrib_protons.pf[proton_momentum_index]
 
 # ╔═╡ e6b9701d-3d27-4c0c-b0b9-9879527f369c
 normal_distrib_protons = fitdistributions(Normal, CR_p_gdf_momentum)
+# normal_distrib_protons = fitnormals(CR_p_gdf_momentum)
 
 # ╔═╡ 2e79471f-3430-4b1c-91fe-80434de63cb2
 ad_scores_p = let
