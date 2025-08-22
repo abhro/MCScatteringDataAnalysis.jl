@@ -131,4 +131,7 @@ function SSE_hist(occurrences, dist)
     score = norm(hist_y - dist_y)
     return score
 end
+
+centers(v) = (v[begin:end-1] + v[begin+1:end])/2;
+export centers
 end
