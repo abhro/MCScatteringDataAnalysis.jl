@@ -1,7 +1,5 @@
 module MCScatteringDataAnalysis
 
-export CR_gdfstats, SSE_hist, fit_dist_to_histogram, fitdistribution, fitdistributions
-
 using Distributions
 using DataFrames
 
@@ -51,6 +49,7 @@ function fit_dist_to_histogram(v::AbstractVector{T}; nbins = 150) where T
     end
     return (best_model, best_fit_score)
 end
+export fit_dist_to_histogram
 
 function fitdistribution(DT::Type{<:Distribution}, x::AbstractVector{Union{Missing,T}}) where {T}
     x = collect(skipmissing(x))
@@ -60,6 +59,7 @@ function fitdistribution(DT::Type{<:Distribution}, x::AbstractVector{Union{Missi
 
     return Distributions.fit(DT{T}, x)
 end
+export fitdistribution
 
 function fitdistributions(DT::Type{<:Distribution}, gdf::GroupedDataFrame)
 
@@ -84,6 +84,7 @@ function fitdistributions(DT::Type{<:Distribution}, gdf::GroupedDataFrame)
 
     (; sf, pf, ISM)
 end
+export fitdistributions
 
 """
     CR_gdfstats(gdf)
@@ -113,6 +114,7 @@ function CR_gdfstats(gdf)
         n_ISM_samples,
     )
 end
+export CR_gdfstats
 
 """
     SSE_hist(occurrences, dist)
@@ -131,6 +133,7 @@ function SSE_hist(occurrences, dist)
     score = norm(hist_y - dist_y)
     return score
 end
+export SSE_hist
 
 centers(v) = (v[begin:end-1] + v[begin+1:end])/2;
 export centers
