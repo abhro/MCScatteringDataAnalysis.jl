@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.20.16
+# v0.20.17
 
 using Markdown
 using InteractiveUtils
@@ -25,13 +25,10 @@ using JLD2, DataFrames
 # ╔═╡ b137e7fa-f2ce-4cb1-85d7-87078a9aa9cc
 using Distributions
 
-# ╔═╡ 547aad6f-32db-405d-9886-a727f1591101
-begin
-    #using WGLMakie
-    using AlgebraOfGraphics
-    import AlgebraOfGraphics as AoG
-    using CairoMakie
-end
+
+# ╔═╡ d8a66ccd-efdc-4b85-9af3-cfa5624c88e8
+# using CairoMakie
+using WGLMakie
 
 # ╔═╡ 7a050dc5-7772-4933-959f-bf4fb478fc7d
 using PlutoUI
@@ -63,6 +60,15 @@ md"""
 md"""
 ## Import packages
 """
+
+# ╔═╡ 547aad6f-32db-405d-9886-a727f1591101
+# ╠═╡ disabled = true
+#=╠═╡
+begin
+    using AlgebraOfGraphics
+    import AlgebraOfGraphics as AoG
+end
+  ╠═╡ =#
 
 # ╔═╡ 5c6b130f-0a51-4131-bab7-40b059c4cc11
 md"""
@@ -813,6 +819,7 @@ end
 # ╠═f1ee2cb0-8274-11ef-0826-f55183647219
 # ╠═7899ae97-fbc2-43e5-ac77-c6d725f0371e
 # ╠═b137e7fa-f2ce-4cb1-85d7-87078a9aa9cc
+# ╠═d8a66ccd-efdc-4b85-9af3-cfa5624c88e8
 # ╠═547aad6f-32db-405d-9886-a727f1591101
 # ╠═7a050dc5-7772-4933-959f-bf4fb478fc7d
 # ╠═40efcd80-db38-4db3-a193-6e65ee5c4367
