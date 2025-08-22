@@ -4,8 +4,12 @@ using LinearAlgebra
 using StatsBase
 using Distributions
 using DataFrames
+using BiNormalDistributions
 
-function fit_dist_to_histogram(v::AbstractVector{T}; nbins = 150) where T
+sse(ŷ, y) = sum((y - ŷ).^2)
+export sse
+
+function fit_dist_to_histogram(v::AbstractVector{T}; params, nbins = 150) where T
     h = normalize(StatsBase.fit(StatsBase.Histogram, v; nbins), mode = :pdf)
     edges = only(h.edges)
     # x and y of the histogram plot if treated like a curve
@@ -15,7 +19,7 @@ function fit_dist_to_histogram(v::AbstractVector{T}; nbins = 150) where T
     data_width = maximum(v) - minimum(v) # for setting up sigma ranges
     @debug("Calculated histogram", h, edges, x, y, data_width)
 
-    lambda_ideal, _, sigma_1_ideal, mu_2_ideal, sigma_2_ideal =params(manual_bn)
+    lambda_ideal, _, sigma_1_ideal, mu_2_ideal, sigma_2_ideal = params
 
     # parameter sweep
     # set up ranges for each parameter
@@ -141,6 +145,7 @@ function SSE_hist(occurrences, dist; relative = true, bias = eps(eltype(occurren
 end
 export SSE_hist
 
+"""Return array of each element being the center of adjacent elements"""
 centers(v) = (v[begin:end-1] + v[begin+1:end])/2;
 export centers
 

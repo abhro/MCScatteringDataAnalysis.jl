@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.20.16
+# v0.20.17
 
 using Markdown
 using InteractiveUtils
@@ -24,6 +24,9 @@ using JLD2, DataFrames
 
 # ╔═╡ b137e7fa-f2ce-4cb1-85d7-87078a9aa9cc
 using Distributions
+
+# ╔═╡ 325d0adb-9001-4f1c-98fb-cfce042a09ca
+using MCScatteringDataAnalysis
 
 # ╔═╡ 547aad6f-32db-405d-9886-a727f1591101
 begin
@@ -130,10 +133,16 @@ md"""
 For protons
 """
 
+# ╔═╡ c5947192-0fa5-4063-8af2-74febf514b8b
+CR_gdfstats(CR_p_gdf_momentum)
+
 # ╔═╡ ea647872-9dc3-4fb9-9499-e396127703b2
 md"""
 For electrons:
 """
+
+# ╔═╡ 60ee4f38-e85f-4a2d-b17c-579531588058
+CR_gdfstats(CR_e_gdf_momentum)
 
 # ╔═╡ ecf80697-b786-4b02-9563-f3d082383b76
 md"""
@@ -264,6 +273,13 @@ import StatsBase
 # ╔═╡ 4eeb0f0b-311d-410b-b528-cbcb6f7490a7
 q = normalize(StatsBase.fit(StatsBase.Histogram, testset, nbins = 90), mode = :pdf)
 
+# ╔═╡ 860ad43f-8683-481e-b0d2-06194ebc1af9
+let
+    ŷ = pdf.(manual_bn, centers(q.edges |> first))
+    y = q.weights
+    sse(ŷ, y)
+end
+
 # ╔═╡ bc44add8-d20f-4e67-ae68-7af945020d55
 argmax(q.weights)
 
@@ -273,73 +289,11 @@ plot(q)
 # ╔═╡ bd7fa9ce-3049-44d3-844f-df048003bfc5
 q.weights |> Print
 
-# ╔═╡ 5e7c3b65-e786-487e-b311-1bc5ada975f2
-"""Return array of each element being the center of adjacent elements"""
-centers(v) = (v[begin:end-1] + v[begin+1:end])/2;
-
 # ╔═╡ 53fbfeb5-7993-453f-bd57-2d3c409ed46e
 q.edges
 
-# ╔═╡ 466a1246-826e-4f01-acaf-58e105119920
-sse(ŷ, y) = sum((y - ŷ).^2)
-
-# ╔═╡ 860ad43f-8683-481e-b0d2-06194ebc1af9
-let
-    ŷ = pdf.(manual_bn, centers(q.edges |> first))
-    y = q.weights
-    sse(ŷ, y)
-end
-
-# ╔═╡ b8cb20fc-faff-439d-8b93-aa47f9150842
-function fit_dist_to_histogram(v::AbstractVector{T}; nbins = 150) where T
-    h = normalize(StatsBase.fit(StatsBase.Histogram, v; nbins), mode = :pdf)
-    edges = only(h.edges)
-    # x and y of the histogram plot if treated like a curve
-    x = centers(edges)
-    #x = edges[begin+1:end]
-    y = h.weights
-    data_width = maximum(v) - minimum(v) # for setting up sigma ranges
-    @debug("Calculated histogram", h, edges, x, y, data_width)
-
-    lambda_ideal, _, sigma_1_ideal, mu_2_ideal, sigma_2_ideal =params(manual_bn)
-
-    # parameter sweep
-    # set up ranges for each parameter
-    μ₁ = x[argmax(y)] # can get μ₁ from the peak of the histogram
-    μ₂_range = sort(filter(>(38.6), vcat(edges, x))) # consider all bin edges and centers
-    #σ₁_range = range(0, data_width/2, length = 50)
-    σ₁_range = range(0.1, 0.2, step = 0.01)
-    #σ₂_range = σ₁_range # use same range for both
-    σ₂_range = range(0.7, 0.8, step = 0.01)
-    λ_range = 0.5:0.01:1.0
-    @debug("Using ranges", μ₁, μ₂_range, σ₁_range, σ₂_range, λ_range)
-
-    # starting guess: single gaussian, unit variance
-    local best_model = BiNormal(1.0, μ₁, one(T), zero(T), one(T))
-    local best_fit_score = Inf
-
-    # for each parameter (Cartesian product of all ranges)
-    for μ₂ in μ₂_range, σ₁ in σ₁_range, σ₂ in σ₂_range, λ in λ_range
-        # create the model
-        model = BiNormal(λ, μ₁, σ₁, μ₂, σ₂)
-        # calculate the ŷ produced by the new parameter set
-        ŷ = pdf.(model, x)
-        # calculate the goodness of fit
-        fit_score = sse(ŷ, y)
-
-        # if better than current best fit, save model and new fitness score
-        if fit_score < best_fit_score
-            best_model = model
-            best_fit_score = fit_score
-
-            #@debug("Found new best model", model, fit_score)
-        end
-    end
-    return (best_model, best_fit_score)
-end
-
 # ╔═╡ e6a6cbe6-d8e4-40e1-8c29-aea7703f35a9
-brute_fitted = fit_dist_to_histogram(testset)
+brute_fitted = fit_dist_to_histogram(testset, params = params(manual_bn))
 
 # ╔═╡ a97412e6-9681-4afa-8ceb-6f37f2f6dd0b
 brute_fit_dist = first(brute_fitted)
@@ -438,77 +392,6 @@ end
 md"""
 # Constants and functions
 """
-
-# ╔═╡ e780481f-ffde-407f-8dff-bc289e0ceb40
-function fitdistribution(DT::Type{<:Distribution}, x::AbstractVector{Union{Missing,T}}) where {T}
-    x = collect(skipmissing(x))
-    if isempty(x) # don't fit to a dataset with only `missing`s
-        return missing
-    end
-
-    return Distributions.fit(DT{T}, x)
-end
-
-# ╔═╡ 84d1d644-6a5b-44eb-ab4f-3b9b7171d6fe
-function fitdistributions(DT::Type{<:Distribution}, gdf::GroupedDataFrame)
-
-    DistArrayType = Vector{Union{Missing,Nothing,Distribution}}
-
-    sf = DistArrayType(undef, length(gdf))
-    pf = DistArrayType(undef, length(gdf))
-    ISM = DistArrayType(undef, length(gdf))
-
-    for (i, df) in enumerate(gdf)
-        # fit a distribution to the shock frame data
-        cursf = fitdistribution(DT, df.log_dNdp_cr_sf)
-        # fit a distribution to the plasma frame data
-        curpf = fitdistribution(DT, df.log_dNdp_cr_pf)
-        # fit a distribution to the ISM frame data
-        curISM = fitdistribution(DT, df.log_dNdp_cr_ISM)
-
-        sf[i] = cursf
-        pf[i] = curpf
-        ISM[i] = curISM
-    end
-
-    (; sf, pf, ISM)
-end
-
-# ╔═╡ 602b1ccd-7cc5-48e2-bcff-6d2c00585e9b
-"""
-    CR_gdfstats(gdf)
-
-For a `GroupedDataFrame` of dN/dp values, compute various statistics grouped by momentum.
-"""
-function CR_gdfstats(gdf)
-    n = length(gdf)
-    log_p = zeros(n)
-    nrows = zeros(Int, n)
-    n_pf_samples = zeros(Int, n)
-    n_sf_samples = zeros(Int, n)
-    n_ISM_samples = zeros(Int, n)
-
-    for (i, df) in enumerate(gdf)
-        log_p[i] = keys(gdf)[i] |> values |> first
-        nrows[i] = nrow(df)
-        n_pf_samples[i] = count(!ismissing, df.log_dNdp_cr_pf)
-        n_sf_samples[i] = count(!ismissing, df.log_dNdp_cr_sf)
-        n_ISM_samples[i] = count(!ismissing, df.log_dNdp_cr_ISM)
-    end
-    return DataFrame(;
-        log_p,
-        nrows,
-        n_pf_samples,
-        n_sf_samples,
-        n_ISM_samples,
-    )
-end
-
-# ╔═╡ c5947192-0fa5-4063-8af2-74febf514b8b
-CR_gdfstats(CR_p_gdf_momentum)
-
-# ╔═╡ 60ee4f38-e85f-4a2d-b17c-579531588058
-CR_gdfstats(CR_e_gdf_momentum)
 
 # ╔═╡ 6d5eb940-6739-4781-9dda-7433cae3cf50
 Base.:*(x::Bool, l::AoG.Layer) = x ? l : AoG.zerolayer()
@@ -736,6 +619,7 @@ end
 # ╟─cd809ca8-2cc4-435d-ab8b-b7b24fa40ed1
 # ╠═7899ae97-fbc2-43e5-ac77-c6d725f0371e
 # ╠═b137e7fa-f2ce-4cb1-85d7-87078a9aa9cc
+# ╠═325d0adb-9001-4f1c-98fb-cfce042a09ca
 # ╠═547aad6f-32db-405d-9886-a727f1591101
 # ╠═7a050dc5-7772-4933-959f-bf4fb478fc7d
 # ╠═40efcd80-db38-4db3-a193-6e65ee5c4367
@@ -786,14 +670,11 @@ end
 # ╠═bc44add8-d20f-4e67-ae68-7af945020d55
 # ╠═6eeb6453-dee0-45eb-89ec-19b7cb2d26c1
 # ╠═bd7fa9ce-3049-44d3-844f-df048003bfc5
-# ╠═5e7c3b65-e786-487e-b311-1bc5ada975f2
 # ╠═53fbfeb5-7993-453f-bd57-2d3c409ed46e
 # ╠═e6a6cbe6-d8e4-40e1-8c29-aea7703f35a9
 # ╠═a97412e6-9681-4afa-8ceb-6f37f2f6dd0b
 # ╠═0aab1add-5285-4da7-b4eb-d1445b96b035
 # ╠═c305f828-96c5-4839-9524-6a890a5d68fa
-# ╠═b8cb20fc-faff-439d-8b93-aa47f9150842
-# ╠═466a1246-826e-4f01-acaf-58e105119920
 # ╠═d72cc184-01ce-440d-90e3-6977f9b8af7e
 # ╠═df94b5b9-959c-49b8-b0b0-d8c965c61a9b
 # ╠═a10b1208-3349-4a66-abc6-097bd0d5acd4
@@ -830,9 +711,6 @@ end
 # ╠═1360285b-8b6a-4d1c-bbb5-c6acfeddb8b6
 # ╠═4153a601-06c3-4126-ace6-d354064e03f5
 # ╟─8d03de5e-d344-4efd-b9af-dd5391028780
-# ╠═84d1d644-6a5b-44eb-ab4f-3b9b7171d6fe
-# ╠═e780481f-ffde-407f-8dff-bc289e0ceb40
-# ╠═602b1ccd-7cc5-48e2-bcff-6d2c00585e9b
 # ╠═6d5eb940-6739-4781-9dda-7433cae3cf50
 # ╠═71404de8-f8b2-4d26-b7d7-41064cae1447
 # ╠═cef8f0a4-0967-4e86-bfde-7fa84c474e31

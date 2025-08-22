@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.20.16
+# v0.20.17
 
 using Markdown
 using InteractiveUtils
@@ -18,6 +18,9 @@ end
 
 # ╔═╡ f1ee2cb0-8274-11ef-0826-f55183647219
 import Pkg; Pkg.activate(Base.current_project())
+
+# ╔═╡ c126bbd5-fd67-4946-bdd6-d43a95aacd49
+using MCScatteringDataAnalysis
 
 # ╔═╡ 7899ae97-fbc2-43e5-ac77-c6d725f0371e
 using JLD2, DataFrames
@@ -115,43 +118,21 @@ md"""
 # Plot Cosmic Ray data
 """
 
-# ╔═╡ 067dc6df-b9ef-45cf-a32f-128a5a5cfdb6
-begin
-    function printstats(io::IO, gdf)
-        headers = "p index | log p | nrows | # pf samples| # sf samples| # ISM samples"
-        splitter = "--------|-------|-------|-------------|-------------|--------------"
-        println(io, headers)
-        println(io, splitter)
-        for (i, df) in enumerate(gdf)
-            log_p = keys(gdf)[i] |> values |> first
-
-            println(io, @sprintf("%-7i | %5.1f | %5i | %11i | %11i | %12i", i, log_p,
-                                    nrow(df),
-                                    count(!ismissing, df.log_dNdp_cr_pf),
-                                    count(!ismissing, df.log_dNdp_cr_sf),
-                                    count(!ismissing, df.log_dNdp_cr_ISM)))
-        end
-        println(io, splitter)
-        println(io, headers)
-    end
-    printstats(gdf) = printstats(stdout, gdf)
-end
+# ╔═╡ 0a74f619-9dc5-425e-aacd-60c74a0c1d38
+md"""
+For protons:
+"""
 
 # ╔═╡ c16d7ba5-3272-4903-93eb-5ebf06511243
-with_terminal() do
-    println("For protons:")
-    println()
-    println()
-    printstats(CR_p_gdf_momentum)
-end
+CR_gdfstats(CR_p_gdf_momentum)
+
+# ╔═╡ 81baea0e-eb99-4f3d-8315-dd308d4bc1ea
+md"""
+For electrons:
+"""
 
 # ╔═╡ 653d7f99-776e-495c-8200-5e9510648de3
-with_terminal() do
-    println("For electrons:")
-    println()
-    println()
-    printstats(CR_e_gdf_momentum)
-end
+CR_gdfstats(CR_e_gdf_momentum)
 
 # ╔═╡ 59a22149-3397-4e97-9f7b-5d502aacf293
 const markersize = 6;
@@ -425,41 +406,6 @@ md"""
 # Constants and functions
 """
 
-# ╔═╡ e780481f-ffde-407f-8dff-bc289e0ceb40
-function fitdistribution(DT::Type{<:Distribution}, x::AbstractVector{Union{Missing,T}}) where {T}
-    x = collect(skipmissing(x))
-    if isempty(x) # don't fit to a dataset with only missings
-        return missing
-    end
-
-    return Distributions.fit(DT{T}, x)
-end
-
-# ╔═╡ 84d1d644-6a5b-44eb-ab4f-3b9b7171d6fe
-function fitdistributions(DT::Type{<:Distribution}, gdf::GroupedDataFrame)
-
-    DistArrayType = Vector{Union{Missing,Nothing,Distribution}}
-
-    sf = DistArrayType(undef, length(gdf))
-    pf = DistArrayType(undef, length(gdf))
-    ISM = DistArrayType(undef, length(gdf))
-
-    for (i, df) in enumerate(gdf)
-        # fit a distribution to the shock frame data
-        cursf = fitdistribution(DT, df.log_dNdp_cr_sf)
-        # fit a distribution to the plasma frame data
-        curpf = fitdistribution(DT, df.log_dNdp_cr_pf)
-        # fit a distribution to the ISM frame data
-        curISM = fitdistribution(DT, df.log_dNdp_cr_ISM)
-
-        sf[i] = cursf
-        pf[i] = curpf
-        ISM[i] = curISM
-    end
-
-    (; sf, pf, ISM)
-end
-
 # ╔═╡ ab063295-d2b0-47a2-8f99-3e894f4cd646
 """
 Fit `BiNormal` distribution using method of moments.
@@ -632,6 +578,7 @@ BiNormalDistributions.componentpdfs(sciml_sol_dist, 3)
 # ╠═7899ae97-fbc2-43e5-ac77-c6d725f0371e
 # ╠═b137e7fa-f2ce-4cb1-85d7-87078a9aa9cc
 # ╠═547aad6f-32db-405d-9886-a727f1591101
+# ╠═c126bbd5-fd67-4946-bdd6-d43a95aacd49
 # ╠═7a050dc5-7772-4933-959f-bf4fb478fc7d
 # ╠═40efcd80-db38-4db3-a193-6e65ee5c4367
 # ╠═3791e767-dcf1-4f9d-909d-a7d08e4c5f9c
@@ -646,8 +593,9 @@ BiNormalDistributions.componentpdfs(sciml_sol_dist, 3)
 # ╠═710739bb-10f4-4a8e-abc2-b884c6b9dfef
 # ╠═67ec1e13-d315-4566-a877-2346dca07a0c
 # ╟─628130bf-da25-4799-8e5e-3d2db15b1e49
-# ╟─067dc6df-b9ef-45cf-a32f-128a5a5cfdb6
+# ╟─0a74f619-9dc5-425e-aacd-60c74a0c1d38
 # ╟─c16d7ba5-3272-4903-93eb-5ebf06511243
+# ╟─81baea0e-eb99-4f3d-8315-dd308d4bc1ea
 # ╟─653d7f99-776e-495c-8200-5e9510648de3
 # ╠═59a22149-3397-4e97-9f7b-5d502aacf293
 # ╠═f91132bd-28af-4a6c-9a77-5c5b0ed4a08a
@@ -708,8 +656,6 @@ BiNormalDistributions.componentpdfs(sciml_sol_dist, 3)
 # ╠═529bc217-2f91-46aa-9b59-b49385b478a0
 # ╠═2a2ef8bd-a181-47bb-a02d-9a1eab0de967
 # ╟─8d03de5e-d344-4efd-b9af-dd5391028780
-# ╠═84d1d644-6a5b-44eb-ab4f-3b9b7171d6fe
-# ╠═e780481f-ffde-407f-8dff-bc289e0ceb40
 # ╠═ab063295-d2b0-47a2-8f99-3e894f4cd646
 # ╠═272dded6-134f-453f-8401-5f4d64379fba
 # ╠═5917ab60-d980-4ac4-bdd1-796e0bcaf043
