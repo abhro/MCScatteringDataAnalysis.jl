@@ -161,4 +161,50 @@ function get_hist(occurrences; nbins)
     return x, hist_y
 end
 export get_hist
+
+"""
+Analogue of `fitdistribution`, but directly constructs a `Normal` using the mean and variance.
+"""
+function fitnormal(x::AbstractVector{Union{Missing,T}}) where {T}
+    x = collect(skipmissing(x))
+    if isempty(x) # don't fit to a dataset with only missings
+        return missing
+    end
+
+    μ = mean(x)
+    σ = std(x, corrected = false, mean = μ)
+    if isnan(μ) || isnan(σ)
+        return missing
+    end
+    return Normal(μ, σ)
+end
+export fitnormal
+
+"""
+Analogue of `fitdistributions`, but directly constructs a `Normal` using the mean and variance.
+"""
+function fitnormals(gdf::GroupedDataFrame)
+
+    DistArrayType = Vector{Union{Missing,Nothing,Normal}}
+
+    sf = DistArrayType(undef, length(gdf))
+    pf = DistArrayType(undef, length(gdf))
+    ISM = DistArrayType(undef, length(gdf))
+
+    for (i, df) in enumerate(gdf)
+        # fit a distribution to the shock frame data
+        cursf = fitnormal(df.log_dNdp_cr_sf)
+        # fit a distribution to the plasma frame data
+        curpf = fitnormal(df.log_dNdp_cr_pf)
+        # fit a distribution to the ISM frame data
+        curISM = fitnormal(df.log_dNdp_cr_ISM)
+
+        sf[i] = cursf
+        pf[i] = curpf
+        ISM[i] = curISM
+    end
+
+    (; sf, pf, ISM)
+end
+export fitnormals
 end
