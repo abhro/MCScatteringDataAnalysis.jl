@@ -2,6 +2,8 @@ module MCScatteringDataAnalysis
 
 export CR_gdfstats, SSE_hist, fit_dist_to_histogram, fitdistribution, fitdistributions
 
+using Distributions
+using DataFrames
 
 function fit_dist_to_histogram(v::AbstractVector{T}; nbins = 150) where T
     h = normalize(StatsBase.fit(StatsBase.Histogram, v; nbins), mode = :pdf)
