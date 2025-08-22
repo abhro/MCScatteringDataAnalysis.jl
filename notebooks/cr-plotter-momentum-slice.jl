@@ -363,6 +363,8 @@ md"""
 # Constants and functions
 """
 
+# ╔═╡ 54452e38-227e-4d06-ae74-7347aae2c021
+fitted_dist = normal_distrib_protons.pf[proton_momentum_index]
 
 # ╔═╡ e6b9701d-3d27-4c0c-b0b9-9879527f369c
 normal_distrib_protons = fitdistributions(Normal, CR_p_gdf_momentum)
@@ -394,6 +396,9 @@ pf_scores = let
     end
     arr
 end
+# ╔═╡ 5bbd6e99-87e1-401c-a09e-065e2d426370
+SSE_hist(logdNdp, fitted_dist)
+
 
 # ╔═╡ e75ea9c0-59ca-4097-b4f6-6a3af04dc308
 normal_distrib_electrons = fitdistributions(Normal, CR_e_gdf_momentum)
@@ -427,12 +432,7 @@ sse_scores_p = let
             continue
         end
         log_dNdp = collect(skipmissing(df.log_dNdp_cr_pf))
-        histogram = normalize(fit(Histogram, log_dNdp); mode=:pdf)
-
-        x = histogram.edges |> only |> centers
-        hist_y = histogram.weights
-        normal_y = pdf.(dist, x)
-        score = norm(hist_y - normal_y)
+        score = SSE_hist(log_dNdp, dist)
         push!(arr, score)
     end
     arr
@@ -447,12 +447,7 @@ sse_scores_e = let
             continue
         end
         log_dNdp = collect(skipmissing(df.log_dNdp_cr_pf))
-        histogram = normalize(fit(Histogram, log_dNdp); mode=:pdf)
-
-        x = histogram.edges |> only |> centers
-        hist_y = histogram.weights
-        normal_y = pdf.(dist, x)
-        score = norm(hist_y - normal_y)
+        score = SSE_hist(log_dNdp, dist)
         push!(arr, score)
     end
     arr
@@ -797,6 +792,8 @@ end
 # ╠═49902e99-870d-4d19-afb0-1de612c185df
 # ╠═4ac32bef-af81-4f7e-8e97-7eac4dd2bf69
 # ╟─e7a26d10-0e00-444d-a8f9-27874a8f821e
+# ╠═54452e38-227e-4d06-ae74-7347aae2c021
+# ╠═5bbd6e99-87e1-401c-a09e-065e2d426370
 # ╟─222df0cb-0760-48a2-902e-91d32e451a11
 # ╟─cbea4ff4-b132-4abb-97c6-e406a339ced6
 # ╟─98675d19-3b1b-4be0-9e48-ab0ffd019647
