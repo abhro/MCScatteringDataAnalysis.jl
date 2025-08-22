@@ -1,5 +1,7 @@
 module MCScatteringDataAnalysis
 
+using LinearAlgebra
+using StatsBase
 using Distributions
 using DataFrames
 
@@ -137,4 +139,22 @@ export SSE_hist
 
 centers(v) = (v[begin:end-1] + v[begin+1:end])/2;
 export centers
+
+"""
+    get_hist(occurrences; nbins)
+
+Get a pdf normalized histogram with `nbins` bins
+
+### Returns
+- `x`: center of bins
+- `y`: pdf at each `x`.
+"""
+function get_hist(occurrences; nbins)
+    histogram = normalize(fit(Histogram, occurrences; nbins); mode=:pdf)
+
+    x = histogram.edges |> only |> centers
+    hist_y = histogram.weights
+    return x, hist_y
+end
+export get_hist
 end
