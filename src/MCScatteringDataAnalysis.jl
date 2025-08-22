@@ -119,20 +119,24 @@ end
 export CR_gdfstats
 
 """
-    SSE_hist(occurrences, dist)
+    SSE_hist(occurrences, dist; relative = true, bias)
 
 Given a list of `occurences`, and a pre-fit distribution `dist`,
 compute the L2-norm of errors of the histogram and the pdf of `dist`.
 The `pdf` is evaluated at the center of each bin.
 """
-function SSE_hist(occurrences, dist)
+function SSE_hist(occurrences, dist; relative = true, bias = eps(eltype(occurrences)))
     occurrences = collect(skipmissing(occurrences))
     histogram = normalize(fit(Histogram, occurrences); mode=:pdf)
 
     x = histogram.edges |> only |> centers
     hist_y = histogram.weights
     dist_y = pdf.(dist, x)
-    score = norm(hist_y - dist_y)
+    residuals = hist_y - dist_y
+    if relative
+        residuals ./= dist_y .+ bias
+    end
+    score = norm(residuals)
     return score
 end
 export SSE_hist
