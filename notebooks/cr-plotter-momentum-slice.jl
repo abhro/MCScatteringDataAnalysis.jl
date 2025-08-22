@@ -25,6 +25,8 @@ using JLD2, DataFrames
 # ╔═╡ b137e7fa-f2ce-4cb1-85d7-87078a9aa9cc
 using Distributions
 
+# ╔═╡ 800673a1-dcb4-471a-a628-74a92aee2941
+using MCScatteringDataAnalysis
 
 # ╔═╡ d8a66ccd-efdc-4b85-9af3-cfa5624c88e8
 # using CairoMakie
@@ -361,47 +363,6 @@ md"""
 # Constants and functions
 """
 
-# ╔═╡ e780481f-ffde-407f-8dff-bc289e0ceb40
-"""
-    fitdistribution(D, x::AbstractVector{Union{Missing,T}}) where {T}
-
-Fit a distribution of type `D` to a vector of samples `x`.
-`x` may contain `missing` values. However, if `x` contains _only_ `missing` values, `missing` is returned instead of a distribution.
-This function mainly exists as a wrapper around `Distribtuions.fit` to handle `missing` values.
-"""
-function fitdistribution(D::Type{<:Distribution}, x::AbstractVector{Union{Missing,T}}) where {T}
-    x = collect(skipmissing(x))
-    if isempty(x) # don't fit to a dataset with only missings
-        return missing
-    end
-
-    return Distributions.fit(D{T}, x)
-end
-
-# ╔═╡ 84d1d644-6a5b-44eb-ab4f-3b9b7171d6fe
-function fitdistributions(DT::Type{<:Distribution}, gdf::GroupedDataFrame)
-
-    DistArrayType = Vector{Union{Missing,Nothing,Distribution}}
-
-    sf = DistArrayType(undef, length(gdf))
-    pf = DistArrayType(undef, length(gdf))
-    ISM = DistArrayType(undef, length(gdf))
-
-    for (i, df) in enumerate(gdf)
-        # fit a distribution to the shock frame data
-        cursf = fitdistribution(DT, df.log_dNdp_cr_sf)
-        # fit a distribution to the plasma frame data
-        curpf = fitdistribution(DT, df.log_dNdp_cr_pf)
-        # fit a distribution to the ISM frame data
-        curISM = fitdistribution(DT, df.log_dNdp_cr_ISM)
-
-        sf[i] = cursf
-        pf[i] = curpf
-        ISM[i] = curISM
-    end
-
-    (; sf, pf, ISM)
-end
 
 # ╔═╡ e6b9701d-3d27-4c0c-b0b9-9879527f369c
 normal_distrib_protons = fitdistributions(Normal, CR_p_gdf_momentum)
@@ -451,44 +412,11 @@ ad_scores_e = let
     arr
 end;
 
-# ╔═╡ ea3f967e-770b-4879-bddd-8d3b497344bf
-"""
-    CR_gdfstats(gdf)
-
-For a `GroupedDataFrame` of dN/dp values, compute various statistics grouped by momentum.
-"""
-function CR_gdfstats(gdf)
-    n = length(gdf)
-    log_p = zeros(n)
-    nrows = zeros(Int, n)
-    n_pf_samples = zeros(Int, n)
-    n_sf_samples = zeros(Int, n)
-    n_ISM_samples = zeros(Int, n)
-
-    for (i, df) in enumerate(gdf)
-        log_p[i] = keys(gdf)[i] |> values |> first
-        nrows[i] = nrow(df)
-        n_pf_samples[i] = count(!ismissing, df.log_dNdp_cr_pf)
-        n_sf_samples[i] = count(!ismissing, df.log_dNdp_cr_sf)
-        n_ISM_samples[i] = count(!ismissing, df.log_dNdp_cr_ISM)
-    end
-    return DataFrame(;
-        log_p,
-        nrows,
-        n_pf_samples,
-        n_sf_samples,
-        n_ISM_samples,
-    )
-end
-
 # ╔═╡ a36ea9cf-176f-40bd-8577-cc2ea8db64af
 CR_gdfstats(CR_p_gdf_momentum)
 
 # ╔═╡ d85427f4-86ed-4c04-980a-a4152b5875e8
 CR_gdfstats(CR_e_gdf_momentum)
-
-# ╔═╡ c507291a-479c-4fa3-8956-0f841391c23f
-centers(v) = (v[begin:end-1] + v[begin+1:end])/2;
 
 # ╔═╡ 222df0cb-0760-48a2-902e-91d32e451a11
 sse_scores_p = let
@@ -530,24 +458,6 @@ sse_scores_e = let
     arr
 end;
 
-# ╔═╡ 22a91877-4339-4e6b-8f7d-0e5a80dc7c74
-"""
-    SSE_hist(occurrences, dist)
-
-Given a list of `occurences`, and a pre-fit distribution `dist`,
-compute the L2-norm of errors of the histogram and the pdf of `dist`.
-The `pdf` is evaluated at the center of each bin.
-"""
-function SSE_hist(occurrences, dist)
-    occurrences = collect(skipmissing(occurrences))
-    histogram = normalize(fit(Histogram, occurrences); mode=:pdf)
-
-    x = histogram.edges |> only |> centers
-    hist_y = histogram.weights
-    dist_y = pdf.(dist, x)
-    score = norm(hist_y - dist_y)
-    return score
-end
 
 # ╔═╡ 32edc221-e586-4510-9427-977b22f62f6c
 md"""
@@ -819,6 +729,7 @@ end
 # ╠═f1ee2cb0-8274-11ef-0826-f55183647219
 # ╠═7899ae97-fbc2-43e5-ac77-c6d725f0371e
 # ╠═b137e7fa-f2ce-4cb1-85d7-87078a9aa9cc
+# ╠═800673a1-dcb4-471a-a628-74a92aee2941
 # ╠═d8a66ccd-efdc-4b85-9af3-cfa5624c88e8
 # ╠═547aad6f-32db-405d-9886-a727f1591101
 # ╠═7a050dc5-7772-4933-959f-bf4fb478fc7d
@@ -899,11 +810,6 @@ end
 # ╟─08542eea-964a-4f1d-aae5-2b50a628588a
 # ╠═e8ab294c-0612-43c5-8b64-bb1ddec387ae
 # ╟─8d03de5e-d344-4efd-b9af-dd5391028780
-# ╠═e780481f-ffde-407f-8dff-bc289e0ceb40
-# ╠═84d1d644-6a5b-44eb-ab4f-3b9b7171d6fe
-# ╠═ea3f967e-770b-4879-bddd-8d3b497344bf
-# ╠═22a91877-4339-4e6b-8f7d-0e5a80dc7c74
-# ╠═c507291a-479c-4fa3-8956-0f841391c23f
 # ╟─32edc221-e586-4510-9427-977b22f62f6c
 # ╠═e8406a6a-ecc2-49d2-b67a-503b4ef5764b
 # ╠═589661b1-6a64-4db5-ac40-c1565c29c3cc
