@@ -1,3 +1,8 @@
+name = "MCScatteringDataAnalysis"
+uuid = "bf7559df-1170-47f2-96bf-287de9cbd746"
+version = "0.0.1"
+authors = ["abhro"]
+
 [deps]
 AlgebraOfGraphics = "cbdf2221-f076-402e-a563-3d30da359d67"
 BiNormalDistributions = "35cb82aa-8885-40e5-a2ce-8461cb5c8dfc"
