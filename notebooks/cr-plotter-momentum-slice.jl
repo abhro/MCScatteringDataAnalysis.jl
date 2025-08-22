@@ -671,8 +671,9 @@ let
     f = Figure()
     ax = Axis(
         f[1,1];
-        title = "Sum-of-Squared-Errors vs momentum slice",
+        title = "Root-Sum-of-Squared-Errors vs momentum slice",
         axis_properties...,
+        xminorticksvisible = true, yminorticksvisible = true,
         xlabel = "log p (nat)",
         yscale = p_val_yscale,
     )
@@ -680,7 +681,7 @@ let
     scatterlines!(ax, proton_log_p_nat, sse_scores_p, color = color_pf_p, label = "protons, plasma frame"; markersize)
     scatterlines!(ax, electron_log_p_nat, sse_scores_e, color = color_pf_e, label = "electrons, plasma frame"; markersize)
 
-    axislegend(ax, position = plot_p_values_in_logscale ? :cb : :ct)
+    axislegend(ax, position = plot_p_values_in_logscale ? :ct : :ct)
 
     f
 end
