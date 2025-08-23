@@ -19,22 +19,24 @@ end
 # ╔═╡ f1ee2cb0-8274-11ef-0826-f55183647219
 import Pkg; Pkg.activate(Base.current_project())
 
-# ╔═╡ c126bbd5-fd67-4946-bdd6-d43a95aacd49
-using MCScatteringDataAnalysis
-
 # ╔═╡ 7899ae97-fbc2-43e5-ac77-c6d725f0371e
 using JLD2, DataFrames
 
 # ╔═╡ b137e7fa-f2ce-4cb1-85d7-87078a9aa9cc
 using Distributions
 
+# ╔═╡ 23968942-3055-4414-a651-60209665fbc0
+using CairoMakie
+#using WGLMakie
+
 # ╔═╡ 547aad6f-32db-405d-9886-a727f1591101
 begin
-    using CairoMakie
-    #using WGLMakie
     using AlgebraOfGraphics
     import AlgebraOfGraphics as AoG
 end
+
+# ╔═╡ c126bbd5-fd67-4946-bdd6-d43a95aacd49
+using MCScatteringDataAnalysis
 
 # ╔═╡ 7a050dc5-7772-4933-959f-bf4fb478fc7d
 using PlutoUI
@@ -63,19 +65,24 @@ using StatsBase
 # ╔═╡ ee6fd4d1-d341-4c60-bf93-8130266b5d48
 using NonlinearSolve
 
+# ╔═╡ 99fad567-fb21-4ecc-a1bf-3beda0185b2e
+md"""
+# Fit a binormal distribution to fluxes for each momentum slice
+"""
+
 # ╔═╡ a5526239-2f05-4618-8868-0f552855d574
 md"""
-# Preamble
+## Preamble
 """
 
 # ╔═╡ cd809ca8-2cc4-435d-ab8b-b7b24fa40ed1
 md"""
-## Import packages
+### Import packages
 """
 
 # ╔═╡ dc0952b3-5443-4c99-8cc6-497897c38dea
 md"""
-## Configure notebook appearance
+### Configure notebook appearance
 """
 
 # ╔═╡ b544df91-fe2d-4396-892c-7faea2edd141
@@ -95,7 +102,7 @@ main {
 
 # ╔═╡ 8dfe6f3c-f693-4c73-8152-8c43c1c1ff42
 md"""
-# Read data file
+## Read data files
 """
 
 # ╔═╡ 22088c63-a7ac-45c0-97db-c1fc3360fe2d
@@ -108,14 +115,20 @@ CR_p_gdf_momentum = load_object(joinpath(datadir, "dNdp-CR-protons-momentum-spli
 CR_e_gdf_momentum = load_object(joinpath(datadir, "dNdp-CR-electrons-momentum-split.jld2"));
 
 # ╔═╡ 710739bb-10f4-4a8e-abc2-b884c6b9dfef
+# ╠═╡ disabled = true
+#=╠═╡
 CR_p_gdf_momentum
+  ╠═╡ =#
 
 # ╔═╡ 67ec1e13-d315-4566-a877-2346dca07a0c
+# ╠═╡ disabled = true
+#=╠═╡
 CR_e_gdf_momentum
+  ╠═╡ =#
 
 # ╔═╡ 628130bf-da25-4799-8e5e-3d2db15b1e49
 md"""
-# Plot Cosmic Ray data
+## Plot Cosmic Ray data
 """
 
 # ╔═╡ 0a74f619-9dc5-425e-aacd-60c74a0c1d38
@@ -320,7 +333,7 @@ describe(pcutdf)
 
 # ╔═╡ f3132403-113d-4b30-9fd0-379d28ade3c7
 md"""
-# Bi-normal distribution inference (method of moments)
+## Bi-normal distribution inference (method of moments)
 """
 
 # ╔═╡ f3212b13-682f-4be4-865b-fd0f1b450aa4
@@ -375,12 +388,12 @@ mixture_model_test = fit_mom(BiNormal{eltype(testset)}, testset, solver = Optim.
 
 # ╔═╡ 951d183e-7f63-4ef2-b806-bf2c6fd94a2c
 md"""
-## Use NLsolve
+### Use NLsolve
 """
 
 # ╔═╡ 4049368c-1c73-4a17-8ed6-aaa02e072976
 md"""
-## Use SciML NonlinearSolve
+### Use SciML NonlinearSolve
 """
 
 # ╔═╡ 13b78287-4a5f-4b9a-be43-92d157373769
@@ -403,7 +416,7 @@ end
 
 # ╔═╡ 8d03de5e-d344-4efd-b9af-dd5391028780
 md"""
-# Constants and functions
+## Constants and functions
 """
 
 # ╔═╡ ab063295-d2b0-47a2-8f99-3e894f4cd646
@@ -572,11 +585,13 @@ plot(sciml_sol_dist)
 BiNormalDistributions.componentpdfs(sciml_sol_dist, 3)
 
 # ╔═╡ Cell order:
-# ╠═f1ee2cb0-8274-11ef-0826-f55183647219
+# ╟─99fad567-fb21-4ecc-a1bf-3beda0185b2e
 # ╟─a5526239-2f05-4618-8868-0f552855d574
+# ╠═f1ee2cb0-8274-11ef-0826-f55183647219
 # ╟─cd809ca8-2cc4-435d-ab8b-b7b24fa40ed1
 # ╠═7899ae97-fbc2-43e5-ac77-c6d725f0371e
 # ╠═b137e7fa-f2ce-4cb1-85d7-87078a9aa9cc
+# ╠═23968942-3055-4414-a651-60209665fbc0
 # ╠═547aad6f-32db-405d-9886-a727f1591101
 # ╠═c126bbd5-fd67-4946-bdd6-d43a95aacd49
 # ╠═7a050dc5-7772-4933-959f-bf4fb478fc7d

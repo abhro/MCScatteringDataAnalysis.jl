@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.20.16
+# v0.20.17
 
 using Markdown
 using InteractiveUtils
@@ -41,19 +41,24 @@ using Missings
 # ╔═╡ fe2b3846-c753-4685-8704-e6fb50624989
 using Printf
 
+# ╔═╡ f08edae2-4f29-4274-b010-07cfb3826f1e
+md"""
+# Plot spectra for each iteration
+"""
+
 # ╔═╡ a5526239-2f05-4618-8868-0f552855d574
 md"""
-# Preamble
+## Preamble
 """
 
 # ╔═╡ cd809ca8-2cc4-435d-ab8b-b7b24fa40ed1
 md"""
-## Import packages
+### Import packages
 """
 
 # ╔═╡ c3cedbde-37a4-473b-87e4-d60295362dba
 md"""
-## Configure notebook appearance
+### Configure notebook appearance
 """
 
 # ╔═╡ b544df91-fe2d-4396-892c-7faea2edd141
@@ -63,15 +68,15 @@ TableOfContents(depth = 6)
 # Increase cell width
 html"""<style>
 main {
-    max-width: 80%;
-    padding-left: max(360px, 10%);
+    max-width: 83%;
+    padding-left: max(300px, 5%);
     padding-right: 0%;
 }
 </style>"""
 
 # ╔═╡ 8dfe6f3c-f693-4c73-8152-8c43c1c1ff42
 md"""
-# Read data file
+## Read data file
 """
 
 # ╔═╡ ee3eab6d-7913-4650-a5c3-aabf0747a58a
@@ -84,14 +89,20 @@ CR_p_gdf_iter = load_object(joinpath(datadir, "dNdp-CR-protons-iteration-split.j
 CR_e_gdf_iter = load_object(joinpath(datadir, "dNdp-CR-electrons-iteration-split.jld2"));
 
 # ╔═╡ 3a2e4aee-bc90-493e-84b1-79897934f16a
+# ╠═╡ disabled = true
+#=╠═╡
 CR_p_gdf_iter
+  ╠═╡ =#
 
 # ╔═╡ fae99b13-0b14-45c0-989f-8d0f22f0e96c
+# ╠═╡ disabled = true
+#=╠═╡
 CR_e_gdf_iter
+  ╠═╡ =#
 
 # ╔═╡ 628130bf-da25-4799-8e5e-3d2db15b1e49
 md"""
-# Plot Cosmic Ray data
+## Plot Cosmic Ray data
 """
 
 # ╔═╡ f91132bd-28af-4a6c-9a77-5c5b0ed4a08a
@@ -105,7 +116,7 @@ const markersize = 5;
 
 # ╔═╡ 19a41e11-d031-498c-adbb-082e682fb67e
 md"""
-## Individual iterations
+### Individual iterations
 """
 
 # ╔═╡ ecf80697-b786-4b02-9563-f3d082383b76
@@ -115,9 +126,6 @@ Choose which frames to plot:
 - Shock frame: $(@bind do_plot_sf CheckBox(default=false))
 - ISM frame: $(@bind do_plot_ISM CheckBox(default=false))
 """
-
-# ╔═╡ 9c7fc2ae-f6b5-4a4d-90ed-63967ea55200
-#plot_iter = 1
 
 # ╔═╡ c2b3d96a-216e-4abe-8b0f-625419ac072f
 #CR_e_gdf_iter[plot_iter]
@@ -224,7 +232,7 @@ end
 
 # ╔═╡ 67f27108-eb9d-49b0-95ae-e016973e02b5
 md"""
-## Multiple iterations
+### Multiple iterations
 """
 
 # ╔═╡ 1f35f220-7739-4097-b51d-0ab6000be247
@@ -269,7 +277,7 @@ end
 
 # ╔═╡ e5dbf380-3480-4d96-881a-8c562b5fc6ab
 md"""
-## All at once
+### All at once
 """
 
 # ╔═╡ 4e26e9ec-b4f2-46f8-bada-945c00cb4907
@@ -327,15 +335,13 @@ end
 
 # ╔═╡ 8d03de5e-d344-4efd-b9af-dd5391028780
 md"""
-# Constants and functions
+## Constants and functions
 """
 
-# ╔═╡ 4272e1f1-1c3b-439f-9406-5315a901587b
-
-
 # ╔═╡ Cell order:
-# ╠═f1ee2cb0-8274-11ef-0826-f55183647219
+# ╟─f08edae2-4f29-4274-b010-07cfb3826f1e
 # ╟─a5526239-2f05-4618-8868-0f552855d574
+# ╠═f1ee2cb0-8274-11ef-0826-f55183647219
 # ╟─cd809ca8-2cc4-435d-ab8b-b7b24fa40ed1
 # ╠═7899ae97-fbc2-43e5-ac77-c6d725f0371e
 # ╠═b137e7fa-f2ce-4cb1-85d7-87078a9aa9cc
@@ -354,12 +360,8 @@ md"""
 # ╠═3a2e4aee-bc90-493e-84b1-79897934f16a
 # ╠═fae99b13-0b14-45c0-989f-8d0f22f0e96c
 # ╟─628130bf-da25-4799-8e5e-3d2db15b1e49
-# ╠═f91132bd-28af-4a6c-9a77-5c5b0ed4a08a
-# ╠═50b1a87f-49ff-4d93-aa6e-f042a87b875e
-# ╠═3cc54622-c4e4-4c59-8828-4aa899a51e51
 # ╟─19a41e11-d031-498c-adbb-082e682fb67e
 # ╟─ecf80697-b786-4b02-9563-f3d082383b76
-# ╠═9c7fc2ae-f6b5-4a4d-90ed-63967ea55200
 # ╠═c2b3d96a-216e-4abe-8b0f-625419ac072f
 # ╟─47a47a1d-4247-4a1a-a629-0a580253b41d
 # ╟─220c3ca5-e0b5-4f5c-86b0-e5d7cdd67558
@@ -368,11 +370,13 @@ md"""
 # ╟─f4930314-a64c-4b6a-bcef-c0d9dcf2ef81
 # ╠═6537effb-12e6-4f4e-b34f-15dd33547921
 # ╟─67f27108-eb9d-49b0-95ae-e016973e02b5
-# ╟─1f35f220-7739-4097-b51d-0ab6000be247
 # ╟─6c07e039-2575-49a6-a50d-531c40ee7965
+# ╟─1f35f220-7739-4097-b51d-0ab6000be247
 # ╟─e5dbf380-3480-4d96-881a-8c562b5fc6ab
 # ╠═4e26e9ec-b4f2-46f8-bada-945c00cb4907
 # ╟─a0be5567-9256-4c03-9a96-11d4d1973347
 # ╠═526cd197-9ec7-445a-9018-3163d3916e10
 # ╟─8d03de5e-d344-4efd-b9af-dd5391028780
-# ╠═4272e1f1-1c3b-439f-9406-5315a901587b
+# ╠═f91132bd-28af-4a6c-9a77-5c5b0ed4a08a
+# ╠═50b1a87f-49ff-4d93-aa6e-f042a87b875e
+# ╠═3cc54622-c4e4-4c59-8828-4aa899a51e51

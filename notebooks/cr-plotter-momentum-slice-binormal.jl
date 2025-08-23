@@ -28,10 +28,12 @@ using Distributions
 # ╔═╡ 325d0adb-9001-4f1c-98fb-cfce042a09ca
 using MCScatteringDataAnalysis
 
+# ╔═╡ 1e0808e1-a106-4f0e-8649-13989b8ca855
+using CairoMakie
+#using WGLMakie
+
 # ╔═╡ 547aad6f-32db-405d-9886-a727f1591101
 begin
-    using CairoMakie
-    #using WGLMakie
     using AlgebraOfGraphics
     import AlgebraOfGraphics as AoG
 end
@@ -81,19 +83,24 @@ using ExpectationMaximization
 # ╔═╡ 4153a601-06c3-4126-ace6-d354064e03f5
 using Random
 
+# ╔═╡ 4a0e2184-0950-4b19-9b8b-061150d17ec5
+md"""
+# Plot fluxes for each momentum slice with binormal distribution estimates
+"""
+
 # ╔═╡ a5526239-2f05-4618-8868-0f552855d574
 md"""
-# Preamble
+## Preamble
 """
 
 # ╔═╡ cd809ca8-2cc4-435d-ab8b-b7b24fa40ed1
 md"""
-## Import packages
+### Import packages
 """
 
 # ╔═╡ 334b4ffc-1c5d-4743-88fb-ab383a3e6f80
 md"""
-## Configure notebook appearance
+### Configure notebook appearance
 """
 
 # ╔═╡ b544df91-fe2d-4396-892c-7faea2edd141
@@ -111,7 +118,7 @@ main {
 
 # ╔═╡ 8dfe6f3c-f693-4c73-8152-8c43c1c1ff42
 md"""
-# Read data file
+## Read data file
 """
 
 # ╔═╡ c159f801-b129-4919-85ef-29eedf977f14
@@ -125,7 +132,7 @@ CR_e_gdf_momentum = load_object(joinpath(datadir, "dNdp-CR-electrons-momentum-sp
 
 # ╔═╡ 628130bf-da25-4799-8e5e-3d2db15b1e49
 md"""
-# Plot Cosmic Ray data
+## Plot Cosmic Ray data
 """
 
 # ╔═╡ bfc6a515-8189-487b-be08-746d865a78ae
@@ -214,11 +221,8 @@ describe(pcutdf)
 
 # ╔═╡ f3132403-113d-4b30-9fd0-379d28ade3c7
 md"""
-# Bi-normal distribution inference
+## Bi-normal distribution inference
 """
-
-# ╔═╡ f3212b13-682f-4be4-865b-fd0f1b450aa4
-Makie.update_theme!(colormap = Makie.wong_colors())
 
 # ╔═╡ 90e850f3-7b48-441a-92ab-1e1f6bf04e9a
 md"""
@@ -251,7 +255,7 @@ bn_tentative = BiNormal(
 
 # ╔═╡ e3dab56a-5560-4ea8-84d7-53ce88cedc1c
 md"""
-## Manual fit
+### Manual fit
 """
 
 # ╔═╡ d21499d1-f010-444a-96c2-1dee378496e7
@@ -264,7 +268,7 @@ SSE of manual fit
 
 # ╔═╡ 7d2a121d-7e87-471b-8cc0-034796151b84
 md"""
-## Parameter sweep on histogram discretization
+### Parameter sweep on histogram discretization
 """
 
 # ╔═╡ 9bc9c0f1-c3be-4944-9fec-575c4fda3ce5
@@ -321,7 +325,7 @@ Takes constraints from ``λ ∈ [1/2, 1]`` to ``β ∈ ℝ``.
 
 # ╔═╡ c1b47c6c-66ea-4014-9c04-8aa142449178
 md"""
-## Mode finding through kernel density estimates
+### Mode finding through kernel density estimates
 """
 
 # ╔═╡ 8999b23b-4357-4655-baa6-273b218006b7
@@ -346,7 +350,7 @@ testset_kde.x[density_maxes.indices]
 
 # ╔═╡ 5252c2c6-969d-45c1-839c-32db557aa4b8
 md"""
-## Fit Kernel density estimate curve
+### Fit Kernel density estimate curve
 """
 
 # ╔═╡ 5b7baac9-e657-4666-be4d-62233362aa09
@@ -365,12 +369,12 @@ Some imports for some reason
 
 # ╔═╡ b9892967-520c-40e6-8cf1-3b1eb081ce04
 md"""
-## Log-likelihood maximization
+### Log-likelihood maximization
 """
 
 # ╔═╡ a08fe436-01cf-498e-8976-6e2c3173ca11
 md"""
-## Expectation maximization
+### Expectation maximization
 """
 
 # ╔═╡ 1360285b-8b6a-4d1c-bbb5-c6acfeddb8b6
@@ -390,7 +394,7 @@ end
 
 # ╔═╡ 8d03de5e-d344-4efd-b9af-dd5391028780
 md"""
-# Constants and functions
+## Constants and functions
 """
 
 # ╔═╡ 6d5eb940-6739-4781-9dda-7433cae3cf50
@@ -614,12 +618,14 @@ let df = CR_e_gdf_momentum[electron_momentum_index]
 end
 
 # ╔═╡ Cell order:
-# ╠═f1ee2cb0-8274-11ef-0826-f55183647219
+# ╟─4a0e2184-0950-4b19-9b8b-061150d17ec5
 # ╟─a5526239-2f05-4618-8868-0f552855d574
+# ╠═f1ee2cb0-8274-11ef-0826-f55183647219
 # ╟─cd809ca8-2cc4-435d-ab8b-b7b24fa40ed1
 # ╠═7899ae97-fbc2-43e5-ac77-c6d725f0371e
 # ╠═b137e7fa-f2ce-4cb1-85d7-87078a9aa9cc
 # ╠═325d0adb-9001-4f1c-98fb-cfce042a09ca
+# ╠═1e0808e1-a106-4f0e-8649-13989b8ca855
 # ╠═547aad6f-32db-405d-9886-a727f1591101
 # ╠═7a050dc5-7772-4933-959f-bf4fb478fc7d
 # ╠═40efcd80-db38-4db3-a193-6e65ee5c4367
@@ -647,7 +653,6 @@ end
 # ╠═f95a0d36-5dd8-4190-98c6-06e8be2ad840
 # ╠═b88ef78f-6d6f-4b38-a9af-6da4f540f8c3
 # ╟─f3132403-113d-4b30-9fd0-379d28ade3c7
-# ╠═f3212b13-682f-4be4-865b-fd0f1b450aa4
 # ╠═75e49b40-bff0-48f5-ab57-28b185f63cc9
 # ╟─90e850f3-7b48-441a-92ab-1e1f6bf04e9a
 # ╠═18ae83a7-98e2-4ef0-b21c-cac428146188

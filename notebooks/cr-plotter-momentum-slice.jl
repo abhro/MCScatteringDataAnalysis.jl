@@ -44,26 +44,31 @@ using Missings
 # ╔═╡ fe2b3846-c753-4685-8704-e6fb50624989
 using Printf
 
-# ╔═╡ fd47dab7-426c-44fc-8038-00e378324e41
-using HypothesisTests
-
 # ╔═╡ 49902e99-870d-4d19-afb0-1de612c185df
 using StatsBase
 
 # ╔═╡ 4ac32bef-af81-4f7e-8e97-7eac4dd2bf69
 using LinearAlgebra
 
+# ╔═╡ fd47dab7-426c-44fc-8038-00e378324e41
+using HypothesisTests
+
 # ╔═╡ 59e1cd4d-6f38-4260-8955-159f21347fc6
 using LsqFit
 
+# ╔═╡ f0e77bbd-e420-49f1-9b40-f9d994888b93
+md"""
+# Plot fluxes for each momentum slice
+"""
+
 # ╔═╡ a5526239-2f05-4618-8868-0f552855d574
 md"""
-# Preamble
+## Preamble
 """
 
 # ╔═╡ cd809ca8-2cc4-435d-ab8b-b7b24fa40ed1
 md"""
-## Import packages
+### Import packages
 """
 
 # ╔═╡ 547aad6f-32db-405d-9886-a727f1591101
@@ -77,7 +82,7 @@ end
 
 # ╔═╡ 5c6b130f-0a51-4131-bab7-40b059c4cc11
 md"""
-## Configure notebook appearance
+### Configure notebook appearance
 """
 
 # ╔═╡ b544df91-fe2d-4396-892c-7faea2edd141
@@ -97,7 +102,7 @@ main {
 
 # ╔═╡ 8dfe6f3c-f693-4c73-8152-8c43c1c1ff42
 md"""
-# Read data file
+## Read data file
 """
 
 # ╔═╡ d70a4da5-1589-4b41-af32-05671f27be4d
@@ -111,7 +116,7 @@ CR_e_gdf_momentum = load_object(joinpath(datadir, "dNdp-CR-electrons-momentum-sp
 
 # ╔═╡ 628130bf-da25-4799-8e5e-3d2db15b1e49
 md"""
-# Plot Cosmic Ray data
+## Plot Cosmic Ray data
 """
 
 # ╔═╡ 68c8329f-501e-47df-8047-d3cbc319e705
@@ -144,27 +149,27 @@ const color_pf_p, color_sf_p, color_ISM_p, color_pf_e, color_sf_e, color_ISM_e =
 
 # ╔═╡ 3bf64608-0fa2-4fcb-9782-fd7a8de47bda
 md"""
-## Sample statistics
+### Sample statistics
 """
 
 # ╔═╡ 932c2a77-0198-4df4-a4bd-30d0bda93946
 md"""
-### Means
+#### Means
 """
 
 # ╔═╡ 5767b9ac-64c2-4d2f-ad42-961184c7edc7
 md"""
-### Standard deviations
+#### Standard deviations
 """
 
 # ╔═╡ 7495e7e9-3d50-4401-baef-d2e3c11e6b46
 md"""
-### Skewness
+#### Skewness
 """
 
 # ╔═╡ 44cb6acf-7fee-4e3e-8253-d91e5a76299a
 md"""
-## With Algebra of Graphics
+### With Algebra of Graphics
 """
 
 # ╔═╡ 6d5eb940-6739-4781-9dda-7433cae3cf50
@@ -189,7 +194,7 @@ map_layer = AoG.mapping(
 
 # ╔═╡ ce8b1307-dc78-463b-9f41-04fe5dded525
 md"""
-## Histograms
+### Histograms
 """
 
 # ╔═╡ 35710ad9-f2e4-487b-be19-c29500633726
@@ -240,7 +245,7 @@ end
 
 # ╔═╡ 9ea7a3a4-987d-416d-88d1-672e3cce23c5
 md"""
-## dN/dp vs. iteration
+### dN/dp vs. iteration
 """
 
 # ╔═╡ b7a96870-784e-4ce0-830d-d245fc16e5f4
@@ -305,12 +310,19 @@ describe(pcutdf)
 
 # ╔═╡ f3132403-113d-4b30-9fd0-379d28ade3c7
 md"""
-# Normal distribution inference
+## Normal distribution inference
 """
+
+# ╔═╡ e6b9701d-3d27-4c0c-b0b9-9879527f369c
+normal_distrib_protons = fitdistributions(Normal, CR_p_gdf_momentum)
+# normal_distrib_protons = fitnormals(CR_p_gdf_momentum)
+
+# ╔═╡ e75ea9c0-59ca-4097-b4f6-6a3af04dc308
+normal_distrib_electrons = fitdistributions(Normal, CR_e_gdf_momentum)
 
 # ╔═╡ da107273-c428-4c68-80a9-8f82cb211497
 md"""
-# Hypothesis tests
+## Hypothesis tests
 """
 
 # ╔═╡ f330af91-60a6-46ac-bdc5-ec49c216fccb
@@ -331,7 +343,7 @@ p_val_yscale = plot_p_values_in_logscale ? log10 : identity;
 
 # ╔═╡ 94a91acd-a878-4c3c-9716-8bed60bf8c6c
 md"""
-## Root-sum-squared errors
+### Root-sum-squared errors
 """
 
 # ╔═╡ b0d555b3-5087-4405-8343-ce304d482ca9
@@ -377,12 +389,12 @@ fit = curve_fit(model, x, y, [3.4, 2.5])# [mean(logdNdp) - 3, std(logdNdp) - 5])
 
 # ╔═╡ 98675d19-3b1b-4be0-9e48-ab0ffd019647
 md"""
-## Anderson–Darling test
+### Anderson–Darling test
 """
 
 # ╔═╡ b499bf86-3e7a-441a-809a-934a1a8dd402
 md"""
-## Shapiro–Wilk test
+### Shapiro–Wilk test
 """
 
 # ╔═╡ a2dca585-2b84-4958-8ba6-af51602c4d8a
@@ -417,20 +429,16 @@ end;
 
 # ╔═╡ 2ab2979f-1ad4-4168-b59c-a25e57d4826a
 md"""
-## Kolmogorov–Smirnov test
+### Kolmogorov–Smirnov test
 """
 
 # ╔═╡ 8d03de5e-d344-4efd-b9af-dd5391028780
 md"""
-# Constants and functions
+## Constants and functions
 """
 
 # ╔═╡ 54452e38-227e-4d06-ae74-7347aae2c021
 fitted_dist = normal_distrib_protons.pf[proton_momentum_index]
-
-# ╔═╡ e6b9701d-3d27-4c0c-b0b9-9879527f369c
-normal_distrib_protons = fitdistributions(Normal, CR_p_gdf_momentum)
-# normal_distrib_protons = fitnormals(CR_p_gdf_momentum)
 
 # ╔═╡ 2e79471f-3430-4b1c-91fe-80434de63cb2
 ad_scores_p = let
@@ -465,9 +473,6 @@ SSE_hist(logdNdp, fitted_dist)
 
 # ╔═╡ 55d8c831-27e6-4914-a836-7a05281e8fb3
 sum(logpdf.(fitted_dist, logdNdp))
-
-# ╔═╡ e75ea9c0-59ca-4097-b4f6-6a3af04dc308
-normal_distrib_electrons = fitdistributions(Normal, CR_e_gdf_momentum)
 
 # ╔═╡ bd8f636c-6033-434e-a220-a07397679431
 ad_scores_e = let
@@ -837,9 +842,10 @@ let
 end
 
 # ╔═╡ Cell order:
+# ╟─f0e77bbd-e420-49f1-9b40-f9d994888b93
 # ╟─a5526239-2f05-4618-8868-0f552855d574
-# ╟─cd809ca8-2cc4-435d-ab8b-b7b24fa40ed1
 # ╠═f1ee2cb0-8274-11ef-0826-f55183647219
+# ╟─cd809ca8-2cc4-435d-ab8b-b7b24fa40ed1
 # ╠═7899ae97-fbc2-43e5-ac77-c6d725f0371e
 # ╠═b137e7fa-f2ce-4cb1-85d7-87078a9aa9cc
 # ╠═800673a1-dcb4-471a-a628-74a92aee2941
