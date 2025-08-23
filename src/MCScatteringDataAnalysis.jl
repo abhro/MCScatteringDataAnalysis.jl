@@ -204,9 +204,9 @@ export get_hist_curve
 
 Analogue of `fitdistribution`, but directly constructs a `Normal` using the mean and variance.
 """
-function fitnormal(x::AbstractVector{Union{Missing,T}}) where {T}
+function fitnormal(x::AbstractVector)
     x = collect(skipmissing(x))
-    if isempty(x) # don't fit to a dataset with only missings
+    if isempty(x) # don't fit to a dataset with only missing values
         return missing
     end
 
