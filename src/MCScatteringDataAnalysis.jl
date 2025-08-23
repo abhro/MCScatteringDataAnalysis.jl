@@ -191,7 +191,7 @@ x-values as the bin centers, and the y-values as the value of the pdf at the bin
 - `y`: pdf at each `x`.
 """
 function get_hist_curve(occurrences; nbins)
-    histogram = normalize(fit(Histogram, occurrences; nbins); mode=:pdf)
+    histogram = normalize(StatsBase.fit(Histogram, occurrences; nbins); mode=:pdf)
 
     x = histogram.edges |> only |> centers
     hist_y = histogram.weights
