@@ -105,6 +105,11 @@ md"""
 ## Plot Cosmic Ray data
 """
 
+# ╔═╡ 3e59e047-6f47-40de-9881-f748d7f356e9
+md"""
+### Plotting configuration
+"""
+
 # ╔═╡ f91132bd-28af-4a6c-9a77-5c5b0ed4a08a
 const axis_properties = (xminorgridvisible = true, yminorgridvisible = true);
 
@@ -122,9 +127,9 @@ md"""
 # ╔═╡ ecf80697-b786-4b02-9563-f3d082383b76
 md"""
 Choose which frames to plot:
-- Plasma frame: $(@bind do_plot_pf CheckBox(default=true))
-- Shock frame: $(@bind do_plot_sf CheckBox(default=false))
-- ISM frame: $(@bind do_plot_ISM CheckBox(default=false))
+- Plasma frame: $(@bind do_plot_pf  CheckBox(default=true))
+- Shock frame:  $(@bind do_plot_sf  CheckBox(default=false))
+- ISM frame:    $(@bind do_plot_ISM CheckBox(default=false))
 """
 
 # ╔═╡ c2b3d96a-216e-4abe-8b0f-625419ac072f
@@ -333,11 +338,6 @@ let f = Figure()
 end
   ╠═╡ =#
 
-# ╔═╡ 8d03de5e-d344-4efd-b9af-dd5391028780
-md"""
-## Constants and functions
-"""
-
 # ╔═╡ Cell order:
 # ╟─f08edae2-4f29-4274-b010-07cfb3826f1e
 # ╟─a5526239-2f05-4618-8868-0f552855d574
@@ -360,13 +360,17 @@ md"""
 # ╠═3a2e4aee-bc90-493e-84b1-79897934f16a
 # ╠═fae99b13-0b14-45c0-989f-8d0f22f0e96c
 # ╟─628130bf-da25-4799-8e5e-3d2db15b1e49
-# ╟─19a41e11-d031-498c-adbb-082e682fb67e
+# ╟─3e59e047-6f47-40de-9881-f748d7f356e9
+# ╠═f91132bd-28af-4a6c-9a77-5c5b0ed4a08a
+# ╠═50b1a87f-49ff-4d93-aa6e-f042a87b875e
+# ╠═3cc54622-c4e4-4c59-8828-4aa899a51e51
 # ╟─ecf80697-b786-4b02-9563-f3d082383b76
+# ╟─d7d554cf-2f16-49e1-849d-25b5088e85ff
+# ╟─19a41e11-d031-498c-adbb-082e682fb67e
 # ╠═c2b3d96a-216e-4abe-8b0f-625419ac072f
 # ╟─47a47a1d-4247-4a1a-a629-0a580253b41d
 # ╟─220c3ca5-e0b5-4f5c-86b0-e5d7cdd67558
 # ╟─7879a41a-a284-452b-9505-a239209f1ed0
-# ╟─d7d554cf-2f16-49e1-849d-25b5088e85ff
 # ╟─f4930314-a64c-4b6a-bcef-c0d9dcf2ef81
 # ╠═6537effb-12e6-4f4e-b34f-15dd33547921
 # ╟─67f27108-eb9d-49b0-95ae-e016973e02b5
@@ -376,7 +380,3 @@ md"""
 # ╠═4e26e9ec-b4f2-46f8-bada-945c00cb4907
 # ╟─a0be5567-9256-4c03-9a96-11d4d1973347
 # ╠═526cd197-9ec7-445a-9018-3163d3916e10
-# ╟─8d03de5e-d344-4efd-b9af-dd5391028780
-# ╠═f91132bd-28af-4a6c-9a77-5c5b0ed4a08a
-# ╠═50b1a87f-49ff-4d93-aa6e-f042a87b875e
-# ╠═3cc54622-c4e4-4c59-8828-4aa899a51e51
