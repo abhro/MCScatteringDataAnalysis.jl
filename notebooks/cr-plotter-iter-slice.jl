@@ -196,6 +196,11 @@ let f = Figure(), df = CR_e_gdf_iter[plot_iter]
     f
 end
 
+# ╔═╡ 1529a53f-a084-40fc-80b0-3f9f31a5868e
+md"""
+Plot of ``\log(p^σ dN/dp)`` vs. ``\log(p)``
+"""
+
 # ╔═╡ 6537effb-12e6-4f4e-b34f-15dd33547921
 const σ = 2.23;
 
@@ -377,6 +382,7 @@ end
 # ╟─47a47a1d-4247-4a1a-a629-0a580253b41d
 # ╟─220c3ca5-e0b5-4f5c-86b0-e5d7cdd67558
 # ╟─7879a41a-a284-452b-9505-a239209f1ed0
+# ╟─1529a53f-a084-40fc-80b0-3f9f31a5868e
 # ╟─f4930314-a64c-4b6a-bcef-c0d9dcf2ef81
 # ╠═6537effb-12e6-4f4e-b34f-15dd33547921
 # ╟─67f27108-eb9d-49b0-95ae-e016973e02b5
