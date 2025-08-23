@@ -156,12 +156,9 @@ let f = Figure(), df = CR_p_gdf_iter[plot_iter]
         title = "dN/dp of Cosmic rays (protons), iteration $plot_iter",
         xlabel = "log(p) (cgs)", ylabel = "log(dN/dp)", axis_properties...)
 
-    p, N = df.log_p_nat, df.log_dNdp_cr_sf
-    do_plot_sf && lines!(ax, p, N, label = "shock frame", color = color_sf_p)
-    p, N = df.log_p_nat, df.log_dNdp_cr_pf
-    do_plot_pf && lines!(ax, p, N, label = "plasma frame", color = color_pf_p)
-    p, N = df.log_p_nat, df.log_dNdp_cr_ISM
-    do_plot_ISM && lines!(ax, p, N, label = "ISM frame", color = color_ISM_p)
+    do_plot_sf && lines!(ax, df.log_p_nat, df.log_dNdp_cr_sf, label = "shock frame", color = color_sf_p)
+    do_plot_pf && lines!(ax, df.log_p_nat, df.log_dNdp_cr_pf, label = "plasma frame", color = color_pf_p)
+    do_plot_ISM && lines!(ax, df.log_p_nat, df.log_dNdp_cr_ISM, label = "ISM frame", color = color_ISM_p)
 
     #xlims!(ax, -16, -3)
     #ylims!(ax, 30, 60)
@@ -201,25 +198,25 @@ let
         xlabel = "log(p) (nat)", ylabel = "log dN/dp + σ log p", axis_properties...)
 
     if do_plot_pf
-        p, N = (dfp.log_p_nat, dfp.log_dNdp_cr_pf)
-        scatterlines!(ax, p, N .+ σ*p, label = "protons, plasma frame"; color = color_pf_p, markersize)
+        log_p, log_dNdp = (dfp.log_p_nat, dfp.log_dNdp_cr_pf)
+        scatterlines!(ax, log_p, log_dNdp .+ σ*log_p, label = "protons, plasma frame"; color = color_pf_p, markersize)
 
-        p, N = (dfe.log_p_nat, dfe.log_dNdp_cr_pf)
-        scatterlines!(ax, p, N .+ σ*p, label = "electrons, plasma frame"; color = color_pf_e, markersize)
+        log_p, log_dNdp = (dfe.log_p_nat, dfe.log_dNdp_cr_pf)
+        scatterlines!(ax, log_p, log_dNdp .+ σ*log_p, label = "electrons, plasma frame"; color = color_pf_e, markersize)
     end
     if do_plot_sf
-        p, N = (dfp.log_p_nat, dfp.log_dNdp_cr_sf)
-        scatterlines!(ax, p, N .+ σ*p, label = "protons, shock frame"; color = color_sf_p, markersize)
+        log_p, log_dNdp = (dfp.log_p_nat, dfp.log_dNdp_cr_sf)
+        scatterlines!(ax, log_p, log_dNdp .+ σ*log_p, label = "protons, shock frame"; color = color_sf_p, markersize)
 
-        p, N = (dfe.log_p_nat, dfe.log_dNdp_cr_sf)
-        scatterlines!(ax, p, N .+ σ*p, label = "electrons, shock frame"; color = color_sf_e, markersize)
+        log_p, log_dNdp = (dfe.log_p_nat, dfe.log_dNdp_cr_sf)
+        scatterlines!(ax, log_p, log_dNdp .+ σ*log_p, label = "electrons, shock frame"; color = color_sf_e, markersize)
     end
     if do_plot_ISM
-        p, N = (dfp.log_p_nat, dfp.log_dNdp_cr_ISM)
-        scatterlines!(ax, p, N .+ σ*p, label = "protons, ISM frame"; color = color_ISM_p, markersize)
+        log_p, log_dNdp = (dfp.log_p_nat, dfp.log_dNdp_cr_ISM)
+        scatterlines!(ax, log_p, log_dNdp .+ σ*log_p, label = "protons, ISM frame"; color = color_ISM_p, markersize)
 
-        p, N = (dfe.log_p_nat, dfe.log_dNdp_cr_ISM)
-        scatterlines!(ax, p, N .+ σ*p, label = "electrons, ISM frame"; color = color_ISM_e, markersize)
+        log_p, log_dNdp = (dfe.log_p_nat, dfe.log_dNdp_cr_ISM)
+        scatterlines!(ax, log_p, log_dNdp .+ σ*log_p, label = "electrons, ISM frame"; color = color_ISM_e, markersize)
     end
 
     hlines!(ax, 57.8, color = color_pf_p)
@@ -249,8 +246,8 @@ let f = Figure()
         axis_properties...)
 
     for (i, dfe) in enumerate(CR_e_gdf_iter[5775:5779])
-        p, N = dfe.log_p_nat, dfe.log_dNdp_cr_pf
-        scatterlines!(ax, p, N + σ*p, label = "plasma frame (iter $i)"; markersize)
+        log_p, log_dNdp = dfe.log_p_nat, dfe.log_dNdp_cr_pf
+        scatterlines!(ax, log_p, log_dNdp + σ*log_p, label = "plasma frame (iter $i)"; markersize)
     end
 
     xlims!(ax, -0.3, 5)
@@ -264,12 +261,12 @@ let f = Figure()
     ax = Axis(
         f[1,1];
         title = "dN/dp of Cosmic rays (protons)",
-        xlabel = "log(p) (nat)", ylabel = "log dN/dp + σ log p",
+        xlabel = "log(p) (nat)", ylabel = "log(dN/dp) + σ log(p)",
         axis_properties...)
 
-    for (i, dfproton) in enumerate(CR_p_gdf_iter[5620:5630])
-        p, N = dfproton.log_p_nat, dfproton.log_dNdp_cr_pf
-        scatterlines!(ax, p, N + σ*p, label = "plasma frame (iter $i)"; markersize)
+    for (i, dfp) in enumerate(CR_p_gdf_iter[5620:5630])
+        log_p, log_dNdp = dfp.log_p_nat, dfp.log_dNdp_cr_pf
+        scatterlines!(ax, log_p, log_dNdp + σ*log_p, label = "plasma frame (iter $i)"; markersize)
     end
 
     #hlines!(ax, 57.5)
@@ -292,12 +289,12 @@ let f = Figure()
     ax = Axis(
         f[1,1];
         title = "dN/dp of Cosmic rays (protons)",
-        xlabel = "log(p) (nat)", ylabel = "log dN/dp + σ log p",
+        xlabel = "log(p) (nat)", ylabel = "log(dN/dp) + σ log(p)",
         axis_properties...)
 
-    for (i, dfproton) in enumerate(CR_p_gdf_iter)
-        p, N = dfproton.log_p_nat, dfproton.log_dNdp_cr_pf
-        scatterlines!(ax, p, N + σ*p, label = "plasma frame (iter $i)"; markersize)
+    for (i, dfp) in enumerate(CR_p_gdf_iter)
+        log_p, log_dNdp = dfp.log_p_nat, dfp.log_dNdp_cr_pf
+        scatterlines!(ax, log_p, log_dNdp + σ*log_p, label = "plasma frame (iter $i)"; markersize)
     end
 
     #hlines!(ax, 57.5)
@@ -327,8 +324,8 @@ let f = Figure()
         axis_properties...)
 
     for (i, dfe) in enumerate(CR_e_gdf_iter)
-        p, N = dfe.log_p_nat, dfe.log_dNdp_cr_pf
-        scatterlines!(ax, p, N + σ*p, label = "plasma frame (iter $i)"; markersize)
+        log_p, log_dNdp = dfe.log_p_nat, dfe.log_dNdp_cr_pf
+        scatterlines!(ax, log_p, log_dNdp + σ*log_p, label = "plasma frame (iter $i)"; markersize)
     end
 
     xlims!(ax, -0.3, 5)
