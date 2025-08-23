@@ -134,7 +134,7 @@ const axis_properties = (xminorgridvisible = true, yminorgridvisible = true, xla
 const bins = 90;
 
 # ╔═╡ 29ec59ad-0e22-462a-ab6d-2065a56fc001
-x, y = get_hist(logdNdp; nbins=bins)
+x, y = get_hist_curve(logdNdp; nbins=bins)
 
 # ╔═╡ 377aaf8f-b909-4c42-bc77-912fd300c300
 const normalization = :pdf;
@@ -562,7 +562,7 @@ let df = CR_p_gdf_momentum[proton_momentum_index], distribs = normal_distrib_pro
     if do_plot_pf
         N = df.log_dNdp_cr_pf |> skipmissing |> collect
         if !isempty(N)
-            x, y = get_hist(N; nbins=bins)
+            x, y = get_hist_curve(N; nbins=bins)
             # lines!(ax, x, y, label = "bin-centered \"histogram\"")
             stephist!(ax, N, label = "data"; bins, normalization, color = :teal, linewidth = 0.5)
         end

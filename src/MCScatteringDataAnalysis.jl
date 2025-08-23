@@ -181,22 +181,23 @@ centers(v) = (v[begin:end-1] + v[begin+1:end])/2;
 export centers
 
 """
-    get_hist(occurrences; nbins)
+    get_hist_curve(occurrences; nbins)
 
-Get a pdf normalized histogram with `nbins` bins
+Get a pdf normalized histogram with `nbins` bins, treated as a curve with the
+x-values as the bin centers, and the y-values as the value of the pdf at the bin center.
 
 ### Returns
 - `x`: center of bins
 - `y`: pdf at each `x`.
 """
-function get_hist(occurrences; nbins)
+function get_hist_curve(occurrences; nbins)
     histogram = normalize(fit(Histogram, occurrences; nbins); mode=:pdf)
 
     x = histogram.edges |> only |> centers
     hist_y = histogram.weights
     return x, hist_y
 end
-export get_hist
+export get_hist_curve
 
 """
     fitnormal(x::AbstractVector)
