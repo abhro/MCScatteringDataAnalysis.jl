@@ -184,23 +184,41 @@ md"""
 """
 
 # ╔═╡ 6d5eb940-6739-4781-9dda-7433cae3cf50
-# ╠═╡ disabled = true
 #=╠═╡
 Base.:*(x::Bool, l::AoG.Layer) = x ? l : AoG.zerolayer()
   ╠═╡ =#
 
+# ╔═╡ aa3a5985-3d14-4e6e-b2b2-5f7f731c3336
+#=╠═╡
+data = AoG.data(df);
+  ╠═╡ =#
+
 # ╔═╡ 2f44c2c5-7fc6-4c93-be6e-0cffb863afd4
-# ╠═╡ disabled = true
 #=╠═╡
 visual_layer = AoG.histogram(Stairs; bins, normalization);
   ╠═╡ =#
 
 # ╔═╡ b15d71e1-ac37-422e-98f0-a0a03238fe35
-# ╠═╡ disabled = true
 #=╠═╡
 map_layer = AoG.mapping(
     [:log_dNdp_cr_pf, :log_dNdp_cr_sf, :log_dNdp_cr_ISM],
     color = dims(1) => renamer(["Plasma frame", "Shock frame", "ISM frame"]));
+  ╠═╡ =#
+
+# ╔═╡ 1333eaeb-8aae-49d5-aabc-3622b9d6ae35
+#=╠═╡
+layer = data * map_layer * visual_layer;
+  ╠═╡ =#
+
+# ╔═╡ 4979cc00-15c1-40da-b538-021a067d1065
+#=╠═╡
+draw(
+    layer;
+    figure = (;
+        title = "Histogram of protons dN/dp at p = 10^$log_p_nat_at_slice mₚc",
+        titlealign = :center,
+    ),
+)
   ╠═╡ =#
 
 # ╔═╡ ce8b1307-dc78-463b-9f41-04fe5dded525
@@ -217,24 +235,6 @@ let
     Proton momentum slice to plot (index): $binder (min: $min_idx, max: $max_idx)
     """ # should the proton_momentum_index variable be considered a leak here?
 end
-
-# ╔═╡ d1c788a6-27ff-40d2-9bf4-1e7a4b6c48f3
-# ╠═╡ disabled = true
-#=╠═╡
-df = CR_p_gdf_momentum[proton_momentum_index];
-  ╠═╡ =#
-
-# ╔═╡ aa3a5985-3d14-4e6e-b2b2-5f7f731c3336
-# ╠═╡ disabled = true
-#=╠═╡
-data = AoG.data(df);
-  ╠═╡ =#
-
-# ╔═╡ 1333eaeb-8aae-49d5-aabc-3622b9d6ae35
-# ╠═╡ disabled = true
-#=╠═╡
-layer = data * map_layer * visual_layer;
-  ╠═╡ =#
 
 # ╔═╡ ecf80697-b786-4b02-9563-f3d082383b76
 md"""
