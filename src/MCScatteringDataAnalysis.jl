@@ -10,21 +10,16 @@ sse(ŷ, y) = sum((y - ŷ).^2)
 export sse
 
 function fit_dist_to_histogram(v::AbstractVector{T}; params, nbins = 150) where T
-    h = normalize(StatsBase.fit(StatsBase.Histogram, v; nbins), mode = :pdf)
-    edges = only(h.edges)
     # x and y of the histogram plot if treated like a curve
-    x = centers(edges)
-    #x = edges[begin+1:end]
-    y = h.weights
-    data_width = maximum(v) - minimum(v) # for setting up sigma ranges
-    @debug("Calculated histogram", h, edges, x, y, data_width)
+    x, y = get_hist_curve(v; nbins)
+    data_width = maximum(v) - minimum(v) # for setting up σ ranges
 
-    lambda_ideal, _, sigma_1_ideal, mu_2_ideal, sigma_2_ideal = params
+    λ_ideal, _, σ₁_ideal, μ₂_ideal, σ₂_ideal = params
 
     # parameter sweep
     # set up ranges for each parameter
     μ₁ = x[argmax(y)] # can get μ₁ from the peak of the histogram
-    μ₂_range = sort(filter(>(38.6), vcat(edges, x))) # consider all bin edges and centers
+    μ₂_range = sort(filter(>(38.6), x)) # consider all bin centers
     #σ₁_range = range(0, data_width/2, length = 50)
     σ₁_range = range(0.1, 0.2, step = 0.01)
     #σ₂_range = σ₁_range # use same range for both
@@ -156,12 +151,9 @@ The `pdf` is evaluated at the center of each bin.
 - `bias`: Offset term used when calculating the relative error to prevent division by
   small floating point numbers. Defaults to `eps(T)` where `T` is the type of a data point.
 """
-function SSE_hist(occurrences, dist; relative = true, bias = eps(eltype(occurrences)))
+function SSE_hist(occurrences, dist; nbins = 90, relative = true, bias = eps(eltype(occurrences)))
     occurrences = collect(skipmissing(occurrences))
-    histogram = normalize(fit(Histogram, occurrences); mode=:pdf)
-
-    x = histogram.edges |> only |> centers
-    hist_y = histogram.weights
+    x, hist_y = get_hist_curve(occurrences; nbins)
     dist_y = pdf.(dist, x)
     residuals = hist_y - dist_y
     if relative
