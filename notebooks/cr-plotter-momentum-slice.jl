@@ -114,19 +114,30 @@ CR_p_gdf_momentum = load_object(joinpath(datadir, "dNdp-CR-protons-momentum-spli
 # ╔═╡ 3777306e-eb41-413b-80a9-72cdc0228a94
 CR_e_gdf_momentum = load_object(joinpath(datadir, "dNdp-CR-electrons-momentum-split.jld2"));
 
-# ╔═╡ 628130bf-da25-4799-8e5e-3d2db15b1e49
-md"""
-## Plot Cosmic Ray data
-"""
-
 # ╔═╡ 68c8329f-501e-47df-8047-d3cbc319e705
 md"""
 For protons:
 """
 
+# ╔═╡ a36ea9cf-176f-40bd-8577-cc2ea8db64af
+CR_gdfstats(CR_p_gdf_momentum)
+
 # ╔═╡ 985a2460-3fbc-4935-af59-2e734786c973
 md"""
 For electrons:
+"""
+
+# ╔═╡ d85427f4-86ed-4c04-980a-a4152b5875e8
+CR_gdfstats(CR_e_gdf_momentum)
+
+# ╔═╡ 628130bf-da25-4799-8e5e-3d2db15b1e49
+md"""
+## Plot Cosmic Ray data
+"""
+
+# ╔═╡ ecf233ad-d75e-4aa5-bf7e-ff3e7b1d8755
+md"""
+### Plotting configuration
 """
 
 # ╔═╡ 59a22149-3397-4e97-9f7b-5d502aacf293
@@ -487,12 +498,6 @@ ad_scores_e = let
     end
     arr
 end;
-
-# ╔═╡ a36ea9cf-176f-40bd-8577-cc2ea8db64af
-CR_gdfstats(CR_p_gdf_momentum)
-
-# ╔═╡ d85427f4-86ed-4c04-980a-a4152b5875e8
-CR_gdfstats(CR_e_gdf_momentum)
 
 # ╔═╡ 222df0cb-0760-48a2-902e-91d32e451a11
 sse_scores_p = let
