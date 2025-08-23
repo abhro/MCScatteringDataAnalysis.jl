@@ -17,7 +17,10 @@ macro bind(def, element)
 end
 
 # ╔═╡ f1ee2cb0-8274-11ef-0826-f55183647219
+# ╠═╡ skip_as_script = true
+#=╠═╡
 import Pkg; Pkg.activate(Base.current_project())
+  ╠═╡ =#
 
 # ╔═╡ 7899ae97-fbc2-43e5-ac77-c6d725f0371e
 using JLD2, DataFrames
@@ -111,18 +114,18 @@ md"""
 """
 
 # ╔═╡ f91132bd-28af-4a6c-9a77-5c5b0ed4a08a
-const axis_properties = (xminorgridvisible = true, yminorgridvisible = true);
+const axis_properties = (
+    xminorgridvisible = true,
+    yminorgridvisible = true,
+    xminorticksvisible = true,
+    yminorticksvisible = true,
+);
 
 # ╔═╡ 50b1a87f-49ff-4d93-aa6e-f042a87b875e
 const color_pf_p, color_sf_p, color_ISM_p, color_pf_e, color_sf_e, color_ISM_e = Makie.wong_colors();
 
 # ╔═╡ 3cc54622-c4e4-4c59-8828-4aa899a51e51
 const markersize = 5;
-
-# ╔═╡ 19a41e11-d031-498c-adbb-082e682fb67e
-md"""
-### Individual iterations
-"""
 
 # ╔═╡ ecf80697-b786-4b02-9563-f3d082383b76
 md"""
@@ -132,21 +135,31 @@ Choose which frames to plot:
 - ISM frame:    $(@bind do_plot_ISM CheckBox(default=false))
 """
 
-# ╔═╡ c2b3d96a-216e-4abe-8b0f-625419ac072f
-#CR_e_gdf_iter[plot_iter]
-
-# ╔═╡ 47a47a1d-4247-4a1a-a629-0a580253b41d
-md"""
-at plot_iter 1, there's a weird kick at the end. why?
-
-Dr. Warren suggestion: momentum splitting. to be investigated
-"""
-
 # ╔═╡ d7d554cf-2f16-49e1-849d-25b5088e85ff
 md"""
+Select which iteration to plot:
+
 `plot_iter` = $(
     @bind plot_iter NumberField(axes(CR_p_gdf_iter, 1))
 )
+"""
+
+# ╔═╡ 19a41e11-d031-498c-adbb-082e682fb67e
+md"""
+### Individual iterations
+"""
+
+# ╔═╡ c2b3d96a-216e-4abe-8b0f-625419ac072f
+# ╠═╡ disabled = true
+#=╠═╡
+CR_e_gdf_iter[plot_iter]
+  ╠═╡ =#
+
+# ╔═╡ 47a47a1d-4247-4a1a-a629-0a580253b41d
+md"""
+at `plot_iter = 1`, there's a weird kick at the end. why?
+
+Dr. Warren suggestion: momentum splitting. to be investigated
 """
 
 # ╔═╡ 220c3ca5-e0b5-4f5c-86b0-e5d7cdd67558
@@ -154,7 +167,7 @@ let f = Figure(), df = CR_p_gdf_iter[plot_iter]
     ax = Axis(
         f[1,1];
         title = "dN/dp of Cosmic rays (protons), iteration $plot_iter",
-        xlabel = "log(p) (cgs)", ylabel = "log(dN/dp)", axis_properties...)
+        xlabel = "log(p) (nat)", ylabel = "log(dN/dp)", axis_properties...)
 
     do_plot_sf && lines!(ax, df.log_p_nat, df.log_dNdp_cr_sf, label = "shock frame", color = color_sf_p)
     do_plot_pf && lines!(ax, df.log_p_nat, df.log_dNdp_cr_pf, label = "plasma frame", color = color_pf_p)
@@ -195,7 +208,7 @@ let
 
     ax = Axis(
         f[1,1]; title = "dN/dp of Cosmic rays, iteration $plot_iter",
-        xlabel = "log(p) (nat)", ylabel = "log dN/dp + σ log p", axis_properties...)
+        xlabel = "log(p) (nat)", ylabel = "log(dN/dp) + σ log(p)", axis_properties...)
 
     if do_plot_pf
         log_p, log_dNdp = (dfp.log_p_nat, dfp.log_dNdp_cr_pf)
@@ -219,8 +232,8 @@ let
         scatterlines!(ax, log_p, log_dNdp .+ σ*log_p, label = "electrons, ISM frame"; color = color_ISM_e, markersize)
     end
 
-    hlines!(ax, 57.8, color = color_pf_p)
-    hlines!(ax, 56.5, color = color_pf_e)
+    hlines!(ax, 57.8, color = color_pf_p, linewidth = 0.5)
+    hlines!(ax, 56.5, color = color_pf_e, linewidth = 0.5)
 
     #xlims!(ax, -1, 8)
     #ylims!(ax, 56, 58.5)
@@ -237,6 +250,24 @@ md"""
 ### Multiple iterations
 """
 
+# ╔═╡ 6c07e039-2575-49a6-a50d-531c40ee7965
+let f = Figure()
+    ax = Axis(
+        f[1,1];
+        title = "dN/dp of Cosmic rays (protons)",
+        xlabel = "log(p) (nat)", ylabel = "log(dN/dp) + σ log(p)",
+        axis_properties...)
+
+    for (i, dfp) in enumerate(CR_p_gdf_iter[5620:5630])
+        log_p, log_dNdp = dfp.log_p_nat, dfp.log_dNdp_cr_pf
+        scatterlines!(ax, log_p, log_dNdp + σ*log_p, label = "plasma frame (iter $i)"; markersize)
+    end
+
+    xlims!(ax, 2, 5)
+    ylims!(ax, 57.2, 58.3)
+    f
+end
+
 # ╔═╡ 1f35f220-7739-4097-b51d-0ab6000be247
 let f = Figure()
     ax = Axis(
@@ -252,28 +283,6 @@ let f = Figure()
 
     xlims!(ax, -0.3, 5)
     ylims!(ax, 56, 57.0)
-    #axislegend(ax)
-    f
-end
-
-# ╔═╡ 6c07e039-2575-49a6-a50d-531c40ee7965
-let f = Figure()
-    ax = Axis(
-        f[1,1];
-        title = "dN/dp of Cosmic rays (protons)",
-        xlabel = "log(p) (nat)", ylabel = "log(dN/dp) + σ log(p)",
-        axis_properties...)
-
-    for (i, dfp) in enumerate(CR_p_gdf_iter[5620:5630])
-        log_p, log_dNdp = dfp.log_p_nat, dfp.log_dNdp_cr_pf
-        scatterlines!(ax, log_p, log_dNdp + σ*log_p, label = "plasma frame (iter $i)"; markersize)
-    end
-
-    #hlines!(ax, 57.5)
-
-    xlims!(ax, 2, 5)
-    ylims!(ax, 57.2, 58.3)
-    #axislegend(ax, position = :lb)
     f
 end
 
