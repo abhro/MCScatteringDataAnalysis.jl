@@ -42,8 +42,7 @@ CR_df = let
 end
 
 CR_p_df, CR_e_df = let
-    # split CR_df based on ion and iteration number
-    # split therm_df based on ion and iteration number because each of them is
+    # split CR_df based on ion and iteration number because each of them is
     # a complete run which needs to be de-histogrammed
     gdf = groupby(CR_df, [:iter, :ion])
     CR_df_dehistogrammed = dehistogram(gdf)

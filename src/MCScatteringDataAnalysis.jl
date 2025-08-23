@@ -32,7 +32,7 @@ function fit_dist_to_histogram(v::AbstractVector{T}; params, nbins = 150) where 
     λ_range = 0.5:0.01:1.0
     @debug("Using ranges", μ₁, μ₂_range, σ₁_range, σ₂_range, λ_range)
 
-    # starting guess: single gaussian, unit variance
+    # starting guess: single Gaussian, unit variance
     local best_model = BiNormal(1.0, μ₁, one(T), zero(T), one(T))
     local best_fit_score = Inf
 
@@ -57,6 +57,12 @@ function fit_dist_to_histogram(v::AbstractVector{T}; params, nbins = 150) where 
 end
 export fit_dist_to_histogram
 
+"""
+    fitdistribution(DT::Type{<:Distribution}, x::AbstractVector)
+
+Wrapper around `Distributions.fit`, but it also allows `x` to contain `missing` values.
+If `x` contains _only_ missing values, or is empty, `missing` is returned.
+"""
 function fitdistribution(DT::Type{<:Distribution}, x::AbstractVector{Union{Missing,T}}) where {T}
     x = collect(skipmissing(x))
     if isempty(x) # don't fit to a dataset with only `missing`s
@@ -67,6 +73,18 @@ function fitdistribution(DT::Type{<:Distribution}, x::AbstractVector{Union{Missi
 end
 export fitdistribution
 
+"""
+    fitdistributions(DT::Type{<:Distribution}, gdf::GroupedDataFrame)
+
+Within a `GroupedDataFrame`, call `fitdistribution` on the three columns
+`:log_dNdp_cr_sf`, `:log_dNdp_cr_pf`, and `:log_dNdp_cr_ISM` and return those distributions.
+
+### Returns
+- A 3-element `NamedTuple` containing:
+  - `sf`: The distributions found by fitting to the `log_dNdp_cr_sf` column in each group.
+  - `pf`: The distributions found by fitting to the `log_dNdp_cr_pf` column in each group.
+  - `ISM`: The distributions found by fitting to the `log_dNdp_cr_ISM` column in each group.
+"""
 function fitdistributions(DT::Type{<:Distribution}, gdf::GroupedDataFrame)
 
     DistArrayType = Vector{Union{Missing,Nothing,Distribution}}
@@ -95,7 +113,8 @@ export fitdistributions
 """
     CR_gdfstats(gdf)
 
-For a `GroupedDataFrame` of dN/dp values, compute various statistics grouped by momentum.
+For a `GroupedDataFrame` of dN/dp values, compute various statistics
+for each frame, grouped by momentum.
 """
 function CR_gdfstats(gdf)
     n = length(gdf)
@@ -125,9 +144,17 @@ export CR_gdfstats
 """
     SSE_hist(occurrences, dist; relative = true, bias)
 
-Given a list of `occurences`, and a pre-fit distribution `dist`,
+Given a list of `occurrences`, and a pre-fit distribution `dist`,
 compute the L2-norm of errors of the histogram and the pdf of `dist`.
 The `pdf` is evaluated at the center of each bin.
+
+### Arguments
+- `occurrences`: Array of data points
+- `dist`: Distribution to compare to. The distribution is treated as the ground
+  truth since the histogram from `occurrences` can have bins with 0 density.
+- `relative`: Whether the relative (or absolute) error should be calculated
+- `bias`: Offset term used when calculating the relative error to prevent division by
+  small floating point numbers. Defaults to `eps(T)` where `T` is the type of a data point.
 """
 function SSE_hist(occurrences, dist; relative = true, bias = eps(eltype(occurrences)))
     occurrences = collect(skipmissing(occurrences))
@@ -145,7 +172,11 @@ function SSE_hist(occurrences, dist; relative = true, bias = eps(eltype(occurren
 end
 export SSE_hist
 
-"""Return array of each element being the center of adjacent elements"""
+"""
+    centers(v)
+
+Return array of each element being the center (mean) of adjacent elements
+"""
 centers(v) = (v[begin:end-1] + v[begin+1:end])/2;
 export centers
 
@@ -168,6 +199,8 @@ end
 export get_hist
 
 """
+    fitnormal(x::AbstractVector)
+
 Analogue of `fitdistribution`, but directly constructs a `Normal` using the mean and variance.
 """
 function fitnormal(x::AbstractVector{Union{Missing,T}}) where {T}
@@ -186,6 +219,8 @@ end
 export fitnormal
 
 """
+    fitnormals(gdf::GroupedDataFrame)
+
 Analogue of `fitdistributions`, but directly constructs a `Normal` using the mean and variance.
 """
 function fitnormals(gdf::GroupedDataFrame)
