@@ -38,6 +38,12 @@ using PlutoUI: Slider
 #using WGLMakie
 using CairoMakie
 
+# ╔═╡ 5eaf1fbb-9dc7-40e4-87b8-8a0af299f815
+begin
+    using AlgebraOfGraphics
+    import AlgebraOfGraphics as AoG
+end
+
 # ╔═╡ 3791e767-dcf1-4f9d-909d-a7d08e4c5f9c
 using Missings
 
@@ -119,13 +125,41 @@ const axis_properties = (
     yminorgridvisible = true,
     xminorticksvisible = true,
     yminorticksvisible = true,
-);
+)
+
+# ╔═╡ d36bd46d-6bcd-4d97-9448-23393109e806
+# options for getting legend by AlgebraOfGraphics to cooperate
+const legend_properties = (
+    valign = :top,
+    halign = :right,
+    tellwidth = false,
+    margin = (10, 10, 10, 10),
+    framevisible = false,
+)
 
 # ╔═╡ 50b1a87f-49ff-4d93-aa6e-f042a87b875e
 const color_pf_p, color_sf_p, color_ISM_p, color_pf_e, color_sf_e, color_ISM_e = Makie.wong_colors();
 
 # ╔═╡ 3cc54622-c4e4-4c59-8828-4aa899a51e51
 const markersize = 5;
+
+# ╔═╡ 3fccf366-bf6d-4c7a-a3d1-916b8f13afd3
+map_layer = let
+    x_map = :log_p_nat => "log (p) (nat)"
+    y_label = "log(dN/dp)"
+
+    # A little type-piracy makes the world go round
+    Base.:*(b::Bool, l::Layer) = b ? l : zerolayer()
+
+    pf_map = mapping(x_map, :log_dNdp_cr_pf => y_label, color = direct("plasma frame"))
+    sf_map = mapping(x_map, :log_dNdp_cr_sf => y_label, color = direct("shock frame"))
+    ISM_map = mapping(x_map, :log_dNdp_cr_ISM => y_label, color = direct("ISM frame"))
+
+    do_plot_pf*pf_map + do_plot_sf*sf_map + do_plot_ISM*ISM_map
+end;
+
+# ╔═╡ 968fd2bf-172b-462e-8c45-4ab7cf21f41e
+visual_layer = visual(Lines);
 
 # ╔═╡ ecf80697-b786-4b02-9563-f3d082383b76
 md"""
@@ -164,35 +198,19 @@ Dr. Warren suggestion: momentum splitting. to be investigated
 
 # ╔═╡ 220c3ca5-e0b5-4f5c-86b0-e5d7cdd67558
 let f = Figure(), df = CR_p_gdf_iter[plot_iter]
-    ax = Axis(
-        f[1,1];
-        title = "dN/dp of Cosmic rays (protons), iteration $plot_iter",
-        xlabel = "log(p) (nat)", ylabel = "log(dN/dp)", axis_properties...)
-
-    do_plot_sf && lines!(ax, df.log_p_nat, df.log_dNdp_cr_sf, label = "shock frame", color = color_sf_p)
-    do_plot_pf && lines!(ax, df.log_p_nat, df.log_dNdp_cr_pf, label = "plasma frame", color = color_pf_p)
-    do_plot_ISM && lines!(ax, df.log_p_nat, df.log_dNdp_cr_ISM, label = "ISM frame", color = color_ISM_p)
-
-    #xlims!(ax, -16, -3)
-    #ylims!(ax, 30, 60)
-    axislegend(ax)
+    spec = data(df) * map_layer * visual_layer
+    title = "dN/dp of Cosmic rays (protons), iteration $plot_iter"
+    plt = draw!(f[1,1], spec, axis = (; title, axis_properties...))
+    legend!(f[1,1], plt; legend_properties...)
     f
 end
 
 # ╔═╡ 7879a41a-a284-452b-9505-a239209f1ed0
 let f = Figure(), df = CR_e_gdf_iter[plot_iter]
-    ax = Axis(
-        f[1,1];
-        title = "dN/dp of Cosmic rays (electrons), iteration $plot_iter",
-        xlabel = "log(p) (nat)", ylabel = "log(dN/dp)",
-        axis_properties...)
-
-    do_plot_sf && lines!(ax, df.log_p_nat, df.log_dNdp_cr_sf, label = "shock frame", color = color_sf_e)
-    do_plot_pf && lines!(ax, df.log_p_nat, df.log_dNdp_cr_pf, label = "plasma frame", color = color_pf_e)
-    do_plot_ISM && lines!(ax, df.log_p_nat, df.log_dNdp_cr_ISM, label = "ISM frame", color = color_ISM_e)
-
-    #xlims!(ax, extrema(df.psd_mom_bounds_nat))
-    axislegend(ax)
+    spec = data(df) * map_layer * visual_layer
+    title = "dN/dp of Cosmic rays (electrons), iteration $plot_iter"
+    plt = draw!(f[1,1], spec, axis = (; title, axis_properties...))
+    legend!(f[1,1], plt; legend_properties...)
     f
 end
 
@@ -359,6 +377,7 @@ end
 # ╠═7a050dc5-7772-4933-959f-bf4fb478fc7d
 # ╠═40efcd80-db38-4db3-a193-6e65ee5c4367
 # ╠═acbe8855-c586-46e3-a72b-a556df77b547
+# ╠═5eaf1fbb-9dc7-40e4-87b8-8a0af299f815
 # ╠═3791e767-dcf1-4f9d-909d-a7d08e4c5f9c
 # ╠═fe2b3846-c753-4685-8704-e6fb50624989
 # ╟─c3cedbde-37a4-473b-87e4-d60295362dba
@@ -372,9 +391,12 @@ end
 # ╠═fae99b13-0b14-45c0-989f-8d0f22f0e96c
 # ╟─628130bf-da25-4799-8e5e-3d2db15b1e49
 # ╟─3e59e047-6f47-40de-9881-f748d7f356e9
-# ╠═f91132bd-28af-4a6c-9a77-5c5b0ed4a08a
+# ╟─f91132bd-28af-4a6c-9a77-5c5b0ed4a08a
+# ╟─d36bd46d-6bcd-4d97-9448-23393109e806
 # ╠═50b1a87f-49ff-4d93-aa6e-f042a87b875e
 # ╠═3cc54622-c4e4-4c59-8828-4aa899a51e51
+# ╠═3fccf366-bf6d-4c7a-a3d1-916b8f13afd3
+# ╠═968fd2bf-172b-462e-8c45-4ab7cf21f41e
 # ╟─ecf80697-b786-4b02-9563-f3d082383b76
 # ╟─d7d554cf-2f16-49e1-849d-25b5088e85ff
 # ╟─19a41e11-d031-498c-adbb-082e682fb67e
@@ -383,8 +405,8 @@ end
 # ╟─220c3ca5-e0b5-4f5c-86b0-e5d7cdd67558
 # ╟─7879a41a-a284-452b-9505-a239209f1ed0
 # ╟─1529a53f-a084-40fc-80b0-3f9f31a5868e
-# ╟─f4930314-a64c-4b6a-bcef-c0d9dcf2ef81
 # ╠═6537effb-12e6-4f4e-b34f-15dd33547921
+# ╟─f4930314-a64c-4b6a-bcef-c0d9dcf2ef81
 # ╟─67f27108-eb9d-49b0-95ae-e016973e02b5
 # ╟─6c07e039-2575-49a6-a50d-531c40ee7965
 # ╟─1f35f220-7739-4097-b51d-0ab6000be247
