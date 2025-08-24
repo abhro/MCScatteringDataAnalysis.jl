@@ -17,7 +17,10 @@ macro bind(def, element)
 end
 
 # ╔═╡ f1ee2cb0-8274-11ef-0826-f55183647219
+# ╠═╡ skip_as_script = true
+#=╠═╡
 import Pkg; Pkg.activate(Base.current_project())
+  ╠═╡ =#
 
 # ╔═╡ 7899ae97-fbc2-43e5-ac77-c6d725f0371e
 using JLD2, DataFrames
