@@ -398,10 +398,25 @@ sum(logpdf.(custom_dist, logdNdp))
 fit = curve_fit(model, x, y, [3.4, 2.5])# [mean(logdNdp) - 3, std(logdNdp) - 5])
   ╠═╡ =#
 
+# ╔═╡ 222df0cb-0760-48a2-902e-91d32e451a11
+sse_scores_p = get_sse_scores(CR_p_gdf_momentum, normal_distrib_protons.pf, col = :log_dNdp_cr_pf)
+
+# ╔═╡ 32f07cd2-f62f-41e0-9211-8ac333bdd98d
+sse_scores_p |> skipmissing |> findmax
+
+# ╔═╡ cbea4ff4-b132-4abb-97c6-e406a339ced6
+sse_scores_e = get_sse_scores(CR_e_gdf_momentum, normal_distrib_electrons.pf, col = :log_dNdp_cr_pf)
+
 # ╔═╡ 98675d19-3b1b-4be0-9e48-ab0ffd019647
 md"""
 ### Anderson–Darling test
 """
+
+# ╔═╡ 2e79471f-3430-4b1c-91fe-80434de63cb2
+ad_scores_p = get_ad_scores(CR_p_gdf_momentum, normal_distrib_protons.pf, col = :log_dNdp_cr_pf);
+
+# ╔═╡ bd8f636c-6033-434e-a220-a07397679431
+ad_scores_e = get_ad_scores(CR_e_gdf_momentum, normal_distrib_electrons.pf, col = :log_dNdp_cr_pf);
 
 # ╔═╡ b499bf86-3e7a-441a-809a-934a1a8dd402
 md"""
@@ -409,39 +424,21 @@ md"""
 """
 
 # ╔═╡ a2dca585-2b84-4958-8ba6-af51602c4d8a
-sw_scores_p = let
-    arr = []
-    for df in CR_p_gdf_momentum
-        vec = collect(skipmissing(df.log_dNdp_cr_pf))
-        if length(vec) < 3
-            push!(arr, missing)
-            continue
-        end
-        score = ShapiroWilkTest(vec)
-        push!(arr, score)
-    end
-    arr
-end;
+sw_scores_p = get_sw_scores(CR_p_gdf_momentum, col = :log_dNdp_cr_pf);
 
 # ╔═╡ ec6883c9-b6bb-4e7e-bd6d-e65d6e06144d
-sw_scores_e = let
-    arr = []
-    for df in CR_e_gdf_momentum
-        vec = collect(skipmissing(df.log_dNdp_cr_pf))
-        if length(vec) < 3
-            push!(arr, missing)
-            continue
-        end
-        score = ShapiroWilkTest(vec)
-        push!(arr, score)
-    end
-    arr
-end;
+sw_scores_e = get_sw_scores(CR_e_gdf_momentum, col = :log_dNdp_cr_pf);
 
 # ╔═╡ 2ab2979f-1ad4-4168-b59c-a25e57d4826a
 md"""
 ### Kolmogorov–Smirnov test
 """
+
+# ╔═╡ fc4dddd0-cfca-407e-ad94-622f53b148b3
+ks_scores_p = get_ks_scores(CR_p_gdf_momentum, normal_distrib_protons.pf, col = :log_dNdp_cr_pf);
+
+# ╔═╡ cfdbbdea-c4fe-44ac-9de5-70720a138286
+ks_scores_e = get_ks_scores(CR_e_gdf_momentum, normal_distrib_electrons.pf, col = :log_dNdp_cr_pf);
 
 # ╔═╡ 8d03de5e-d344-4efd-b9af-dd5391028780
 md"""
@@ -451,86 +448,11 @@ md"""
 # ╔═╡ 54452e38-227e-4d06-ae74-7347aae2c021
 fitted_dist = normal_distrib_protons.pf[proton_momentum_index]
 
-# ╔═╡ 2e79471f-3430-4b1c-91fe-80434de63cb2
-ad_scores_p = let
-    arr = []
-    for (df, dist) in zip(CR_p_gdf_momentum, normal_distrib_protons.pf)
-        if ismissing(dist)
-            push!(arr, missing)
-            continue
-        end
-        score = OneSampleADTest(collect(skipmissing(df.log_dNdp_cr_pf)), dist)
-        push!(arr, score)
-    end
-    arr
-end;
-
-# ╔═╡ e8ab294c-0612-43c5-8b64-bb1ddec387ae
-pf_scores = let
-    arr = []
-    for (df, dist) in zip(CR_p_gdf_momentum, normal_distrib_protons.pf)
-        if ismissing(dist)
-            push!(arr, missing)
-            continue
-        end
-        score = ExactOneSampleKSTest(collect(skipmissing(df.log_dNdp_cr_pf)), dist)
-        push!(arr, score)
-    end
-    arr
-end;
-
 # ╔═╡ 5bbd6e99-87e1-401c-a09e-065e2d426370
 SSE_hist(logdNdp, fitted_dist)
 
 # ╔═╡ 55d8c831-27e6-4914-a836-7a05281e8fb3
 sum(logpdf.(fitted_dist, logdNdp))
-
-# ╔═╡ bd8f636c-6033-434e-a220-a07397679431
-ad_scores_e = let
-    arr = []
-    for (df, dist) in zip(CR_e_gdf_momentum, normal_distrib_electrons.pf)
-        if ismissing(dist)
-            push!(arr, missing)
-            continue
-        end
-        score = OneSampleADTest(collect(skipmissing(df.log_dNdp_cr_pf)), dist)
-        push!(arr, score)
-    end
-    arr
-end;
-
-# ╔═╡ 222df0cb-0760-48a2-902e-91d32e451a11
-sse_scores_p = let
-    arr = []
-    for (df, dist) in zip(CR_p_gdf_momentum, normal_distrib_protons.pf)
-        if ismissing(dist)
-            push!(arr, missing)
-            continue
-        end
-        log_dNdp = collect(skipmissing(df.log_dNdp_cr_pf))
-        score = SSE_hist(log_dNdp, dist)
-        push!(arr, score)
-    end
-    arr
-end;
-
-# ╔═╡ cbea4ff4-b132-4abb-97c6-e406a339ced6
-sse_scores_e = let
-    arr = []
-    for (df, dist) in zip(CR_e_gdf_momentum, normal_distrib_electrons.pf)
-        if ismissing(dist)
-            push!(arr, missing)
-            continue
-        end
-        log_dNdp = collect(skipmissing(df.log_dNdp_cr_pf))
-        score = SSE_hist(log_dNdp, dist)
-        push!(arr, score)
-    end
-    arr
-end;
-
-# ╔═╡ 32f07cd2-f62f-41e0-9211-8ac333bdd98d
-sse_scores_p |> skipmissing |> findmax
 
 # ╔═╡ 32edc221-e586-4510-9427-977b22f62f6c
 md"""
@@ -542,18 +464,6 @@ const proton_log_p_nat = keys(CR_p_gdf_momentum) .|> values .|> first;
 
 # ╔═╡ 71404de8-f8b2-4d26-b7d7-41064cae1447
 log_p_nat_at_slice = proton_log_p_nat[proton_momentum_index];
-
-# ╔═╡ 4979cc00-15c1-40da-b538-021a067d1065
-# ╠═╡ disabled = true
-#=╠═╡
-draw(
-    layer;
-    figure = (;
-        title = "Histogram of protons dN/dp at p = 10^$log_p_nat_at_slice mₚc",
-        titlealign = :center,
-    ),
-)
-  ╠═╡ =#
 
 # ╔═╡ 89bcb29b-0b1c-4e3a-91cb-282c05df2bc5
 md"""
@@ -637,25 +547,6 @@ let df = CR_p_gdf_momentum[proton_momentum_index], distribs = normal_distrib_pro
     f
 end
   ╠═╡ =#
-
-# ╔═╡ 08542eea-964a-4f1d-aae5-2b50a628588a
-let
-    f = Figure()
-    ax = Axis(
-        f[1,1];
-        title = "Kolmogorov–Smirnov p-value vs momentum slice",
-        axis_properties...,
-        xlabel = "log p (nat)",
-        yscale = p_val_yscale,
-    )
-
-    scatterlines!(ax, proton_log_p_nat, passmissing(pvalue).(pf_scores), color = color_pf_p, label = "protons, plasma frame"; markersize)
-    # scatterlines!(ax, electron_log_p_nat, passmissing(pvalue).(sw_scores_e), color = color_pf_e, label = "electrons, plasma frame"; markersize)
-
-    axislegend(ax, position = plot_p_values_in_logscale ? :cb : :lt)
-
-    f
-end
 
 # ╔═╡ 589661b1-6a64-4db5-ac40-c1565c29c3cc
 const electron_log_p_nat = keys(CR_e_gdf_momentum) .|> values .|> first;
@@ -846,6 +737,25 @@ let
     f
 end
 
+# ╔═╡ 08542eea-964a-4f1d-aae5-2b50a628588a
+let
+    f = Figure()
+    ax = Axis(
+        f[1,1];
+        title = "Kolmogorov–Smirnov p-value vs momentum slice",
+        axis_properties...,
+        xlabel = "log p (nat)",
+        yscale = p_val_yscale,
+    )
+
+    scatterlines!(ax, proton_log_p_nat, passmissing(pvalue).(ks_scores_p), color = color_pf_p, label = "protons, plasma frame"; markersize)
+    scatterlines!(ax, electron_log_p_nat, passmissing(pvalue).(ks_scores_e), color = color_pf_e, label = "electrons, plasma frame"; markersize)
+
+    axislegend(ax, position = plot_p_values_in_logscale ? :cb : :lt)
+
+    f
+end
+
 # ╔═╡ Cell order:
 # ╟─f0e77bbd-e420-49f1-9b40-f9d994888b93
 # ╟─a5526239-2f05-4618-8868-0f552855d574
@@ -940,8 +850,9 @@ end
 # ╟─a2dca585-2b84-4958-8ba6-af51602c4d8a
 # ╟─ec6883c9-b6bb-4e7e-bd6d-e65d6e06144d
 # ╟─2ab2979f-1ad4-4168-b59c-a25e57d4826a
+# ╠═fc4dddd0-cfca-407e-ad94-622f53b148b3
+# ╠═cfdbbdea-c4fe-44ac-9de5-70720a138286
 # ╟─08542eea-964a-4f1d-aae5-2b50a628588a
-# ╟─e8ab294c-0612-43c5-8b64-bb1ddec387ae
 # ╟─8d03de5e-d344-4efd-b9af-dd5391028780
 # ╠═59a22149-3397-4e97-9f7b-5d502aacf293
 # ╠═f91132bd-28af-4a6c-9a77-5c5b0ed4a08a

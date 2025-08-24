@@ -5,6 +5,7 @@ using StatsBase
 using Distributions
 using DataFrames
 using BiNormalDistributions
+using HypothesisTests
 
 sse(ŷ, y) = sum((y - ŷ).^2)
 export sse
@@ -240,4 +241,65 @@ function fitnormals(gdf::GroupedDataFrame)
     (; sf, pf, ISM)
 end
 export fitnormals
+
+"""
+    get_sse_scores(gdf, dists)
+
+Get Root-sum-square-error scores for a `GroupedDataFrame` `gdf` when compared
+with a list of distributions `dists`.
+"""
+get_sse_scores(gdf, dists; col) = get_onesample_scores(SSE_hist, gdf, dists; col)
+export get_sse_scores
+
+"""
+    get_sw_scores(gdf)
+
+Get Shapiro―Wilk scores for a `GroupedDataFrame` `gdf`.
+"""
+function get_sw_scores(gdf; col)
+    arr = []
+    for df in gdf
+        vec = df[!, col] |> skipmissing |> collect
+        if length(vec) < 3
+            push!(arr, missing)
+            continue
+        end
+        score = ShapiroWilkTest(vec)
+        push!(arr, score)
+    end
+    return arr
+end
+export get_sw_scores
+
+"""
+    get_ad_scores(gdf, dists)
+
+Get Anderson―Darling scores for a `GroupedDataFrame` `gdf` when compared with a
+list of distributions `dists`.
+"""
+get_ad_scores(gdf, dists; col) = get_onesample_scores(OneSampleADTest, gdf, dists; col)
+export get_ad_scores
+
+"""
+    get_ks_scores(gdf, dists; col)
+
+Get Kolmogorov―Smirnov scores for a `GroupedDataFrame` `gdf` when compared with a
+list of distributions `dists`.
+"""
+get_ks_scores(gdf, dists; col) = get_onesample_scores(ExactOneSampleKSTest, gdf, dists; col)
+export get_ks_scores
+
+function get_onesample_scores(test, gdf, dists; col)
+    arr = []
+    for (df, dist) in zip(gdf, dists)
+        if ismissing(dist)
+            push!(arr, missing)
+            continue
+        end
+        vec = df[!, col] |> skipmissing |> collect
+        score = test(vec, dist)
+        push!(arr, score)
+    end
+    return arr
+end
 end
