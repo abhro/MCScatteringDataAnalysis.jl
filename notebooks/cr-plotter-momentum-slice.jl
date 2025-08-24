@@ -149,12 +149,6 @@ const axis_properties = (xminorgridvisible = true, yminorgridvisible = true, xla
 # ╔═╡ f86707a1-9d79-4df8-8798-3f7ea1d1797c
 const bins = 90;
 
-# ╔═╡ 29ec59ad-0e22-462a-ab6d-2065a56fc001
-x, y = get_hist_curve(logdNdp; nbins=bins)
-
-# ╔═╡ 377aaf8f-b909-4c42-bc77-912fd300c300
-const normalization = :pdf;
-
 # ╔═╡ 50b1a87f-49ff-4d93-aa6e-f042a87b875e
 const color_pf_p, color_sf_p, color_ISM_p, color_pf_e, color_sf_e, color_ISM_e = Makie.wong_colors();
 
@@ -360,6 +354,9 @@ md"""
 # ╔═╡ b0d555b3-5087-4405-8343-ce304d482ca9
 custom_dist = Normal(32.5, 0.5)
 
+# ╔═╡ 54452e38-227e-4d06-ae74-7347aae2c021
+fitted_dist = normal_distrib_protons.pf[proton_momentum_index]
+
 # ╔═╡ 5dc367ca-2882-4b98-8f29-2b5390426a9b
 logdNdp = CR_p_gdf_momentum[proton_momentum_index].log_dNdp_cr_pf |> skipmissing |> collect;
 
@@ -385,8 +382,17 @@ end
 # ╔═╡ 5ab05dc9-3a98-4297-a47b-c4e0111b8c51
 SSE_hist(logdNdp, custom_dist)
 
+# ╔═╡ 5bbd6e99-87e1-401c-a09e-065e2d426370
+SSE_hist(logdNdp, fitted_dist)
+
 # ╔═╡ 89f8d7a8-ea2e-4906-9460-da16154b0404
 sum(logpdf.(custom_dist, logdNdp))
+
+# ╔═╡ 55d8c831-27e6-4914-a836-7a05281e8fb3
+sum(logpdf.(fitted_dist, logdNdp))
+
+# ╔═╡ 29ec59ad-0e22-462a-ab6d-2065a56fc001
+x, y = get_hist_curve(logdNdp; nbins=bins)
 
 # ╔═╡ 91733807-63bc-47f6-9252-1bbef55fc5ec
 #=╠═╡
@@ -445,14 +451,8 @@ md"""
 ## Constants and functions
 """
 
-# ╔═╡ 54452e38-227e-4d06-ae74-7347aae2c021
-fitted_dist = normal_distrib_protons.pf[proton_momentum_index]
-
-# ╔═╡ 5bbd6e99-87e1-401c-a09e-065e2d426370
-SSE_hist(logdNdp, fitted_dist)
-
-# ╔═╡ 55d8c831-27e6-4914-a836-7a05281e8fb3
-sum(logpdf.(fitted_dist, logdNdp))
+# ╔═╡ 377aaf8f-b909-4c42-bc77-912fd300c300
+const normalization = :pdf;
 
 # ╔═╡ 32edc221-e586-4510-9427-977b22f62f6c
 md"""
@@ -762,11 +762,16 @@ end
 # ╠═d70a4da5-1589-4b41-af32-05671f27be4d
 # ╠═bdb9591b-b7ac-47e6-98bc-f18921bb64f9
 # ╠═3777306e-eb41-413b-80a9-72cdc0228a94
-# ╟─628130bf-da25-4799-8e5e-3d2db15b1e49
 # ╟─68c8329f-501e-47df-8047-d3cbc319e705
 # ╟─a36ea9cf-176f-40bd-8577-cc2ea8db64af
 # ╟─985a2460-3fbc-4935-af59-2e734786c973
 # ╟─d85427f4-86ed-4c04-980a-a4152b5875e8
+# ╟─628130bf-da25-4799-8e5e-3d2db15b1e49
+# ╟─ecf233ad-d75e-4aa5-bf7e-ff3e7b1d8755
+# ╠═59a22149-3397-4e97-9f7b-5d502aacf293
+# ╠═f91132bd-28af-4a6c-9a77-5c5b0ed4a08a
+# ╠═f86707a1-9d79-4df8-8798-3f7ea1d1797c
+# ╠═50b1a87f-49ff-4d93-aa6e-f042a87b875e
 # ╟─3bf64608-0fa2-4fcb-9782-fd7a8de47bda
 # ╟─932c2a77-0198-4df4-a4bd-30d0bda93946
 # ╟─91bba2da-c925-4123-bb8a-c1f9be8619e9
@@ -776,7 +781,6 @@ end
 # ╟─adf24143-4be1-46c7-a63a-fe4dd490791d
 # ╟─44cb6acf-7fee-4e3e-8253-d91e5a76299a
 # ╠═6d5eb940-6739-4781-9dda-7433cae3cf50
-# ╠═d1c788a6-27ff-40d2-9bf4-1e7a4b6c48f3
 # ╠═aa3a5985-3d14-4e6e-b2b2-5f7f731c3336
 # ╠═2f44c2c5-7fc6-4c93-be6e-0cffb863afd4
 # ╠═b15d71e1-ac37-422e-98f0-a0a03238fe35
@@ -824,26 +828,22 @@ end
 # ╠═85bb106c-0463-4723-8b75-8ff919ba903a
 # ╠═95040e95-2eb6-43e5-8573-e79109c545e6
 # ╠═32f07cd2-f62f-41e0-9211-8ac333bdd98d
-# ╟─222df0cb-0760-48a2-902e-91d32e451a11
-# ╟─cbea4ff4-b132-4abb-97c6-e406a339ced6
+# ╠═222df0cb-0760-48a2-902e-91d32e451a11
+# ╠═cbea4ff4-b132-4abb-97c6-e406a339ced6
 # ╟─98675d19-3b1b-4be0-9e48-ab0ffd019647
+# ╠═2e79471f-3430-4b1c-91fe-80434de63cb2
+# ╠═bd8f636c-6033-434e-a220-a07397679431
 # ╟─cee91c99-adc0-4185-a7c3-e2164b95a003
-# ╟─2e79471f-3430-4b1c-91fe-80434de63cb2
-# ╟─bd8f636c-6033-434e-a220-a07397679431
 # ╟─b499bf86-3e7a-441a-809a-934a1a8dd402
+# ╠═a2dca585-2b84-4958-8ba6-af51602c4d8a
+# ╠═ec6883c9-b6bb-4e7e-bd6d-e65d6e06144d
 # ╟─a49ff5ab-6077-4bb2-b694-6f3662982745
-# ╟─a2dca585-2b84-4958-8ba6-af51602c4d8a
-# ╟─ec6883c9-b6bb-4e7e-bd6d-e65d6e06144d
 # ╟─2ab2979f-1ad4-4168-b59c-a25e57d4826a
 # ╠═fc4dddd0-cfca-407e-ad94-622f53b148b3
 # ╠═cfdbbdea-c4fe-44ac-9de5-70720a138286
 # ╟─08542eea-964a-4f1d-aae5-2b50a628588a
 # ╟─8d03de5e-d344-4efd-b9af-dd5391028780
-# ╠═59a22149-3397-4e97-9f7b-5d502aacf293
-# ╠═f91132bd-28af-4a6c-9a77-5c5b0ed4a08a
-# ╠═f86707a1-9d79-4df8-8798-3f7ea1d1797c
 # ╠═377aaf8f-b909-4c42-bc77-912fd300c300
-# ╠═50b1a87f-49ff-4d93-aa6e-f042a87b875e
 # ╟─32edc221-e586-4510-9427-977b22f62f6c
 # ╠═e8406a6a-ecc2-49d2-b67a-503b4ef5764b
 # ╠═589661b1-6a64-4db5-ac40-c1565c29c3cc
