@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.20.16
+# v0.20.17
 
 using Markdown
 using InteractiveUtils
@@ -19,19 +19,24 @@ using BiNormalDistributions
 # ╔═╡ ecc7d76f-f828-49ea-b15b-69a8865be999
 using Distributions
 
+# ╔═╡ 589dae68-0c2d-4c5a-a58d-2d09f0f51c74
+md"""
+# Derivation of moments for the bi-normal distribution
+"""
+
 # ╔═╡ 857d8253-936d-4226-b9af-87553e65e0fb
 md"""
-# Preamble
+## Preamble
 """
 
 # ╔═╡ c7a48d7b-4bf7-429e-89de-18bbf5a8a7fd
 md"""
-## Import packages
+### Import packages
 """
 
 # ╔═╡ b6466bc4-ff63-4d88-9913-c2b1b80ea9eb
 md"""
-## Configure notebook appearance
+### Configure notebook appearance
 """
 
 # ╔═╡ 1861682e-b53c-4acb-88b6-7a20eaa5a43c
@@ -51,7 +56,7 @@ main {
 
 # ╔═╡ d5fcbe3c-ff12-4394-a225-16d211024693
 md"""
-## Set up base variables
+### Set up base variables
 """
 
 # ╔═╡ 2d52e729-1c62-49a3-8acc-a9e19a3c2797
@@ -62,7 +67,7 @@ const Dt = Differential(t)
 
 # ╔═╡ 30de8ac9-3935-4e0a-b287-94884d8d30e8
 md"""
-# Background
+## Background
 """
 
 # ╔═╡ 77dc30bd-0e8a-4b2c-8574-3bcba5947d65
@@ -76,12 +81,12 @@ where ``μ_x = \operatorname{E}[x]`` is the mean of the distribution.
 
 # ╔═╡ 845e8631-258d-48bf-94c6-e3e84591f66b
 md"""
-# Normal distribution
+## Normal distribution
 """
 
 # ╔═╡ 8fbeb891-3c41-4c28-a5e6-c8053be05c90
 md"""
-## Closed form central moment function
+### Closed form central moment function
 """
 
 # ╔═╡ 296ed25b-738f-4867-a70b-45a98f3b609c
@@ -103,7 +108,7 @@ cm(::Type{Normal}, j::Integer) = isodd(j) ? 0 : doublefactorial(j - 1) * σ^j;
 
 # ╔═╡ 684c95a2-f4a0-4571-b03f-e0057fb03459
 md"""
-## Moment generating function
+### Moment generating function
 """
 
 # ╔═╡ 5e31d1e0-f779-44cd-b3f1-79110ee7845f
@@ -116,7 +121,7 @@ mgf_N = exp(t * μ + 1//2 * t^2 * σ^2)
 
 # ╔═╡ 7ade5063-2727-426d-bc6f-c0209259f3e8
 md"""
-## Central moment generating function
+### Central moment generating function
 """
 
 # ╔═╡ 65ff6f13-f6fb-48a7-84b1-600a0a45eabc
@@ -129,12 +134,12 @@ cmgf_N = exp(-μ * t) * mgf_N |> simplify
 
 # ╔═╡ ca77433f-3259-442e-aafa-5508479618dc
 md"""
-## List of moments
+### List of moments
 """
 
 # ╔═╡ ace37383-6410-48a7-809d-4cd3bc8ca344
 md"""
-### Second moment
+#### Second moment
 """
 
 # ╔═╡ 5ad34919-ca13-40d1-b367-7327dc721c24
@@ -161,7 +166,7 @@ substitute(Dt²cmgf_N, t=>0)
 
 # ╔═╡ bdcab3cd-27b3-4742-96a8-da539339c41c
 md"""
-### Third moment
+#### Third moment
 """
 
 # ╔═╡ 233439cb-1829-4d8f-aa67-32b496483738
@@ -191,7 +196,7 @@ substitute(Dt³cmgf_N, t=>0)
 
 # ╔═╡ 7bb99412-4ec4-4945-9ca8-b7e3027f3068
 md"""
-### Fourth moment
+#### Fourth moment
 """
 
 # ╔═╡ 16371045-d5de-4aea-a382-128b8ac19d8e
@@ -210,17 +215,17 @@ substitute(Dt⁴mgf_N, t=>0)
 
 # ╔═╡ 1163ee1e-1603-472d-9dea-dd0c6fb7d13a
 md"""
-# Binormal distribution
+## Binormal distribution
 """
 
 # ╔═╡ c4bb8639-480c-4061-ace6-5ef57cc20973
 md"""
-## Closed form central moment function
+### Closed form central moment function
 """
 
 # ╔═╡ 5d6e5af0-6bd1-4456-a665-127afbaf3557
 md"""
-## Moment generating function
+### Moment generating function
 """
 
 # ╔═╡ e193653b-a53d-4978-9381-40919e2b1f5d
@@ -263,7 +268,7 @@ mgf_BN = λ * substitute(mgf_N, N₁_subst) + (1 - λ) * substitute(mgf_N, N₂_
 
 # ╔═╡ 20dd0bc7-9e56-4db3-917a-8700a0fd9eef
 md"""
-## First moment
+### First moment
 """
 
 # ╔═╡ 6547815e-53f8-4092-b50c-4eba80d5366c
@@ -274,7 +279,7 @@ const mean_binormal = substitute(DtM_BN, t=>0)
 
 # ╔═╡ 5b20f228-e334-44f3-8ac2-c5c6d8c6dc20
 md"""
-## Central moment generating function
+### Central moment generating function
 """
 
 # ╔═╡ b32e6a33-af1a-4991-9d54-339dad07b3f9
@@ -287,12 +292,12 @@ cmgf_BN = exp(-mean_binormal * t) * mgf_BN
 
 # ╔═╡ d7a30a6e-f523-43a2-9c05-7f6f2b147d8d
 md"""
-## List of higher-order moments
+### List of higher-order moments
 """
 
 # ╔═╡ 12bece90-4ead-41b1-aaf6-0e4f9a5cc81a
 md"""
-### Second moment
+#### Second moment
 """
 
 # ╔═╡ 4572a3e6-71e4-4e0c-945d-127f2c93427f
@@ -325,7 +330,7 @@ variance_BN = λ*σ₁^2 + (1-λ)*σ₂^2 + λ*(1-λ)*(μ₁-μ₂)^2
 
 # ╔═╡ c3674e3c-f623-4590-8b62-349304055688
 md"""
-### Third moment
+#### Third moment
 """
 
 # ╔═╡ e24afe40-4672-49bc-968c-b042a2fa604a
@@ -363,7 +368,7 @@ cm3_BN = (
 
 # ╔═╡ 56d4d179-7c5d-4918-a8ab-41a330a0c183
 md"""
-#### Skewness
+##### Skewness
 """
 
 # ╔═╡ 97ec97c1-b812-4e28-809d-ece86f94bd59
@@ -378,7 +383,7 @@ see the docs for BiNormalDistributions.jl
 
 # ╔═╡ c04ee9dc-dc26-469e-801b-ea8f1cc251a2
 md"""
-### Fourth moment
+#### Fourth moment
 """
 
 # ╔═╡ f239f933-d8bc-44de-912a-fedf12101625
@@ -423,7 +428,7 @@ substitute(cm(BiNormal, 4), μ=>mean_binormal) |> simplify |> terms
 
 # ╔═╡ c210894e-e087-4f89-ac84-516f89e919c6
 md"""
-#### Kurtosis
+##### Kurtosis
 """
 
 # ╔═╡ 57a7711d-99a1-4b2f-9b24-d1b26ed1131d
@@ -433,7 +438,7 @@ kurtosis = (fourth central moment) / (second central moment)^2
 
 # ╔═╡ f49ae510-2b40-4b16-aee2-b6815582abc2
 md"""
-### Fifth moment
+#### Fifth moment
 """
 
 # ╔═╡ 73195df0-ad44-43e9-8366-fc66707f3a30
@@ -443,10 +448,10 @@ Dt⁵mgf_BN = (Dt^5)(mgf_BN) |> expand_derivatives |> simplify
 Dt⁵cmgf_BN = (Dt^5)(cmgf_BN) |> expand_derivatives |> simplify
 
 # ╔═╡ 7b774191-d658-4b64-8a7a-ea9b940feb17
-substitute(Dt⁵mgf_BN, t=> 0)
+substitute(Dt⁵mgf_BN, t=>0)
 
 # ╔═╡ 32170b91-c863-4817-8c55-5fbe37024872
-cm5_BN = substitute(Dt⁵cmgf_BN, t=> 0) |> simplify
+cm5_BN = substitute(Dt⁵cmgf_BN, t=>0) |> simplify
 
 # ╔═╡ 5f833a90-3b4b-43e3-9c43-1dfae492f3db
 cm5_BN |> terms
@@ -456,7 +461,7 @@ substitute(cm(BiNormal, 5), μ=>mean_binormal) |> simplify |> terms
 
 # ╔═╡ 5e92bf1d-5481-495b-96e0-2a3096f05468
 md"""
-### Sixth moment
+#### Sixth moment
 """
 
 # ╔═╡ 39d814cf-d038-40e7-af90-4066c987eb21
@@ -471,6 +476,7 @@ cm(BiNormal, 6)
 substitute(cm(BiNormal, 6), μ=>mean_binormal) |> simplify |> terms
 
 # ╔═╡ Cell order:
+# ╟─589dae68-0c2d-4c5a-a58d-2d09f0f51c74
 # ╟─857d8253-936d-4226-b9af-87553e65e0fb
 # ╟─c7a48d7b-4bf7-429e-89de-18bbf5a8a7fd
 # ╠═a877d102-099f-11f0-37d1-39f0ef1f87e3
