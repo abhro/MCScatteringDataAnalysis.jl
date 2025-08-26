@@ -150,7 +150,8 @@ The `pdf` is evaluated at the center of each bin.
 - `bias`: Offset term used when calculating the relative error to prevent division by
   small floating point numbers. Defaults to `eps(T)` where `T` is the type of a data point.
 """
-function SSE_hist(occurrences, dist; nbins = 90, relative = true, bias = eps(eltype(occurrences)))
+function SSE_hist(occurrences::AbstractVector{T}, dist;
+                  nbins = 90, relative = true, bias = eps(T)) where {T}
     occurrences = collect(skipmissing(occurrences))
     x, hist_y = get_hist_curve(occurrences; nbins)
     dist_y = pdf.(dist, x)
