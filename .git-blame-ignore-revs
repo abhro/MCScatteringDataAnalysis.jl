@@ -1,0 +1,23 @@
+# Update Pluto version for esc-plotter.jl and grid-plotter.jl
+af067d612169a2cf98d1af78cc4ad47654f939e9
+
+# Reorder cells in cr-plotter-momentum-slice.jl
+a4516e07140153d5250ee05feb6c1f074fead969
+
+# Reorder cells by running in cr-plotter-iter-slice.jl
+df1d7d84c5e1c189e26eac24808c8c5873af598b
+
+# Reorder cells by having them run
+1c801027cb9c73b58fe53f4f55cc94650b9ebb91
+
+# Move some constants to end of notebook
+d4562b6d87667bc3050794e35a58b47702c0f3d9
+
+# Reorder Pluto cells by running them
+6954184485262bdcd49c673e4fb8b752c0bd850d
+
+# Update Pluto.jl version in cr-plotter-iter-slice.jl
+5ea13f77ba6647496f8ac1181ac9354565c85d26
+
+# Move cells around
+95079bbd161816ec92334cee16ed106d4c814132
