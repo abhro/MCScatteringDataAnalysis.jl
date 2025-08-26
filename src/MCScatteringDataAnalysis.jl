@@ -90,11 +90,9 @@ function fitdistributions(DT::Type{<:Distribution}, gdf::GroupedDataFrame)
     ISM = DistArrayType(undef, length(gdf))
 
     for (i, df) in enumerate(gdf)
-        # fit a distribution to the shock frame data
+        # fit a distribution to the {shock,plasma,ISM} frame data
         cursf = fitdistribution(DT, df.log_dNdp_cr_sf)
-        # fit a distribution to the plasma frame data
         curpf = fitdistribution(DT, df.log_dNdp_cr_pf)
-        # fit a distribution to the ISM frame data
         curISM = fitdistribution(DT, df.log_dNdp_cr_ISM)
 
         sf[i] = cursf
