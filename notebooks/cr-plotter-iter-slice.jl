@@ -143,6 +143,17 @@ const color_pf_p, color_sf_p, color_ISM_p, color_pf_e, color_sf_e, color_ISM_e =
 # ╔═╡ 3cc54622-c4e4-4c59-8828-4aa899a51e51
 const markersize = 5;
 
+# ╔═╡ 968fd2bf-172b-462e-8c45-4ab7cf21f41e
+visual_layer = visual(Lines);
+
+# ╔═╡ ecf80697-b786-4b02-9563-f3d082383b76
+md"""
+Choose which frames to plot:
+- Plasma frame: $(@bind do_plot_pf  CheckBox(default=true))
+- Shock frame:  $(@bind do_plot_sf  CheckBox(default=false))
+- ISM frame:    $(@bind do_plot_ISM CheckBox(default=false))
+"""
+
 # ╔═╡ 3fccf366-bf6d-4c7a-a3d1-916b8f13afd3
 map_layer = let
     x_map = :log_p_nat => "log (p) (nat)"
@@ -157,17 +168,6 @@ map_layer = let
 
     do_plot_pf*pf_map + do_plot_sf*sf_map + do_plot_ISM*ISM_map
 end;
-
-# ╔═╡ 968fd2bf-172b-462e-8c45-4ab7cf21f41e
-visual_layer = visual(Lines);
-
-# ╔═╡ ecf80697-b786-4b02-9563-f3d082383b76
-md"""
-Choose which frames to plot:
-- Plasma frame: $(@bind do_plot_pf  CheckBox(default=true))
-- Shock frame:  $(@bind do_plot_sf  CheckBox(default=false))
-- ISM frame:    $(@bind do_plot_ISM CheckBox(default=false))
-"""
 
 # ╔═╡ d7d554cf-2f16-49e1-849d-25b5088e85ff
 md"""
