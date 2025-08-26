@@ -59,6 +59,9 @@ using HypothesisTests
 # ╔═╡ 59e1cd4d-6f38-4260-8955-159f21347fc6
 using LsqFit
 
+# ╔═╡ 2db26ede-4361-4d7e-b110-81b34f44f031
+using KernelDensity
+
 # ╔═╡ f0e77bbd-e420-49f1-9b40-f9d994888b93
 md"""
 # Plot fluxes for each momentum slice
@@ -144,10 +147,16 @@ md"""
 """
 
 # ╔═╡ 59a22149-3397-4e97-9f7b-5d502aacf293
-const markersize = 5;
+const markersize = 5
 
 # ╔═╡ f91132bd-28af-4a6c-9a77-5c5b0ed4a08a
-const axis_properties = (xminorgridvisible = true, yminorgridvisible = true, xlabel = "log(dN/dp)");
+const axis_properties = (
+    xminorgridvisible = true,
+    yminorgridvisible = true,
+    xminorticksvisible = true,
+    yminorticksvisible = true,
+    xlabel = "log(dN/dp)",
+)
 
 # ╔═╡ f86707a1-9d79-4df8-8798-3f7ea1d1797c
 const bins = 90;
@@ -159,6 +168,10 @@ const color_pf_p, color_sf_p, color_ISM_p, color_pf_e, color_sf_e, color_ISM_e =
 md"""
 ### Sample statistics
 """
+
+# ╔═╡ 70717f68-e97b-401e-bcf7-0684ade30b07
+gdf_sample_stats(statistic, gdf; column = :log_dNdp_cr_pf) = [
+    statistic(collect(skipmissing(df[!,column]))) for df in gdf];
 
 # ╔═╡ 932c2a77-0198-4df4-a4bd-30d0bda93946
 md"""
@@ -173,6 +186,11 @@ md"""
 # ╔═╡ 7495e7e9-3d50-4401-baef-d2e3c11e6b46
 md"""
 #### Skewness
+"""
+
+# ╔═╡ bb3a74ce-78ee-487e-a413-4c0e035e8818
+md"""
+#### Kurtosis
 """
 
 # ╔═╡ 44cb6acf-7fee-4e3e-8253-d91e5a76299a
@@ -354,6 +372,12 @@ md"""
 ### Root-sum-squared errors
 """
 
+# ╔═╡ 222df0cb-0760-48a2-902e-91d32e451a11
+sse_scores_p = get_sse_scores(CR_p_gdf_momentum, normal_distrib_protons.pf, col = :log_dNdp_cr_pf)
+
+# ╔═╡ cbea4ff4-b132-4abb-97c6-e406a339ced6
+sse_scores_e = get_sse_scores(CR_e_gdf_momentum, normal_distrib_electrons.pf, col = :log_dNdp_cr_pf)
+
 # ╔═╡ b0d555b3-5087-4405-8343-ce304d482ca9
 custom_dist = Normal(32.5, 0.5)
 
@@ -397,6 +421,9 @@ sum(logpdf.(fitted_dist, logdNdp))
 # ╔═╡ 29ec59ad-0e22-462a-ab6d-2065a56fc001
 x, y = get_hist_curve(logdNdp; nbins=bins)
 
+# ╔═╡ 32f07cd2-f62f-41e0-9211-8ac333bdd98d
+sse_scores_p |> skipmissing |> findmax
+
 # ╔═╡ 91733807-63bc-47f6-9252-1bbef55fc5ec
 #=╠═╡
 @. model(t, (μ, σ)) = exp((t - μ)^2 / (2σ^2))
@@ -407,14 +434,44 @@ x, y = get_hist_curve(logdNdp; nbins=bins)
 fit = curve_fit(model, x, y, [3.4, 2.5])# [mean(logdNdp) - 3, std(logdNdp) - 5])
   ╠═╡ =#
 
-# ╔═╡ 222df0cb-0760-48a2-902e-91d32e451a11
-sse_scores_p = get_sse_scores(CR_p_gdf_momentum, normal_distrib_protons.pf, col = :log_dNdp_cr_pf)
+# ╔═╡ 46a7f197-6f31-47db-807d-d1048394a49f
+md"""
+Experiment with KDE
+"""
 
-# ╔═╡ 32f07cd2-f62f-41e0-9211-8ac333bdd98d
-sse_scores_p |> skipmissing |> findmax
+# ╔═╡ 4b00c320-a375-4a50-90cb-ed02e2d6b073
+log_dNdp_cur = CR_p_gdf_momentum[proton_momentum_index].log_dNdp_cr_pf |> skipmissing |> collect;
 
-# ╔═╡ cbea4ff4-b132-4abb-97c6-e406a339ced6
-sse_scores_e = get_sse_scores(CR_e_gdf_momentum, normal_distrib_electrons.pf, col = :log_dNdp_cr_pf)
+# ╔═╡ 47a01d7a-665e-4924-8f14-f013d2aaac4f
+kde_fit = kde(log_dNdp_cur; bandwidth = 0.03)
+
+# ╔═╡ bfd2f89a-e4d9-484e-9bec-c4075799077b
+# ╠═╡ disabled = true
+#=╠═╡
+lines(kde_fit)
+  ╠═╡ =#
+
+# ╔═╡ e293e8e6-d077-464a-847e-f4be309bed3a
+# ╠═╡ disabled = true
+#=╠═╡
+kde_fit |> Dump
+  ╠═╡ =#
+
+# ╔═╡ 6cb898b3-98c5-4f3a-8d77-3deef7cf5358
+md"""
+---
+"""
+
+# ╔═╡ 2374b968-1172-48db-8ddd-7b4deae7817c
+md"""
+Truncate all outlier data
+"""
+
+# ╔═╡ 59444b54-893e-4f4e-b746-97de78417043
+log_dNdp_cur_trunc = filter(x -> 31 ≤ x ≤ 33.8, log_dNdp_cur);
+
+# ╔═╡ afabc297-408f-4643-8296-40be885adafc
+log_dNdp_cur_trunc |> length
 
 # ╔═╡ 98675d19-3b1b-4be0-9e48-ab0ffd019647
 md"""
@@ -465,6 +522,25 @@ Vector of momentum slices
 # ╔═╡ e8406a6a-ecc2-49d2-b67a-503b4ef5764b
 const proton_log_p_nat = keys(CR_p_gdf_momentum) .|> values .|> first;
 
+# ╔═╡ adf24143-4be1-46c7-a63a-fe4dd490791d
+let
+    f = Figure()
+    ax = Axis(
+        f[1,1];
+        title = "Sample skewness vs momentum slice",
+        axis_properties...,
+        xlabel = "log p (nat)", ylabel = "γ",
+        #yscale = log10,
+    )
+
+    scatterlines!(ax, proton_log_p_nat, gdf_sample_stats(skewness, CR_p_gdf_momentum), color = color_pf_p, label = "protons, plasma frame"; markersize)
+    # scatterlines!(ax, electron_log_p_nat, gdf_sample_stats(skewness, CR_e_gdf_momentum), color = color_pf_e, label = "electrons, plasma frame"; markersize)
+
+    axislegend(ax, position = :lb, framevisible = false)
+
+    f
+end
+
 # ╔═╡ 71404de8-f8b2-4d26-b7d7-41064cae1447
 log_p_nat_at_slice = proton_log_p_nat[proton_momentum_index];
 
@@ -472,37 +548,6 @@ log_p_nat_at_slice = proton_log_p_nat[proton_momentum_index];
 md"""
 Value of proton momentum at slice: 10^$(log_p_nat_at_slice) *m*ₚ*c*
 """
-
-# ╔═╡ 95040e95-2eb6-43e5-8573-e79109c545e6
-let df = CR_p_gdf_momentum[proton_momentum_index], distribs = normal_distrib_protons
-    f = Figure()
-    ax = Axis(
-        f[1,1];
-        xlabel = "log(dN/dp)", ylabel = "pdf",
-        title = "Histogram of protons dN/dp at p = 10^$log_p_nat_at_slice mₚc",
-        axis_properties...)
-
-    if do_plot_pf
-        N = df.log_dNdp_cr_pf |> skipmissing |> collect
-        if !isempty(N)
-            x, y = get_hist_curve(N; nbins=bins)
-            # lines!(ax, x, y, label = "bin-centered \"histogram\"")
-            stephist!(ax, N, label = "data"; bins, normalization, color = :teal, linewidth = 0.5)
-        end
-        distrib = distribs.pf[proton_momentum_index]
-        if !ismissing(distrib)
-            plot!(ax, x, distrib, label = @sprintf("MLE fit 𝒩 (%.2f, %.2f)", params(distrib)...), color = :indianred, linewidth = 1)
-        end
-        plot!(ax, x, custom_dist, label = @sprintf("custom 𝒩 (%.2f, %.2f)", params(custom_dist)...), color = :orange, linewidth = 1)
-    end
-
-    try
-        axislegend(ax)
-    catch e
-        # axislegend has no plots to work with, because the current index doesn't have any samples. stop it complaining.
-    end
-    f
-end
 
 # ╔═╡ 4051e244-4c84-4983-8cb9-bc7f53daa9f6
 let df = CR_p_gdf_momentum[proton_momentum_index], distribs = normal_distrib_protons
@@ -548,6 +593,89 @@ let df = CR_p_gdf_momentum[proton_momentum_index], distribs = normal_distrib_pro
     f
 end
 
+# ╔═╡ 95040e95-2eb6-43e5-8573-e79109c545e6
+let df = CR_p_gdf_momentum[proton_momentum_index], distribs = normal_distrib_protons
+    bins = 200
+    f = Figure()
+    ax = Axis(
+        f[1,1];
+        xlabel = "log(dN/dp)", ylabel = "pdf",
+        title = "Histogram of protons dN/dp at p = 10^$log_p_nat_at_slice mₚc",
+        axis_properties...)
+
+    if do_plot_pf
+        N = df.log_dNdp_cr_pf |> skipmissing |> collect
+        if !isempty(N)
+            x, y = get_hist_curve(N; nbins=bins)
+            # lines!(ax, x, y, label = "bin-centered \"histogram\"", linewidth = 0.5)
+            stephist!(ax, N, label = "data"; bins, normalization, color = :teal, linewidth = 0.5)
+        end
+        distrib = distribs.pf[proton_momentum_index]
+        if !ismissing(distrib)
+            plot!(ax, x, distrib, label = @sprintf("MLE fit 𝒩 (%.2f, %.2f)", params(distrib)...), color = :indianred, linewidth = 1)
+        end
+        plot!(ax, x, custom_dist, label = @sprintf("custom 𝒩 (%.2f, %.2f)", params(custom_dist)...), color = :orange, linewidth = 1)
+    end
+
+    try
+        axislegend(ax, framevisible = false)
+    catch e
+        # axislegend has no plots to work with, because the current index doesn't have any samples. stop it complaining.
+    end
+    f
+end
+
+# ╔═╡ 0c230911-62b3-4133-9f17-758bfeb627a2
+let
+    # bins = 200
+    f = Figure()
+    ax = Axis(
+        f[1,1];
+        xlabel = "log(dN/dp)", ylabel = "pdf",
+        title = "Histogram of protons dN/dp at p = 10^$log_p_nat_at_slice mₚc",
+        axis_properties...)
+
+    if do_plot_pf
+        N = log_dNdp_cur_trunc
+        if !isempty(N)
+            x, y = get_hist_curve(N; nbins=bins)
+            # lines!(ax, x, y, label = "bin-centered \"histogram\"", linewidth = 0.5)
+            stephist!(ax, N, label = "data"; bins, normalization, color = :teal, linewidth = 0.5)
+        end
+        distrib = fit(Normal, log_dNdp_cur_trunc)
+        if !ismissing(distrib)
+            plot!(ax, x, distrib, label = @sprintf("MLE fit 𝒩 (%.2f, %.2f)", params(distrib)...), color = :indianred, linewidth = 1)
+        end
+        plot!(ax, x, custom_dist, label = @sprintf("custom 𝒩 (%.2f, %.2f)", params(custom_dist)...), color = :orange, linewidth = 1)
+    end
+
+    try
+        axislegend(ax, framevisible = false)
+    catch e
+        # axislegend has no plots to work with, because the current index doesn't have any samples. stop it complaining.
+    end
+    f
+end
+
+# ╔═╡ cee91c99-adc0-4185-a7c3-e2164b95a003
+let
+    f = Figure()
+    ax = Axis(
+        f[1,1];
+        title = "Anderson–Darling p-value vs momentum slice",
+        axis_properties...,
+        xlabel = "log p (nat)",
+        yscale = p_val_yscale,
+    )
+
+    scatterlines!(ax, proton_log_p_nat, passmissing(pvalue).(ad_scores_p), color = color_pf_p, label = "protons, plasma frame"; markersize)
+    # scatterlines!(ax, electron_log_p_nat, passmissing(pvalue).(ad_scores_e), color = color_pf_e, label = "electrons, plasma frame"; markersize)
+
+    axislegend(ax, position = :lt)
+
+    f
+end
+
 # ╔═╡ 589661b1-6a64-4db5-ac40-c1565c29c3cc
 const electron_log_p_nat = keys(CR_e_gdf_momentum) .|> values .|> first;
 
@@ -556,15 +684,15 @@ let
     f = Figure()
     ax = Axis(
         f[1,1];
-        title = "Mean vs momentum slice",
+        title = "Sample mean vs momentum slice",
         axis_properties...,
         xlabel = "log p (nat)", ylabel = "μ",
     )
 
-    means = passmissing(getproperty).(normal_distrib_protons.pf, :μ)
+    means = gdf_sample_stats(mean, CR_p_gdf_momentum)
     lines!(ax, proton_log_p_nat, means, color = color_pf_p, label = "protons, plasma frame")
 
-    means = passmissing(getproperty).(normal_distrib_electrons.pf, :μ)
+    means = gdf_sample_stats(mean, CR_e_gdf_momentum)
     lines!(ax, electron_log_p_nat, means, color = color_pf_e, label = "electrons, plasma frame")
 
     axislegend(ax)
@@ -577,16 +705,16 @@ let
     f = Figure()
     ax = Axis(
         f[1,1];
-        title = "Standard deviation vs momentum slice",
+        title = "Sample standard deviation vs momentum slice",
         axis_properties...,
         xlabel = "log p (nat)", ylabel = "σ",
     )
     markersize = 4
 
-    std_devs = passmissing(getproperty).(normal_distrib_protons.pf, :σ)
+    std_devs = gdf_sample_stats(std, CR_p_gdf_momentum)
     scatterlines!(ax, proton_log_p_nat, std_devs, color = color_pf_p, label = "protons, plasma frame"; markersize)
 
-    std_devs = passmissing(getproperty).(normal_distrib_electrons.pf, :σ)
+    std_devs = gdf_sample_stats(std, CR_e_gdf_momentum)
     scatterlines!(ax, electron_log_p_nat, std_devs, color = color_pf_e, label = "electrons, plasma frame"; markersize)
 
     axislegend(ax, position = :lt)
@@ -594,23 +722,21 @@ let
     f
 end
 
-# ╔═╡ adf24143-4be1-46c7-a63a-fe4dd490791d
+# ╔═╡ 67533f87-b016-45fe-b582-53c3c225c056
 let
     f = Figure()
     ax = Axis(
         f[1,1];
-        title = "Sample skewness vs momentum slice",
+        title = "Sample kurtosis vs momentum slice",
         axis_properties...,
-        xlabel = "log p (nat)", ylabel = "γ",
+        xlabel = "log p (nat)", ylabel = "Kurtosis",
         #yscale = log10,
     )
-    # you've really gotta refactor this code
-    skewness_getter(gdf) = [skewness(df[!,:log_dNdp_cr_pf] |> skipmissing |> collect) for df in gdf]
 
-    scatterlines!(ax, proton_log_p_nat, skewness_getter(CR_p_gdf_momentum), color = color_pf_p, label = "protons, plasma frame"; markersize)
-    scatterlines!(ax, electron_log_p_nat, skewness_getter(CR_e_gdf_momentum), color = color_pf_e, label = "electrons, plasma frame"; markersize)
+    scatterlines!(ax, proton_log_p_nat, gdf_sample_stats(kurtosis, CR_p_gdf_momentum), color = color_pf_p, label = "protons, plasma frame"; markersize)
+    scatterlines!(ax, electron_log_p_nat, gdf_sample_stats(kurtosis, CR_e_gdf_momentum), color = color_pf_e, label = "electrons, plasma frame"; markersize)
 
-    axislegend(ax, position = :lb)
+    axislegend(ax, position = :lt, framevisible = false)
 
     f
 end
@@ -660,7 +786,7 @@ let df = CR_e_gdf_momentum[electron_momentum_index], distribs = normal_distrib_e
     end
 
     try
-        axislegend(ax, position = :lt)
+        axislegend(ax, position = :lt, framevisible = false)
     catch e
         # axislegend has no plots to work with, because the current index doesn't have any samples. stop it complaining.
     end
@@ -682,26 +808,7 @@ let
     scatterlines!(ax, proton_log_p_nat, sse_scores_p, color = color_pf_p, label = "protons, plasma frame"; markersize)
     scatterlines!(ax, electron_log_p_nat, sse_scores_e, color = color_pf_e, label = "electrons, plasma frame"; markersize)
 
-    axislegend(ax, position = plot_p_values_in_logscale ? :ct : :ct)
-
-    f
-end
-
-# ╔═╡ cee91c99-adc0-4185-a7c3-e2164b95a003
-let
-    f = Figure()
-    ax = Axis(
-        f[1,1];
-        title = "Anderson–Darling p-value vs momentum slice",
-        axis_properties...,
-        xlabel = "log p (nat)",
-        yscale = p_val_yscale,
-    )
-
-    scatterlines!(ax, proton_log_p_nat, passmissing(pvalue).(ad_scores_p), color = color_pf_p, label = "protons, plasma frame"; markersize)
-    scatterlines!(ax, electron_log_p_nat, passmissing(pvalue).(ad_scores_e), color = color_pf_e, label = "electrons, plasma frame"; markersize)
-
-    axislegend(ax, position = :lt)
+    axislegend(ax, position = plot_p_values_in_logscale ? :ct : :ct, framevisible = false)
 
     f
 end
@@ -771,17 +878,20 @@ end
 # ╟─d85427f4-86ed-4c04-980a-a4152b5875e8
 # ╟─628130bf-da25-4799-8e5e-3d2db15b1e49
 # ╟─ecf233ad-d75e-4aa5-bf7e-ff3e7b1d8755
-# ╠═59a22149-3397-4e97-9f7b-5d502aacf293
-# ╠═f91132bd-28af-4a6c-9a77-5c5b0ed4a08a
+# ╟─59a22149-3397-4e97-9f7b-5d502aacf293
+# ╟─f91132bd-28af-4a6c-9a77-5c5b0ed4a08a
 # ╠═f86707a1-9d79-4df8-8798-3f7ea1d1797c
 # ╠═50b1a87f-49ff-4d93-aa6e-f042a87b875e
 # ╟─3bf64608-0fa2-4fcb-9782-fd7a8de47bda
+# ╠═70717f68-e97b-401e-bcf7-0684ade30b07
 # ╟─932c2a77-0198-4df4-a4bd-30d0bda93946
 # ╟─91bba2da-c925-4123-bb8a-c1f9be8619e9
 # ╟─5767b9ac-64c2-4d2f-ad42-961184c7edc7
 # ╟─b6ce51e5-b4ff-49eb-83db-ecf3e8a081ac
 # ╟─7495e7e9-3d50-4401-baef-d2e3c11e6b46
 # ╟─adf24143-4be1-46c7-a63a-fe4dd490791d
+# ╟─bb3a74ce-78ee-487e-a413-4c0e035e8818
+# ╟─67533f87-b016-45fe-b582-53c3c225c056
 # ╟─44cb6acf-7fee-4e3e-8253-d91e5a76299a
 # ╠═6d5eb940-6739-4781-9dda-7433cae3cf50
 # ╠═aa3a5985-3d14-4e6e-b2b2-5f7f731c3336
@@ -828,11 +938,22 @@ end
 # ╠═89f8d7a8-ea2e-4906-9460-da16154b0404
 # ╠═55d8c831-27e6-4914-a836-7a05281e8fb3
 # ╠═29ec59ad-0e22-462a-ab6d-2065a56fc001
+# ╠═95040e95-2eb6-43e5-8573-e79109c545e6
+# ╠═32f07cd2-f62f-41e0-9211-8ac333bdd98d
 # ╠═59e1cd4d-6f38-4260-8955-159f21347fc6
 # ╠═91733807-63bc-47f6-9252-1bbef55fc5ec
 # ╠═85bb106c-0463-4723-8b75-8ff919ba903a
-# ╠═95040e95-2eb6-43e5-8573-e79109c545e6
-# ╠═32f07cd2-f62f-41e0-9211-8ac333bdd98d
+# ╟─46a7f197-6f31-47db-807d-d1048394a49f
+# ╠═2db26ede-4361-4d7e-b110-81b34f44f031
+# ╠═4b00c320-a375-4a50-90cb-ed02e2d6b073
+# ╠═47a01d7a-665e-4924-8f14-f013d2aaac4f
+# ╠═bfd2f89a-e4d9-484e-9bec-c4075799077b
+# ╠═e293e8e6-d077-464a-847e-f4be309bed3a
+# ╟─6cb898b3-98c5-4f3a-8d77-3deef7cf5358
+# ╟─2374b968-1172-48db-8ddd-7b4deae7817c
+# ╠═59444b54-893e-4f4e-b746-97de78417043
+# ╠═afabc297-408f-4643-8296-40be885adafc
+# ╠═0c230911-62b3-4133-9f17-758bfeb627a2
 # ╟─98675d19-3b1b-4be0-9e48-ab0ffd019647
 # ╠═2e79471f-3430-4b1c-91fe-80434de63cb2
 # ╠═bd8f636c-6033-434e-a220-a07397679431
