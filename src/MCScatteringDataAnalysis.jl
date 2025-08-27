@@ -101,7 +101,8 @@ end
 export fitdistribution
 
 """
-    fitdistributions(DT::Type{<:Distribution}, gdf::GroupedDataFrame)
+    fitdistributions(fitfunc, gdf::GroupedDataFrame;
+                     fitter_args=(), fitter_kwargs=NamedTuple())
 
 Within a `GroupedDataFrame`, call `fitdistribution` on the three columns
 `:log_dNdp_cr_sf`, `:log_dNdp_cr_pf`, and `:log_dNdp_cr_ISM` and return those distributions.
@@ -112,24 +113,29 @@ Within a `GroupedDataFrame`, call `fitdistribution` on the three columns
   - `pf`: The distributions found by fitting to the `log_dNdp_cr_pf` column in each group.
   - `ISM`: The distributions found by fitting to the `log_dNdp_cr_ISM` column in each group.
 """
-function fitdistributions(DT::Type{<:Distribution}, gdf::GroupedDataFrame)
+function fitdistributions(
+        fitfunc, gdf::GroupedDataFrame;
+        fitter_args=(), fitter_kwargs=NamedTuple())
 
-    DistArrayType = Vector{Union{Missing,Nothing,Distribution}}
-
-    sf = DistArrayType(undef, length(gdf))
-    pf = DistArrayType(undef, length(gdf))
-    ISM = DistArrayType(undef, length(gdf))
+    sf = Vector{Any}(undef, length(gdf))
+    pf = Vector{Any}(undef, length(gdf))
+    ISM = Vector{Any}(undef, length(gdf))
 
     for (i, df) in enumerate(gdf)
         # fit a distribution to the {shock,plasma,ISM} frame data
-        cursf = fitdistribution(DT, df.log_dNdp_cr_sf)
-        curpf = fitdistribution(DT, df.log_dNdp_cr_pf)
-        curISM = fitdistribution(DT, df.log_dNdp_cr_ISM)
+        cursf = fitfunc(df.log_dNdp_cr_sf, fitter_args...; fitter_kwargs...)
+        curpf = fitfunc(df.log_dNdp_cr_pf, fitter_args...; fitter_kwargs...)
+        curISM = fitfunc(df.log_dNdp_cr_ISM, fitter_args...; fitter_kwargs...)
 
         sf[i] = cursf
         pf[i] = curpf
         ISM[i] = curISM
     end
+
+    # narrow the element type of each vector of distributions
+    sf = Vector{Union{Set(typeof.(sf))...}}(sf)
+    pf = Vector{Union{Set(typeof.(pf))...}}(pf)
+    ISM = Vector{Union{Set(typeof.(pf))...}}(ISM)
 
     (; sf, pf, ISM)
 end
@@ -241,36 +247,6 @@ function fitnormal(x::AbstractVector)
     return Normal(μ, σ)
 end
 export fitnormal
-
-"""
-    fitnormals(gdf::GroupedDataFrame)
-
-Analogue of `fitdistributions`, but directly constructs a `Normal` using the mean and variance.
-"""
-function fitnormals(gdf::GroupedDataFrame)
-
-    DistArrayType = Vector{Union{Missing,Nothing,Normal}}
-
-    sf = DistArrayType(undef, length(gdf))
-    pf = DistArrayType(undef, length(gdf))
-    ISM = DistArrayType(undef, length(gdf))
-
-    for (i, df) in enumerate(gdf)
-        # fit a distribution to the shock frame data
-        cursf = fitnormal(df.log_dNdp_cr_sf)
-        # fit a distribution to the plasma frame data
-        curpf = fitnormal(df.log_dNdp_cr_pf)
-        # fit a distribution to the ISM frame data
-        curISM = fitnormal(df.log_dNdp_cr_ISM)
-
-        sf[i] = cursf
-        pf[i] = curpf
-        ISM[i] = curISM
-    end
-
-    (; sf, pf, ISM)
-end
-export fitnormals
 
 """
     get_sse_scores(gdf, dists)
