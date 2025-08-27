@@ -733,7 +733,7 @@ let
     std_devs = gdf_sample_stats(std, CR_e_gdf_momentum)
     scatterlines!(ax, electron_log_p_nat, std_devs, color = color_pf_e, label = "electrons, plasma frame"; markersize)
 
-    axislegend(ax, position = :lt)
+    axislegend(ax, position = :lt, framevisible = false)
 
     f
 end
@@ -862,7 +862,7 @@ let
     scatterlines!(ax, proton_log_p_nat, passmissing(pvalue).(ks_scores_p), color = color_pf_p, label = "protons, plasma frame"; markersize)
     scatterlines!(ax, electron_log_p_nat, passmissing(pvalue).(ks_scores_e), color = color_pf_e, label = "electrons, plasma frame"; markersize)
 
-    axislegend(ax, position = plot_p_values_in_logscale ? :cb : :lt)
+    axislegend(ax, position = plot_p_values_in_logscale ? :cb : :lt, framevisible = false)
 
     f
 end
