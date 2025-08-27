@@ -10,7 +10,7 @@ using HypothesisTests
 sse(ŷ, y) = sum((y - ŷ).^2)
 export sse
 
-function fit_dist_to_histogram(v::AbstractVector{T}; params, nbins = 150) where T
+function fit_dist_to_histogram(::Type{BiNormal}, v::AbstractVector{T}; params, nbins = 150) where T
     # x and y of the histogram plot if treated like a curve
     x, y = get_hist_curve(v; nbins)
     data_width = maximum(v) - minimum(v) # for setting up σ ranges
@@ -50,6 +50,37 @@ function fit_dist_to_histogram(v::AbstractVector{T}; params, nbins = 150) where 
         end
     end
     return (best_model, best_fit_score)
+end
+
+function fit_dist_to_histogram(::Type{Normal}, v::AbstractVector{T}; nbins = 150) where T
+    if isempty(v)
+        return missing
+    end
+    if length(v) == 1 # essentially a delta distribution
+        return Normal(only(v), zero(T))
+    end
+    # x and y of the histogram plot if treated like a curve
+    x, y = get_hist_curve(v; nbins)
+
+    # Gaussian p.d.f., without creating a `Normal` because it requires σ ≥ 0.
+    model(t, (μ, σ)) = @. pdf(Normal(μ, σ), t)
+    # gradient of the Gaussian p.d.f. with respect to μ and σ
+    function ∇model(t, (μ, σ))
+        f = gaussmodel(t, (μ, σ))
+        J = zeros(length(t), 2)
+        J[:,1] .= f .* (t .- μ)/σ^2            # ∂f/∂μ
+        J[:,2] .= f .* ((t .- μ)/σ^3 .- 1/σ)   # ∂f/∂σ
+        return J
+    end
+
+    # Make initial guesses as good as they can be,
+    # i.e., the actual sample mean and standard deviation
+    μ₀ = mean(v)
+    σ₀ = std(v, mean=μ₀)
+
+    fit = curve_fit(gaussmodel, ∇gaussmodel, x, y, [μ₀, σ₀])
+
+    return Normal(fit.param...)
 end
 export fit_dist_to_histogram
 
