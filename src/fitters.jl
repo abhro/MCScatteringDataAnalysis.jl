@@ -1,0 +1,146 @@
+function fit_dist_to_histogram(::Type{BiNormal}, v::AbstractVector{T}; params, nbins = 150) where T
+    # x and y of the histogram plot if treated like a curve
+    x, y = get_hist_curve(v; nbins)
+    data_width = maximum(v) - minimum(v) # for setting up σ ranges
+
+    λ_ideal, _, σ₁_ideal, μ₂_ideal, σ₂_ideal = params
+
+    # parameter sweep
+    # set up ranges for each parameter
+    μ₁ = x[argmax(y)] # can get μ₁ from the peak of the histogram
+    μ₂_range = sort(filter(>(38.6), x)) # consider all bin centers
+    #σ₁_range = range(0, data_width/2, length = 50)
+    σ₁_range = range(0.1, 0.2, step = 0.01)
+    #σ₂_range = σ₁_range # use same range for both
+    σ₂_range = range(0.7, 0.8, step = 0.01)
+    λ_range = 0.5:0.01:1.0
+    @debug("Using ranges", μ₁, μ₂_range, σ₁_range, σ₂_range, λ_range)
+
+    # starting guess: single Gaussian, unit variance
+    local best_model = BiNormal(1.0, μ₁, one(T), zero(T), one(T))
+    local best_fit_score = Inf
+
+    # for each parameter (Cartesian product of all ranges)
+    for μ₂ in μ₂_range, σ₁ in σ₁_range, σ₂ in σ₂_range, λ in λ_range
+        # create the model
+        model = BiNormal(λ, μ₁, σ₁, μ₂, σ₂)
+        # calculate the ŷ produced by the new parameter set
+        ŷ = pdf.(model, x)
+        # calculate the goodness of fit
+        fit_score = sse(ŷ, y)
+
+        # if better than current best fit, save model and new fitness score
+        if fit_score < best_fit_score
+            best_model = model
+            best_fit_score = fit_score
+
+            #@debug("Found new best model", model, fit_score)
+        end
+    end
+    return (best_model, best_fit_score)
+end
+
+function fit_dist_to_histogram(::Type{Normal}, v::AbstractVector{T}; nbins = 150) where T
+    if isempty(v)
+        return missing
+    end
+    if length(v) == 1 # essentially a delta distribution
+        return Normal(only(v), zero(T))
+    end
+    # x and y of the histogram plot if treated like a curve
+    x, y = get_hist_curve(v; nbins)
+
+    # Gaussian p.d.f., without creating a `Normal` because it requires σ ≥ 0.
+    model(t, (μ, σ)) = @. pdf(Normal(μ, σ), t)
+    # gradient of the Gaussian p.d.f. with respect to μ and σ
+    function ∇model(t, (μ, σ))
+        f = gaussmodel(t, (μ, σ))
+        J = zeros(length(t), 2)
+        J[:,1] .= f .* (t .- μ)/σ^2            # ∂f/∂μ
+        J[:,2] .= f .* ((t .- μ)/σ^3 .- 1/σ)   # ∂f/∂σ
+        return J
+    end
+
+    # Make initial guesses as good as they can be,
+    # i.e., the actual sample mean and standard deviation
+    μ₀ = mean(v)
+    σ₀ = std(v, mean=μ₀)
+
+    fit = curve_fit(gaussmodel, ∇gaussmodel, x, y, [μ₀, σ₀])
+
+    return Normal(fit.param...)
+end
+
+"""
+    fitdistribution(DT::Type{<:Distribution}, x::AbstractVector)
+
+Wrapper around `Distributions.fit`, but it also allows `x` to contain `missing` values.
+If `x` contains _only_ missing values, or is empty, `missing` is returned.
+"""
+function fitdistribution(DT::Type{<:Distribution}, x::AbstractVector{Union{Missing,T}}) where {T}
+    x = collect(skipmissing(x))
+    if isempty(x) # don't fit to a dataset with only `missing`s
+        return missing
+    end
+
+    return Distributions.fit(DT{T}, x)
+end
+
+"""
+    fitdistributions(fitfunc, gdf::GroupedDataFrame;
+                     fitter_args=(), fitter_kwargs=NamedTuple())
+
+Within a `GroupedDataFrame`, call `fitdistribution` on the three columns
+`:log_dNdp_cr_sf`, `:log_dNdp_cr_pf`, and `:log_dNdp_cr_ISM` and return those distributions.
+
+### Returns
+- A 3-element `NamedTuple` containing:
+  - `sf`: The distributions found by fitting to the `log_dNdp_cr_sf` column in each group.
+  - `pf`: The distributions found by fitting to the `log_dNdp_cr_pf` column in each group.
+  - `ISM`: The distributions found by fitting to the `log_dNdp_cr_ISM` column in each group.
+"""
+function fitdistributions(
+        fitfunc, gdf::GroupedDataFrame;
+        fitter_args=(), fitter_kwargs=NamedTuple())
+
+    sf = Vector{Any}(undef, length(gdf))
+    pf = Vector{Any}(undef, length(gdf))
+    ISM = Vector{Any}(undef, length(gdf))
+
+    for (i, df) in enumerate(gdf)
+        # fit a distribution to the {shock,plasma,ISM} frame data
+        cursf = fitfunc(df.log_dNdp_cr_sf, fitter_args...; fitter_kwargs...)
+        curpf = fitfunc(df.log_dNdp_cr_pf, fitter_args...; fitter_kwargs...)
+        curISM = fitfunc(df.log_dNdp_cr_ISM, fitter_args...; fitter_kwargs...)
+
+        sf[i] = cursf
+        pf[i] = curpf
+        ISM[i] = curISM
+    end
+
+    # narrow the element type of each vector of distributions
+    sf = Vector{Union{Set(typeof.(sf))...}}(sf)
+    pf = Vector{Union{Set(typeof.(pf))...}}(pf)
+    ISM = Vector{Union{Set(typeof.(pf))...}}(ISM)
+
+    (; sf, pf, ISM)
+end
+
+"""
+    fitnormal(x::AbstractVector)
+
+Analogue of `fitdistribution`, but directly constructs a `Normal` using the mean and variance.
+"""
+function fitnormal(x::AbstractVector)
+    x = collect(skipmissing(x))
+    if isempty(x) # don't fit to a dataset with only missing values
+        return missing
+    end
+
+    μ = mean(x)
+    σ = std(x, corrected = false, mean = μ)
+    if isnan(μ) || isnan(σ)
+        return missing
+    end
+    return Normal(μ, σ)
+end
