@@ -432,16 +432,6 @@ x, y = get_hist_curve(logdNdp; nbins=bins)
 # ╔═╡ 32f07cd2-f62f-41e0-9211-8ac333bdd98d
 sse_scores_p |> skipmissing |> findmax
 
-# ╔═╡ 91733807-63bc-47f6-9252-1bbef55fc5ec
-#=╠═╡
-@. model(t, (μ, σ)) = exp((t - μ)^2 / (2σ^2))
-  ╠═╡ =#
-
-# ╔═╡ 85bb106c-0463-4723-8b75-8ff919ba903a
-#=╠═╡
-fit = curve_fit(model, x, y, [3.4, 2.5])# [mean(logdNdp) - 3, std(logdNdp) - 5])
-  ╠═╡ =#
-
 # ╔═╡ 46a7f197-6f31-47db-807d-d1048394a49f
 md"""
 Experiment with KDE
@@ -973,8 +963,6 @@ end
 # ╠═95040e95-2eb6-43e5-8573-e79109c545e6
 # ╠═32f07cd2-f62f-41e0-9211-8ac333bdd98d
 # ╠═59e1cd4d-6f38-4260-8955-159f21347fc6
-# ╠═91733807-63bc-47f6-9252-1bbef55fc5ec
-# ╠═85bb106c-0463-4723-8b75-8ff919ba903a
 # ╟─46a7f197-6f31-47db-807d-d1048394a49f
 # ╠═2db26ede-4361-4d7e-b110-81b34f44f031
 # ╠═4b00c320-a375-4a50-90cb-ed02e2d6b073
