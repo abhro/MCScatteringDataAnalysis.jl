@@ -136,6 +136,18 @@ For electrons:
 # ╔═╡ d85427f4-86ed-4c04-980a-a4152b5875e8
 CR_gdfstats(CR_e_gdf_momentum)
 
+# ╔═╡ 1572a05b-77db-43a4-81cd-d9eb3c9bf2e0
+const idx_CR_p_gdf = axes(CR_p_gdf_momentum, 1);
+
+# ╔═╡ f8d26a2c-2789-4b04-8bb7-71bf19686bbd
+const idx_CR_e_gdf = axes(CR_e_gdf_momentum, 1);
+
+# ╔═╡ b679ff7a-89f4-4f92-9dec-2ba3c538d715
+const proton_index_binder = @bind proton_momentum_index NumberField(idx_CR_p_gdf, default = 13);
+
+# ╔═╡ 59f400ef-3b5b-424c-ae08-41b94d220ce9
+const electron_index_binder = @bind electron_momentum_index NumberField(idx_CR_e_gdf, default = 13);
+
 # ╔═╡ 628130bf-da25-4799-8e5e-3d2db15b1e49
 md"""
 ## Plot Cosmic Ray data
@@ -241,16 +253,6 @@ md"""
 ### Histograms
 """
 
-# ╔═╡ 35710ad9-f2e4-487b-be19-c29500633726
-let
-    idx_range = axes(CR_p_gdf_momentum,1)
-    binder = @bind proton_momentum_index NumberField(idx_range, default = 13)
-    min_idx, max_idx = extrema(idx_range)
-    md"""
-    Proton momentum slice to plot (index): $binder (min: $min_idx, max: $max_idx)
-    """ # should the proton_momentum_index variable be considered a leak here?
-end
-
 # ╔═╡ ecf80697-b786-4b02-9563-f3d082383b76
 md"""
 Choose which frames to plot:
@@ -259,15 +261,15 @@ Choose which frames to plot:
 - ISM frame: $(@bind do_plot_ISM CheckBox(default=false))
 """
 
+# ╔═╡ 35710ad9-f2e4-487b-be19-c29500633726
+md"""
+Proton momentum slice to plot (index): $proton_index_binder (min: $(minimum(idx_CR_p_gdf)), max: $(maximum(idx_CR_p_gdf)))
+"""
+
 # ╔═╡ 7be1e6da-0eb9-45e5-a4f9-bb6deedc3def
-let
-    idx_range = axes(CR_e_gdf_momentum,1)
-    binder = @bind electron_momentum_index NumberField(idx_range, default = 13)
-    min_idx, max_idx = extrema(idx_range)
-    md"""
-    Electron momentum slice to plot (index): $binder (min: $min_idx, max: $max_idx)
-    """ # should the electron_momentum_index variable be considered a leak here?
-end
+md"""
+Electron momentum slice to plot (index): $electron_index_binder (min: $(minimum(idx_CR_e_gdf)), max: $(maximum(idx_CR_e_gdf)))
+"""
 
 # ╔═╡ 9ea7a3a4-987d-416d-88d1-672e3cce23c5
 md"""
@@ -356,13 +358,8 @@ md"""
 Get goodness of fits
 """
 
-# ╔═╡ 79dc57bb-d66d-4608-a775-9dfc58af1995
-md"""
-Plot p-values in log scale? (Uncheck for linear)
-$(
-    @bind plot_p_values_in_logscale CheckBox()
-)
-"""
+# ╔═╡ d77a95bf-2d54-46d5-81ca-b671ee1db695
+p_values_scale_checkbox_binder = @bind plot_p_values_in_logscale CheckBox();
 
 # ╔═╡ 04dad413-0dc0-4ceb-81c2-e208ef082f38
 p_val_yscale = plot_p_values_in_logscale ? log10 : identity;
@@ -377,6 +374,12 @@ sse_scores_p = get_sse_scores(CR_p_gdf_momentum, normal_distrib_protons.pf, col 
 
 # ╔═╡ cbea4ff4-b132-4abb-97c6-e406a339ced6
 sse_scores_e = get_sse_scores(CR_e_gdf_momentum, normal_distrib_electrons.pf, col = :log_dNdp_cr_pf)
+
+# ╔═╡ 79dc57bb-d66d-4608-a775-9dfc58af1995
+md"""
+Plot p-values in log scale? (Uncheck for linear)
+$p_values_scale_checkbox_binder
+"""
 
 # ╔═╡ b0d555b3-5087-4405-8343-ce304d482ca9
 custom_dist = Normal(32.5, 0.5)
@@ -405,6 +408,11 @@ open("log_dNdp.txt", "w") do f
     println.(f, log_dNdp_pf)
 end
   ╠═╡ =#
+
+# ╔═╡ 464e92d7-e414-4ddd-a81e-978f271961b2
+md"""
+Proton momentum slice to plot (index): $proton_index_binder (min: $(minimum(idx_CR_p_gdf)), max: $(maximum(idx_CR_p_gdf)))
+"""
 
 # ╔═╡ 5ab05dc9-3a98-4297-a47b-c4e0111b8c51
 SSE_hist(logdNdp, custom_dist)
@@ -484,6 +492,12 @@ ad_scores_p = get_ad_scores(CR_p_gdf_momentum, normal_distrib_protons.pf, col = 
 # ╔═╡ bd8f636c-6033-434e-a220-a07397679431
 ad_scores_e = get_ad_scores(CR_e_gdf_momentum, normal_distrib_electrons.pf, col = :log_dNdp_cr_pf);
 
+# ╔═╡ 89b7b4d0-fb46-4436-a48d-0731cef1dc2c
+md"""
+Plot p-values in log scale? (Uncheck for linear)
+$p_values_scale_checkbox_binder
+"""
+
 # ╔═╡ b499bf86-3e7a-441a-809a-934a1a8dd402
 md"""
 ### Shapiro–Wilk test
@@ -495,6 +509,12 @@ sw_scores_p = get_sw_scores(CR_p_gdf_momentum, col = :log_dNdp_cr_pf);
 # ╔═╡ ec6883c9-b6bb-4e7e-bd6d-e65d6e06144d
 sw_scores_e = get_sw_scores(CR_e_gdf_momentum, col = :log_dNdp_cr_pf);
 
+# ╔═╡ 1b8925de-a9fe-4326-ad1a-a0a022ccbc6b
+md"""
+Plot p-values in log scale? (Uncheck for linear)
+$p_values_scale_checkbox_binder
+"""
+
 # ╔═╡ 2ab2979f-1ad4-4168-b59c-a25e57d4826a
 md"""
 ### Kolmogorov–Smirnov test
@@ -505,6 +525,12 @@ ks_scores_p = get_ks_scores(CR_p_gdf_momentum, normal_distrib_protons.pf, col = 
 
 # ╔═╡ cfdbbdea-c4fe-44ac-9de5-70720a138286
 ks_scores_e = get_ks_scores(CR_e_gdf_momentum, normal_distrib_electrons.pf, col = :log_dNdp_cr_pf);
+
+# ╔═╡ b825855d-bdfc-4aaa-ad9e-82ee4e8d1201
+md"""
+Plot p-values in log scale? (Uncheck for linear)
+$p_values_scale_checkbox_binder
+"""
 
 # ╔═╡ 8d03de5e-d344-4efd-b9af-dd5391028780
 md"""
@@ -876,6 +902,10 @@ end
 # ╟─a36ea9cf-176f-40bd-8577-cc2ea8db64af
 # ╟─985a2460-3fbc-4935-af59-2e734786c973
 # ╟─d85427f4-86ed-4c04-980a-a4152b5875e8
+# ╠═1572a05b-77db-43a4-81cd-d9eb3c9bf2e0
+# ╠═f8d26a2c-2789-4b04-8bb7-71bf19686bbd
+# ╠═b679ff7a-89f4-4f92-9dec-2ba3c538d715
+# ╠═59f400ef-3b5b-424c-ae08-41b94d220ce9
 # ╟─628130bf-da25-4799-8e5e-3d2db15b1e49
 # ╟─ecf233ad-d75e-4aa5-bf7e-ff3e7b1d8755
 # ╟─59a22149-3397-4e97-9f7b-5d502aacf293
@@ -904,8 +934,8 @@ end
 # ╠═6c16fc5a-7113-4b6e-abf2-de1275cceda5
 # ╟─89bcb29b-0b1c-4e3a-91cb-282c05df2bc5
 # ╟─c9b9969c-2c7f-436e-b5a1-603138a4e196
-# ╟─35710ad9-f2e4-487b-be19-c29500633726
 # ╟─ecf80697-b786-4b02-9563-f3d082383b76
+# ╟─35710ad9-f2e4-487b-be19-c29500633726
 # ╟─4051e244-4c84-4983-8cb9-bc7f53daa9f6
 # ╟─7be1e6da-0eb9-45e5-a4f9-bb6deedc3def
 # ╟─88822f52-aab8-4931-9091-1909da6c604b
@@ -922,17 +952,19 @@ end
 # ╠═4ac32bef-af81-4f7e-8e97-7eac4dd2bf69
 # ╟─f330af91-60a6-46ac-bdc5-ec49c216fccb
 # ╠═fd47dab7-426c-44fc-8038-00e378324e41
-# ╟─79dc57bb-d66d-4608-a775-9dfc58af1995
+# ╠═d77a95bf-2d54-46d5-81ca-b671ee1db695
 # ╟─04dad413-0dc0-4ceb-81c2-e208ef082f38
 # ╟─94a91acd-a878-4c3c-9716-8bed60bf8c6c
 # ╠═222df0cb-0760-48a2-902e-91d32e451a11
 # ╠═cbea4ff4-b132-4abb-97c6-e406a339ced6
+# ╟─79dc57bb-d66d-4608-a775-9dfc58af1995
 # ╟─e7a26d10-0e00-444d-a8f9-27874a8f821e
 # ╠═b0d555b3-5087-4405-8343-ce304d482ca9
 # ╠═54452e38-227e-4d06-ae74-7347aae2c021
 # ╠═5dc367ca-2882-4b98-8f29-2b5390426a9b
 # ╠═5ed80ffc-6ad3-4958-9a0d-8944c18f4570
 # ╠═b9e9fef0-b949-411e-8500-5ecd1dec0390
+# ╟─464e92d7-e414-4ddd-a81e-978f271961b2
 # ╠═5ab05dc9-3a98-4297-a47b-c4e0111b8c51
 # ╠═5bbd6e99-87e1-401c-a09e-065e2d426370
 # ╠═89f8d7a8-ea2e-4906-9460-da16154b0404
@@ -957,14 +989,17 @@ end
 # ╟─98675d19-3b1b-4be0-9e48-ab0ffd019647
 # ╠═2e79471f-3430-4b1c-91fe-80434de63cb2
 # ╠═bd8f636c-6033-434e-a220-a07397679431
+# ╟─89b7b4d0-fb46-4436-a48d-0731cef1dc2c
 # ╟─cee91c99-adc0-4185-a7c3-e2164b95a003
 # ╟─b499bf86-3e7a-441a-809a-934a1a8dd402
 # ╠═a2dca585-2b84-4958-8ba6-af51602c4d8a
 # ╠═ec6883c9-b6bb-4e7e-bd6d-e65d6e06144d
+# ╟─1b8925de-a9fe-4326-ad1a-a0a022ccbc6b
 # ╟─a49ff5ab-6077-4bb2-b694-6f3662982745
 # ╟─2ab2979f-1ad4-4168-b59c-a25e57d4826a
 # ╠═fc4dddd0-cfca-407e-ad94-622f53b148b3
 # ╠═cfdbbdea-c4fe-44ac-9de5-70720a138286
+# ╟─b825855d-bdfc-4aaa-ad9e-82ee4e8d1201
 # ╟─08542eea-964a-4f1d-aae5-2b50a628588a
 # ╟─8d03de5e-d344-4efd-b9af-dd5391028780
 # ╠═377aaf8f-b909-4c42-bc77-912fd300c300
