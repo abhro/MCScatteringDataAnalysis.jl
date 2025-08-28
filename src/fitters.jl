@@ -1,4 +1,8 @@
 function fit_dist_to_histogram(::Type{BiNormal}, v::AbstractVector{T}; params, nbins = 150) where T
+    v = collect(skipmissing(v))
+    if isempty(v)
+        return (missing, missing)
+    end
     # x and y of the histogram plot if treated like a curve
     x, y = get_hist_curve(v; nbins)
     data_width = maximum(v) - minimum(v) # for setting up σ ranges
