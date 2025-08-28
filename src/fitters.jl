@@ -94,8 +94,7 @@ function fitdistribution(DT::Type{<:Distribution}, x::AbstractVector{Union{Missi
 end
 
 """
-    fitdistributions(fitfunc, gdf::GroupedDataFrame;
-                     fitter_args=(), fitter_kwargs=NamedTuple())
+    fitdistributions(fitfunc, gdf::GroupedDataFrame)
 
 Within a `GroupedDataFrame`, call `fitdistribution` on the three columns
 `:log_dNdp_cr_sf`, `:log_dNdp_cr_pf`, and `:log_dNdp_cr_ISM` and return those distributions.
@@ -106,9 +105,7 @@ Within a `GroupedDataFrame`, call `fitdistribution` on the three columns
   - `pf`: The distributions found by fitting to the `log_dNdp_cr_pf` column in each group.
   - `ISM`: The distributions found by fitting to the `log_dNdp_cr_ISM` column in each group.
 """
-function fitdistributions(
-        fitfunc, gdf::GroupedDataFrame;
-        fitter_args=(), fitter_kwargs=NamedTuple())
+function fitdistributions(fitfunc, gdf::GroupedDataFrame)
 
     sf = Vector{Any}(undef, length(gdf))
     pf = Vector{Any}(undef, length(gdf))
@@ -116,9 +113,9 @@ function fitdistributions(
 
     for (i, df) in enumerate(gdf)
         # fit a distribution to the {shock,plasma,ISM} frame data
-        cursf = fitfunc(df.log_dNdp_cr_sf, fitter_args...; fitter_kwargs...)
-        curpf = fitfunc(df.log_dNdp_cr_pf, fitter_args...; fitter_kwargs...)
-        curISM = fitfunc(df.log_dNdp_cr_ISM, fitter_args...; fitter_kwargs...)
+        cursf = fitfunc(df.log_dNdp_cr_sf)
+        curpf = fitfunc(df.log_dNdp_cr_pf)
+        curISM = fitfunc(df.log_dNdp_cr_ISM)
 
         sf[i] = cursf
         pf[i] = curpf
