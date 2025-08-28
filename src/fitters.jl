@@ -134,6 +134,8 @@ end
     fitnormal(x::AbstractVector)
 
 Analogue of `fitdistribution`, but directly constructs a `Normal` using the mean and variance.
+
+Note: Does not use the Bessel correction for the variance
 """
 function fitnormal(x::AbstractVector)
     x = collect(skipmissing(x))
