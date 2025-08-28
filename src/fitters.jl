@@ -41,6 +41,7 @@ function fit_dist_to_histogram(::Type{BiNormal}, v::AbstractVector{T}; params, n
 end
 
 function fit_dist_to_histogram(::Type{Normal}, v::AbstractVector{T}; nbins = 150) where T
+    v = collect(skipmissing(v))
     if isempty(v)
         return missing
     end
@@ -51,10 +52,10 @@ function fit_dist_to_histogram(::Type{Normal}, v::AbstractVector{T}; nbins = 150
     x, y = get_hist_curve(v; nbins)
 
     # Gaussian p.d.f., without creating a `Normal` because it requires σ ≥ 0.
-    model(t, (μ, σ)) = @. pdf(Normal(μ, σ), t)
+    model(t, (μ, σ)) = @. exp(-(t - μ)^2 / 2σ^2) / (√(2π) * σ)
     # gradient of the Gaussian p.d.f. with respect to μ and σ
     function ∇model(t, (μ, σ))
-        f = gaussmodel(t, (μ, σ))
+        f = model(t, (μ, σ))
         J = zeros(length(t), 2)
         J[:,1] .= f .* (t .- μ)/σ^2            # ∂f/∂μ
         J[:,2] .= f .* ((t .- μ)/σ^3 .- 1/σ)   # ∂f/∂σ
@@ -66,9 +67,11 @@ function fit_dist_to_histogram(::Type{Normal}, v::AbstractVector{T}; nbins = 150
     μ₀ = mean(v)
     σ₀ = std(v, mean=μ₀)
 
-    fit = curve_fit(gaussmodel, ∇gaussmodel, x, y, [μ₀, σ₀])
+    fit = curve_fit(model, ∇model, x, y, [μ₀, σ₀])
 
-    return Normal(fit.param...)
+    μ, σ = fit.param
+
+    return Normal(μ, σ)
 end
 
 """
