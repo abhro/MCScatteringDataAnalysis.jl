@@ -319,17 +319,6 @@ let df = CR_p_gdf_momentum[electron_momentum_index]
 end
   ╠═╡ =#
 
-# ╔═╡ f95a0d36-5dd8-4190-98c6-06e8be2ad840
-# ╠═╡ disabled = true
-#=╠═╡
-pcutdf = CR_p_gdf_momentum[proton_momentum_index]
-  ╠═╡ =#
-
-# ╔═╡ b88ef78f-6d6f-4b38-a9af-6da4f540f8c3
-#=╠═╡
-describe(pcutdf)
-  ╠═╡ =#
-
 # ╔═╡ f3132403-113d-4b30-9fd0-379d28ade3c7
 md"""
 ## Normal distribution inference
@@ -877,8 +866,6 @@ end
 # ╟─9ea7a3a4-987d-416d-88d1-672e3cce23c5
 # ╟─b7a96870-784e-4ce0-830d-d245fc16e5f4
 # ╟─4ac1798d-ec27-4571-9b2a-44cb432ef0d6
-# ╠═f95a0d36-5dd8-4190-98c6-06e8be2ad840
-# ╠═b88ef78f-6d6f-4b38-a9af-6da4f540f8c3
 # ╟─f3132403-113d-4b30-9fd0-379d28ade3c7
 # ╠═e6b9701d-3d27-4c0c-b0b9-9879527f369c
 # ╠═e75ea9c0-59ca-4097-b4f6-6a3af04dc308
