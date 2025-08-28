@@ -384,10 +384,10 @@ $p_values_scale_checkbox_binder
 """
 
 # ╔═╡ b0d555b3-5087-4405-8343-ce304d482ca9
-custom_dist = Normal(32.5, 0.5)
+fitted_dist_curve = normal_distrib_protons_from_curves.pf[proton_momentum_index]
 
 # ╔═╡ 54452e38-227e-4d06-ae74-7347aae2c021
-fitted_dist = normal_distrib_protons.pf[proton_momentum_index]
+fitted_dist_MLE = normal_distrib_protons.pf[proton_momentum_index]
 
 # ╔═╡ 5dc367ca-2882-4b98-8f29-2b5390426a9b
 log_dNdp = CR_p_gdf_momentum[proton_momentum_index].log_dNdp_cr_pf |> skipmissing |> collect;
@@ -398,16 +398,16 @@ Proton momentum slice to plot (index): $proton_index_binder (min: $(minimum(idx_
 """
 
 # ╔═╡ 5ab05dc9-3a98-4297-a47b-c4e0111b8c51
-SSE_hist(log_dNdp, custom_dist)
+SSE_hist(log_dNdp, fitted_dist_curve)
 
 # ╔═╡ 5bbd6e99-87e1-401c-a09e-065e2d426370
-SSE_hist(log_dNdp, fitted_dist)
+SSE_hist(log_dNdp, fitted_dist_MLE)
 
 # ╔═╡ 89f8d7a8-ea2e-4906-9460-da16154b0404
-sum(logpdf.(custom_dist, log_dNdp))
+sum(logpdf.(fitted_dist_curve, log_dNdp))
 
 # ╔═╡ 55d8c831-27e6-4914-a836-7a05281e8fb3
-sum(logpdf.(fitted_dist, log_dNdp))
+sum(logpdf.(fitted_dist_MLE, log_dNdp))
 
 # ╔═╡ 29ec59ad-0e22-462a-ab6d-2065a56fc001
 x, y = get_hist_curve(log_dNdp; nbins=bins)
@@ -426,7 +426,7 @@ Truncate all outlier data
 """
 
 # ╔═╡ 59444b54-893e-4f4e-b746-97de78417043
-log_dNdp_cur_trunc = filter(x -> 31 ≤ x ≤ 33.8, log_dNdp);
+log_dNdp_cur_trunc = filter(x -> 31 ≤ x ≤ 33.9, log_dNdp);
 
 # ╔═╡ afabc297-408f-4643-8296-40be885adafc
 log_dNdp_cur_trunc |> length
@@ -591,10 +591,11 @@ let
             # lines!(ax, x, y, label = "bin-centered \"histogram\"", linewidth = 0.5)
             stephist!(ax, N, label = "data"; bins, normalization, color = :teal, linewidth = 0.5)
         end
-        distrib = fit(Normal, log_dNdp_cur_trunc)
+        distrib = fitdistribution(Normal, allowmissing(log_dNdp_cur_trunc))
         if !ismissing(distrib)
             plot!(ax, x, distrib, label = @sprintf("MLE fit 𝒩 (%.2f, %.2f)", params(distrib)...), color = :indianred, linewidth = 1)
         end
+        custom_dist = normal_distrib_protons_from_curves.pf[proton_momentum_index]
         plot!(ax, x, custom_dist, label = @sprintf("custom 𝒩 (%.2f, %.2f)", params(custom_dist)...), color = :orange, linewidth = 1)
     end
 
@@ -885,14 +886,14 @@ end
 # ╠═cbea4ff4-b132-4abb-97c6-e406a339ced6
 # ╟─79dc57bb-d66d-4608-a775-9dfc58af1995
 # ╟─e7a26d10-0e00-444d-a8f9-27874a8f821e
-# ╠═b0d555b3-5087-4405-8343-ce304d482ca9
 # ╠═54452e38-227e-4d06-ae74-7347aae2c021
+# ╠═b0d555b3-5087-4405-8343-ce304d482ca9
 # ╠═5dc367ca-2882-4b98-8f29-2b5390426a9b
 # ╟─464e92d7-e414-4ddd-a81e-978f271961b2
-# ╠═5ab05dc9-3a98-4297-a47b-c4e0111b8c51
 # ╠═5bbd6e99-87e1-401c-a09e-065e2d426370
-# ╠═89f8d7a8-ea2e-4906-9460-da16154b0404
+# ╠═5ab05dc9-3a98-4297-a47b-c4e0111b8c51
 # ╠═55d8c831-27e6-4914-a836-7a05281e8fb3
+# ╠═89f8d7a8-ea2e-4906-9460-da16154b0404
 # ╠═29ec59ad-0e22-462a-ab6d-2065a56fc001
 # ╠═32f07cd2-f62f-41e0-9211-8ac333bdd98d
 # ╟─6cb898b3-98c5-4f3a-8d77-3deef7cf5358
