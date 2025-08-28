@@ -593,38 +593,6 @@ let df = CR_p_gdf_momentum[proton_momentum_index], distribs = normal_distrib_pro
     f
 end
 
-# ╔═╡ 95040e95-2eb6-43e5-8573-e79109c545e6
-let df = CR_p_gdf_momentum[proton_momentum_index], distribs = normal_distrib_protons
-    bins = 200
-    f = Figure()
-    ax = Axis(
-        f[1,1];
-        xlabel = "log(dN/dp)", ylabel = "pdf",
-        title = "Histogram of protons dN/dp at p = 10^$log_p_nat_at_slice mₚc",
-        axis_properties...)
-
-    if do_plot_pf
-        N = df.log_dNdp_cr_pf |> skipmissing |> collect
-        if !isempty(N)
-            x, y = get_hist_curve(N; nbins=bins)
-            # lines!(ax, x, y, label = "bin-centered \"histogram\"", linewidth = 0.5)
-            stephist!(ax, N, label = "data"; bins, normalization, color = :teal, linewidth = 0.5)
-        end
-        distrib = distribs.pf[proton_momentum_index]
-        if !ismissing(distrib)
-            plot!(ax, x, distrib, label = @sprintf("MLE fit 𝒩 (%.2f, %.2f)", params(distrib)...), color = :indianred, linewidth = 1)
-        end
-        plot!(ax, x, custom_dist, label = @sprintf("custom 𝒩 (%.2f, %.2f)", params(custom_dist)...), color = :orange, linewidth = 1)
-    end
-
-    try
-        axislegend(ax, framevisible = false)
-    catch e
-        # axislegend has no plots to work with, because the current index doesn't have any samples. stop it complaining.
-    end
-    f
-end
-
 # ╔═╡ 0c230911-62b3-4133-9f17-758bfeb627a2
 let
     # bins = 200
@@ -947,7 +915,6 @@ end
 # ╠═89f8d7a8-ea2e-4906-9460-da16154b0404
 # ╠═55d8c831-27e6-4914-a836-7a05281e8fb3
 # ╠═29ec59ad-0e22-462a-ab6d-2065a56fc001
-# ╠═95040e95-2eb6-43e5-8573-e79109c545e6
 # ╠═32f07cd2-f62f-41e0-9211-8ac333bdd98d
 # ╟─6cb898b3-98c5-4f3a-8d77-3deef7cf5358
 # ╟─2374b968-1172-48db-8ddd-7b4deae7817c
