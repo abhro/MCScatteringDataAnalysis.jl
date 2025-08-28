@@ -293,7 +293,7 @@ let df = CR_p_gdf_momentum[proton_momentum_index]
 
     #xlims!(ax, -16, -3)
     #ylims!(ax, -100, -98)
-    leg = axislegend(ax, position = :rb)
+    leg = axislegend(ax, position = :rb, framevisible = false)
     #leg.framevisible = false
     #Legend(f[1,2], ax)
     f
@@ -319,7 +319,7 @@ let df = CR_p_gdf_momentum[electron_momentum_index]
 
     #xlims!(ax, -16, -3)
     #ylims!(ax, -100, -98)
-    axislegend(ax, position = :rb)
+    axislegend(ax, position = :rb, framevisible = false)
     #Legend(f[1,2], ax)
     f
 end
@@ -607,7 +607,7 @@ let df = CR_p_gdf_momentum[proton_momentum_index], distribs = normal_distrib_pro
     end
 
     try
-        axislegend(ax)
+        axislegend(ax, framevisible = false)
     catch e
         # axislegend has no plots to work with, because the current index doesn't have any samples. stop it complaining.
     end
@@ -692,7 +692,7 @@ let
     scatterlines!(ax, proton_log_p_nat, passmissing(pvalue).(ad_scores_p), color = color_pf_p, label = "protons, plasma frame"; markersize)
     # scatterlines!(ax, electron_log_p_nat, passmissing(pvalue).(ad_scores_e), color = color_pf_e, label = "electrons, plasma frame"; markersize)
 
-    axislegend(ax, position = :lt)
+    axislegend(ax, position = :lt, framevisible = false)
 
     f
 end
@@ -716,7 +716,7 @@ let
     means = gdf_sample_stats(mean, CR_e_gdf_momentum)
     lines!(ax, electron_log_p_nat, means, color = color_pf_e, label = "electrons, plasma frame")
 
-    axislegend(ax)
+    axislegend(ax, framevisible = false)
 
     f
 end
