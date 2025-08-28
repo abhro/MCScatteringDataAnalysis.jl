@@ -593,7 +593,7 @@ let
         plot!(ax, x, distrib, label = @sprintf("MLE fit 𝒩 (%.2f, %.2f)", params(distrib)...), color = :indianred, linewidth = 1)
     end
     custom_dist = normal_distrib_protons_from_curves.pf[proton_momentum_index]
-    plot!(ax, x, custom_dist, label = @sprintf("custom 𝒩 (%.2f, %.2f)", params(custom_dist)...), color = :orange, linewidth = 1)
+    plot!(ax, x, custom_dist, label = @sprintf("curve fit 𝒩 (%.2f, %.2f)", params(custom_dist)...), color = :orange, linewidth = 1)
 
     try
         axislegend(ax, framevisible = false)
