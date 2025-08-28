@@ -3,9 +3,10 @@ module MCScatteringDataAnalysis
 using LinearAlgebra
 using StatsBase
 using Distributions
-using DataFrames
-using BiNormalDistributions
-using HypothesisTests
+using DataFrames: GroupedDataFrame
+using BiNormalDistributions: BiNormal
+using HypothesisTests: OneSampleADTest, ExactOneSampleKSTest, ShapiroWilkTest
+using LsqFit: curve_fit
 
 sse(ŷ, y) = sum((y - ŷ).^2)
 export sse
