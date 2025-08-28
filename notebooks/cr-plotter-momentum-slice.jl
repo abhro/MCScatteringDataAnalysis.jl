@@ -392,25 +392,6 @@ fitted_dist = normal_distrib_protons.pf[proton_momentum_index]
 # ╔═╡ 5dc367ca-2882-4b98-8f29-2b5390426a9b
 log_dNdp = CR_p_gdf_momentum[proton_momentum_index].log_dNdp_cr_pf |> skipmissing |> collect;
 
-# ╔═╡ 5ed80ffc-6ad3-4958-9a0d-8944c18f4570
-# ╠═╡ disabled = true
-#=╠═╡
-log_dNdp_pf = let
-    arr = []
-    for df in CR_p_gdf_momentum
-        push!(arr, df.log_dNdp_cr_pf |> skipmissing |> collect)
-    end
-    Vector{Vector{Float64}}(arr)
-end
-  ╠═╡ =#
-
-# ╔═╡ b9e9fef0-b949-411e-8500-5ecd1dec0390
-#=╠═╡
-open("log_dNdp.txt", "w") do f
-    println.(f, log_dNdp_pf)
-end
-  ╠═╡ =#
-
 # ╔═╡ 464e92d7-e414-4ddd-a81e-978f271961b2
 md"""
 Proton momentum slice to plot (index): $proton_index_binder (min: $(minimum(idx_CR_p_gdf)), max: $(maximum(idx_CR_p_gdf)))
@@ -907,8 +888,6 @@ end
 # ╠═b0d555b3-5087-4405-8343-ce304d482ca9
 # ╠═54452e38-227e-4d06-ae74-7347aae2c021
 # ╠═5dc367ca-2882-4b98-8f29-2b5390426a9b
-# ╠═5ed80ffc-6ad3-4958-9a0d-8944c18f4570
-# ╠═b9e9fef0-b949-411e-8500-5ecd1dec0390
 # ╟─464e92d7-e414-4ddd-a81e-978f271961b2
 # ╠═5ab05dc9-3a98-4297-a47b-c4e0111b8c51
 # ╠═5bbd6e99-87e1-401c-a09e-065e2d426370
