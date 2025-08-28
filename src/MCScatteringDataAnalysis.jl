@@ -3,7 +3,7 @@ module MCScatteringDataAnalysis
 using LinearAlgebra
 using StatsBase
 using Distributions
-using DataFrames: GroupedDataFrame
+using DataFrames: DataFrame, GroupedDataFrame, nrow
 using BiNormalDistributions: BiNormal
 using HypothesisTests: OneSampleADTest, ExactOneSampleKSTest, ShapiroWilkTest
 using LsqFit: curve_fit
