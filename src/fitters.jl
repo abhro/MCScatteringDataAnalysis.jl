@@ -128,7 +128,7 @@ function fitdistributions(
     # narrow the element type of each vector of distributions
     sf = Vector{Union{Set(typeof.(sf))...}}(sf)
     pf = Vector{Union{Set(typeof.(pf))...}}(pf)
-    ISM = Vector{Union{Set(typeof.(pf))...}}(ISM)
+    ISM = Vector{Union{Set(typeof.(ISM))...}}(ISM)
 
     (; sf, pf, ISM)
 end
