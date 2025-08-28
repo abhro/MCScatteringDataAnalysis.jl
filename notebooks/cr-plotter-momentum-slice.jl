@@ -56,9 +56,6 @@ using LinearAlgebra
 # ╔═╡ fd47dab7-426c-44fc-8038-00e378324e41
 using HypothesisTests
 
-# ╔═╡ 59e1cd4d-6f38-4260-8955-159f21347fc6
-using LsqFit
-
 # ╔═╡ f0e77bbd-e420-49f1-9b40-f9d994888b93
 md"""
 # Plot fluxes for each momentum slice
@@ -952,7 +949,6 @@ end
 # ╠═29ec59ad-0e22-462a-ab6d-2065a56fc001
 # ╠═95040e95-2eb6-43e5-8573-e79109c545e6
 # ╠═32f07cd2-f62f-41e0-9211-8ac333bdd98d
-# ╠═59e1cd4d-6f38-4260-8955-159f21347fc6
 # ╟─6cb898b3-98c5-4f3a-8d77-3deef7cf5358
 # ╟─2374b968-1172-48db-8ddd-7b4deae7817c
 # ╠═59444b54-893e-4f4e-b746-97de78417043
