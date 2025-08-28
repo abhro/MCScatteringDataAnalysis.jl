@@ -119,15 +119,16 @@ export get_sse_scores
 Get Shapiro―Wilk scores for a `GroupedDataFrame` `gdf`.
 """
 function get_sw_scores(gdf; col)
-    arr = []
-    for df in gdf
+    n = length(gdf)
+    arr = Vector{Union{ShapiroWilkTest,Missing}}(undef, n)
+    for (i, df) in enumerate(gdf)
         vec = df[!, col] |> skipmissing |> collect
         if length(vec) < 3
-            push!(arr, missing)
+            arr[i] = missing
             continue
         end
         score = ShapiroWilkTest(vec)
-        push!(arr, score)
+        arr[i] = score
     end
     return arr
 end
@@ -152,16 +153,18 @@ get_ks_scores(gdf, dists; col) = get_onesample_scores(ExactOneSampleKSTest, gdf,
 export get_ks_scores
 
 function get_onesample_scores(test, gdf, dists; col)
-    arr = []
-    for (df, dist) in zip(gdf, dists)
+    n = length(gdf)
+    arr = Vector{Any}(undef, n)
+    for (i, (df, dist)) in enumerate(zip(gdf, dists))
         if ismissing(dist)
-            push!(arr, missing)
+            arr[i] = missing
             continue
         end
         vec = df[!, col] |> skipmissing |> collect
         score = test(vec, dist)
-        push!(arr, score)
+        arr[i] = score
     end
+    arr = Vector{Union{Set(typeof.(arr))...}}(arr)
     return arr
 end
 end
