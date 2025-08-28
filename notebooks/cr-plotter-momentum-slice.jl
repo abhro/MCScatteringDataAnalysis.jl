@@ -396,7 +396,7 @@ custom_dist = Normal(32.5, 0.5)
 fitted_dist = normal_distrib_protons.pf[proton_momentum_index]
 
 # ╔═╡ 5dc367ca-2882-4b98-8f29-2b5390426a9b
-logdNdp = CR_p_gdf_momentum[proton_momentum_index].log_dNdp_cr_pf |> skipmissing |> collect;
+log_dNdp = CR_p_gdf_momentum[proton_momentum_index].log_dNdp_cr_pf |> skipmissing |> collect;
 
 # ╔═╡ 5ed80ffc-6ad3-4958-9a0d-8944c18f4570
 # ╠═╡ disabled = true
@@ -423,19 +423,19 @@ Proton momentum slice to plot (index): $proton_index_binder (min: $(minimum(idx_
 """
 
 # ╔═╡ 5ab05dc9-3a98-4297-a47b-c4e0111b8c51
-SSE_hist(logdNdp, custom_dist)
+SSE_hist(log_dNdp, custom_dist)
 
 # ╔═╡ 5bbd6e99-87e1-401c-a09e-065e2d426370
-SSE_hist(logdNdp, fitted_dist)
+SSE_hist(log_dNdp, fitted_dist)
 
 # ╔═╡ 89f8d7a8-ea2e-4906-9460-da16154b0404
-sum(logpdf.(custom_dist, logdNdp))
+sum(logpdf.(custom_dist, log_dNdp))
 
 # ╔═╡ 55d8c831-27e6-4914-a836-7a05281e8fb3
-sum(logpdf.(fitted_dist, logdNdp))
+sum(logpdf.(fitted_dist, log_dNdp))
 
 # ╔═╡ 29ec59ad-0e22-462a-ab6d-2065a56fc001
-x, y = get_hist_curve(logdNdp; nbins=bins)
+x, y = get_hist_curve(log_dNdp; nbins=bins)
 
 # ╔═╡ 32f07cd2-f62f-41e0-9211-8ac333bdd98d
 sse_scores_p |> skipmissing |> findmax
@@ -445,11 +445,8 @@ md"""
 Experiment with KDE
 """
 
-# ╔═╡ 4b00c320-a375-4a50-90cb-ed02e2d6b073
-log_dNdp_cur = CR_p_gdf_momentum[proton_momentum_index].log_dNdp_cr_pf |> skipmissing |> collect;
-
 # ╔═╡ 47a01d7a-665e-4924-8f14-f013d2aaac4f
-kde_fit = kde(log_dNdp_cur; bandwidth = 0.03)
+kde_fit = kde(log_dNdp; bandwidth = 0.03)
 
 # ╔═╡ bfd2f89a-e4d9-484e-9bec-c4075799077b
 # ╠═╡ disabled = true
@@ -474,7 +471,7 @@ Truncate all outlier data
 """
 
 # ╔═╡ 59444b54-893e-4f4e-b746-97de78417043
-log_dNdp_cur_trunc = filter(x -> 31 ≤ x ≤ 33.8, log_dNdp_cur);
+log_dNdp_cur_trunc = filter(x -> 31 ≤ x ≤ 33.8, log_dNdp);
 
 # ╔═╡ afabc297-408f-4643-8296-40be885adafc
 log_dNdp_cur_trunc |> length
@@ -976,7 +973,6 @@ end
 # ╠═59e1cd4d-6f38-4260-8955-159f21347fc6
 # ╟─46a7f197-6f31-47db-807d-d1048394a49f
 # ╠═2db26ede-4361-4d7e-b110-81b34f44f031
-# ╠═4b00c320-a375-4a50-90cb-ed02e2d6b073
 # ╠═47a01d7a-665e-4924-8f14-f013d2aaac4f
 # ╠═bfd2f89a-e4d9-484e-9bec-c4075799077b
 # ╠═e293e8e6-d077-464a-847e-f4be309bed3a
