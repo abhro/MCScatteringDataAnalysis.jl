@@ -585,7 +585,12 @@ let df = CR_p_gdf_momentum[proton_momentum_index], distribs = normal_distrib_pro
 
         distrib = distribs.pf[proton_momentum_index]
         if !ismissing(distrib)
-            plot!(ax, distrib, label = @sprintf("𝒩 (%.2f, %.2f)", params(distrib)...), color = color_pf_p)
+            plot!(ax, distrib, label = @sprintf("MLE fit 𝒩 (%.2f, %.2f)", params(distrib)...), color = color_pf_p)
+        end
+
+        distrib = normal_distrib_protons_from_curves.pf[proton_momentum_index]
+        if !ismissing(distrib)
+            plot!(ax, distrib, label = @sprintf("Curve fit 𝒩 (%.2f, %.2f)", params(distrib)...))
         end
     end
 
