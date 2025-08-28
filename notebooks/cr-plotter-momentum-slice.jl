@@ -59,9 +59,6 @@ using HypothesisTests
 # ╔═╡ 59e1cd4d-6f38-4260-8955-159f21347fc6
 using LsqFit
 
-# ╔═╡ 2db26ede-4361-4d7e-b110-81b34f44f031
-using KernelDensity
-
 # ╔═╡ f0e77bbd-e420-49f1-9b40-f9d994888b93
 md"""
 # Plot fluxes for each momentum slice
@@ -439,26 +436,6 @@ x, y = get_hist_curve(log_dNdp; nbins=bins)
 
 # ╔═╡ 32f07cd2-f62f-41e0-9211-8ac333bdd98d
 sse_scores_p |> skipmissing |> findmax
-
-# ╔═╡ 46a7f197-6f31-47db-807d-d1048394a49f
-md"""
-Experiment with KDE
-"""
-
-# ╔═╡ 47a01d7a-665e-4924-8f14-f013d2aaac4f
-kde_fit = kde(log_dNdp; bandwidth = 0.03)
-
-# ╔═╡ bfd2f89a-e4d9-484e-9bec-c4075799077b
-# ╠═╡ disabled = true
-#=╠═╡
-lines(kde_fit)
-  ╠═╡ =#
-
-# ╔═╡ e293e8e6-d077-464a-847e-f4be309bed3a
-# ╠═╡ disabled = true
-#=╠═╡
-kde_fit |> Dump
-  ╠═╡ =#
 
 # ╔═╡ 6cb898b3-98c5-4f3a-8d77-3deef7cf5358
 md"""
@@ -976,11 +953,6 @@ end
 # ╠═95040e95-2eb6-43e5-8573-e79109c545e6
 # ╠═32f07cd2-f62f-41e0-9211-8ac333bdd98d
 # ╠═59e1cd4d-6f38-4260-8955-159f21347fc6
-# ╟─46a7f197-6f31-47db-807d-d1048394a49f
-# ╠═2db26ede-4361-4d7e-b110-81b34f44f031
-# ╠═47a01d7a-665e-4924-8f14-f013d2aaac4f
-# ╠═bfd2f89a-e4d9-484e-9bec-c4075799077b
-# ╠═e293e8e6-d077-464a-847e-f4be309bed3a
 # ╟─6cb898b3-98c5-4f3a-8d77-3deef7cf5358
 # ╟─2374b968-1172-48db-8ddd-7b4deae7817c
 # ╠═59444b54-893e-4f4e-b746-97de78417043
