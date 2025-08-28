@@ -583,20 +583,17 @@ let
         title = "Histogram of protons dN/dp at p = 10^$log_p_nat_at_slice mₚc",
         axis_properties...)
 
-    if do_plot_pf
-        N = log_dNdp_cur_trunc
-        if !isempty(N)
-            x, y = get_hist_curve(N; nbins=bins)
-            # lines!(ax, x, y, label = "bin-centered \"histogram\"", linewidth = 0.5)
-            stephist!(ax, N, label = "data"; bins, normalization, color = :teal, linewidth = 0.5)
-        end
-        distrib = fitdistribution(Normal, allowmissing(log_dNdp_cur_trunc))
-        if !ismissing(distrib)
-            plot!(ax, x, distrib, label = @sprintf("MLE fit 𝒩 (%.2f, %.2f)", params(distrib)...), color = :indianred, linewidth = 1)
-        end
-        custom_dist = normal_distrib_protons_from_curves.pf[proton_momentum_index]
-        plot!(ax, x, custom_dist, label = @sprintf("custom 𝒩 (%.2f, %.2f)", params(custom_dist)...), color = :orange, linewidth = 1)
+    N = log_dNdp_cur_trunc
+    isempty(N) && error("Not the correct momentum slice")
+    x, y = get_hist_curve(N; nbins=bins)
+    # lines!(ax, x, y, label = "bin-centered \"histogram\"", linewidth = 0.5)
+    stephist!(ax, N, label = "data"; bins, normalization, color = :teal, linewidth = 0.5)
+    distrib = fitdistribution(Normal, allowmissing(log_dNdp_cur_trunc))
+    if !ismissing(distrib)
+        plot!(ax, x, distrib, label = @sprintf("MLE fit 𝒩 (%.2f, %.2f)", params(distrib)...), color = :indianred, linewidth = 1)
     end
+    custom_dist = normal_distrib_protons_from_curves.pf[proton_momentum_index]
+    plot!(ax, x, custom_dist, label = @sprintf("custom 𝒩 (%.2f, %.2f)", params(custom_dist)...), color = :orange, linewidth = 1)
 
     try
         axislegend(ax, framevisible = false)
