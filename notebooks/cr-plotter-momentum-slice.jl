@@ -397,11 +397,21 @@ md"""
 Proton momentum slice to plot (index): $proton_index_binder (min: $(minimum(idx_CR_p_gdf)), max: $(maximum(idx_CR_p_gdf)))
 """
 
+# ╔═╡ daded5be-4319-4a0a-8491-84a7273a844b
+md"""
+Sum-of-squared errors for analytical fit and histogram curve fit:
+"""
+
 # ╔═╡ 5ab05dc9-3a98-4297-a47b-c4e0111b8c51
 SSE_hist(log_dNdp, fitted_dist_curve)
 
 # ╔═╡ 5bbd6e99-87e1-401c-a09e-065e2d426370
 SSE_hist(log_dNdp, fitted_dist_MLE)
+
+# ╔═╡ aebbf1a7-d047-4fa6-aa36-4b9ae8b68127
+md"""
+(log-)Likelihoods for analytical fit and histogram curve fit:
+"""
 
 # ╔═╡ 89f8d7a8-ea2e-4906-9460-da16154b0404
 sum(logpdf.(fitted_dist_curve, log_dNdp))
@@ -890,8 +900,10 @@ end
 # ╠═b0d555b3-5087-4405-8343-ce304d482ca9
 # ╠═5dc367ca-2882-4b98-8f29-2b5390426a9b
 # ╟─464e92d7-e414-4ddd-a81e-978f271961b2
+# ╟─daded5be-4319-4a0a-8491-84a7273a844b
 # ╠═5bbd6e99-87e1-401c-a09e-065e2d426370
 # ╠═5ab05dc9-3a98-4297-a47b-c4e0111b8c51
+# ╟─aebbf1a7-d047-4fa6-aa36-4b9ae8b68127
 # ╠═55d8c831-27e6-4914-a836-7a05281e8fb3
 # ╠═89f8d7a8-ea2e-4906-9460-da16154b0404
 # ╠═29ec59ad-0e22-462a-ab6d-2065a56fc001
