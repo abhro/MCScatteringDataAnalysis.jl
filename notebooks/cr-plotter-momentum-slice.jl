@@ -342,11 +342,19 @@ md"""
 """
 
 # ╔═╡ e6b9701d-3d27-4c0c-b0b9-9879527f369c
-normal_distrib_protons = fitdistributions(Normal, CR_p_gdf_momentum)
-# normal_distrib_protons = fitnormals(CR_p_gdf_momentum)
+normal_distrib_protons = fitdistributions(v -> fitdistribution(Normal, v), CR_p_gdf_momentum)
+# normal_distrib_protons = fitdistributions(fitnormal, CR_p_gdf_momentum)
 
 # ╔═╡ e75ea9c0-59ca-4097-b4f6-6a3af04dc308
-normal_distrib_electrons = fitdistributions(Normal, CR_e_gdf_momentum)
+normal_distrib_electrons = fitdistributions(v -> fitdistribution(Normal, v), CR_e_gdf_momentum)
+
+# ╔═╡ 3860d0cf-20f4-4256-9286-8757afc38ef9
+md"""
+Approach it like curve-fitting
+"""
+
+# ╔═╡ f2fe3844-2be8-4da6-9656-40312304556b
+normal_distrib_protons_from_curves = fitdistributions(v -> fit_dist_to_histogram(Normal, v; nbins=bins), CR_p_gdf_momentum)
 
 # ╔═╡ da107273-c428-4c68-80a9-8f82cb211497
 md"""
@@ -938,6 +946,8 @@ end
 # ╟─f3132403-113d-4b30-9fd0-379d28ade3c7
 # ╠═e6b9701d-3d27-4c0c-b0b9-9879527f369c
 # ╠═e75ea9c0-59ca-4097-b4f6-6a3af04dc308
+# ╟─3860d0cf-20f4-4256-9286-8757afc38ef9
+# ╠═f2fe3844-2be8-4da6-9656-40312304556b
 # ╟─da107273-c428-4c68-80a9-8f82cb211497
 # ╠═49902e99-870d-4d19-afb0-1de612c185df
 # ╠═4ac32bef-af81-4f7e-8e97-7eac4dd2bf69
