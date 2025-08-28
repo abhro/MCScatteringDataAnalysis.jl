@@ -383,11 +383,11 @@ Plot p-values in log scale? (Uncheck for linear)
 $p_values_scale_checkbox_binder
 """
 
-# ╔═╡ b0d555b3-5087-4405-8343-ce304d482ca9
-fitted_dist_curve = normal_distrib_protons_from_curves.pf[proton_momentum_index]
-
 # ╔═╡ 54452e38-227e-4d06-ae74-7347aae2c021
 fitted_dist_MLE = normal_distrib_protons.pf[proton_momentum_index]
+
+# ╔═╡ b0d555b3-5087-4405-8343-ce304d482ca9
+fitted_dist_curve = normal_distrib_protons_from_curves.pf[proton_momentum_index]
 
 # ╔═╡ 5dc367ca-2882-4b98-8f29-2b5390426a9b
 log_dNdp = CR_p_gdf_momentum[proton_momentum_index].log_dNdp_cr_pf |> skipmissing |> collect;
@@ -402,22 +402,22 @@ md"""
 Sum-of-squared errors for analytical fit and histogram curve fit:
 """
 
-# ╔═╡ 5ab05dc9-3a98-4297-a47b-c4e0111b8c51
-SSE_hist(log_dNdp, fitted_dist_curve)
-
 # ╔═╡ 5bbd6e99-87e1-401c-a09e-065e2d426370
 SSE_hist(log_dNdp, fitted_dist_MLE)
+
+# ╔═╡ 5ab05dc9-3a98-4297-a47b-c4e0111b8c51
+SSE_hist(log_dNdp, fitted_dist_curve)
 
 # ╔═╡ aebbf1a7-d047-4fa6-aa36-4b9ae8b68127
 md"""
 (log-)Likelihoods for analytical fit and histogram curve fit:
 """
 
-# ╔═╡ 89f8d7a8-ea2e-4906-9460-da16154b0404
-sum(logpdf.(fitted_dist_curve, log_dNdp))
-
 # ╔═╡ 55d8c831-27e6-4914-a836-7a05281e8fb3
 sum(logpdf.(fitted_dist_MLE, log_dNdp))
+
+# ╔═╡ 89f8d7a8-ea2e-4906-9460-da16154b0404
+sum(logpdf.(fitted_dist_curve, log_dNdp))
 
 # ╔═╡ 29ec59ad-0e22-462a-ab6d-2065a56fc001
 x, y = get_hist_curve(log_dNdp; nbins=bins)
