@@ -3,22 +3,28 @@
 Collection of scripts and notebooks for analyzing the data created by the MonteCarlo\_cr program.
 
 ## Setting up the environment
-First, clone the repository. Then, in a Julia REPL, run
+Ensure you have [Julia installed](https://julialang.org/install) on your device. Then, clone the repository.
+
+Navigating to the root directory of the cloned repository, open a Julia REPL. Within the Julia REPL, run
 ```julia
 julia> ] # Press `]` to drop into pkg mode
 pkg> activate .
+  Activating project at [...]
 
 (MCScatteringDataAnalysis) pkg> instantiate
 [...]
 
 (MCScatteringDataAnalysis) pkg> activate notebooks
+  Activating project at [...]
 
 (notebooks) pkg> instantiate
+[...]
 ```
 
 This will install all the necessary prerequisites. Alternatively, you can run directly from the command line
 ```sh
 $ julia --project -e 'import Pkg; Pkg.instantiate()'
+$ julia --project=notebooks -e 'import Pkg; Pkg.instantiate()'
 ```
 
 ## Running the notebooks
