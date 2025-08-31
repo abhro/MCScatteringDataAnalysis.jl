@@ -23,4 +23,4 @@ function runmcprogram(dirnames)
     end
 end
 
-runmcprogram(string.(runpathbase, seeds))
+runmcprogram(string.(runpath, seeds))

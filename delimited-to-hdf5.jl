@@ -25,10 +25,10 @@ function filteredstream(filename::AbstractString; predicate = data_row_predicate
     return filtered_buffer
 end
 
-# include file to get `seeds` and `runpathbase`
+# include file to get `seeds` and `runpath`
 include("mc-batch-params.jl")
 
-const datadirs = runpathbase .* [@sprintf("%03i", s) for s in seeds]
+const datadirs = runpath .* [@sprintf("%03i", s) for s in seeds]
 
 function DelimitedFiles.readdlm(source, T::Type{<:AbstractDataFrame}; colspec)
     rawmat = readdlm(source)
