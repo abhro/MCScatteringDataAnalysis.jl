@@ -3,9 +3,9 @@ const seeds = 1:1000
 const param_filename = "mc_in.txt"
 
 const params = """
-SKSPD    0  2  0                Shock speed as: km/sec, Lorentz factor, or beta.  1st nonzero value used
+SKSPD    0 20  0                Shock speed as: km/sec, Lorentz factor, or beta.  1st nonzero value used
 NITRS      20                   Number of iterations to perform
-XNPER   1.0E2 2.0E3             Number of time steps per gyro period, for "coarse" and "fine" scattering
+XNPER   1.0E2 1.0E4             Number of time steps per gyro period, for "coarse" and "fine" scattering
 NIONS       2                   Number of different ion species.  1st MUST be protons.  Search "NIONS" for details.
     1     1  1E6  1               A(-99 for e-), Z, T0[K], & den0[/cc] for species 1
     -99   1  1E6  0               A(-99 for e-), Z, T0[K], & den0[/cc] for species 2
@@ -118,4 +118,4 @@ ENDIN
  **** End of input data ****
 """
 
-const runpathbase = joinpath(pwd(), "Raw-Run-Data", "Lorentz-2", "Seed-")
+const runpath = joinpath(pwd(), "Raw-Run-Data", "Lorentz-20")

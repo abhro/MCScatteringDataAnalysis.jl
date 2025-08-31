@@ -19,19 +19,19 @@ function writeparams(filename, seed)
 end
 
 function initdirs(seeds)
-    # TODO use 3 digit seed names
-    dirnames = string.(runpathbase, seeds)
-    for (seed, dirname) in zip(seeds, dirnames)
+    mkpath(runpath)
+    cd(runpath)
+    for seed in seeds
+        dirname = format("Seed-{:0>3}", seed)
         # Create the folder
         mkdir(dirname)
 
-        # cd into the folder
+        # `cd()` into the folder and write the parameters
         cd(dirname) do
             writeparams(param_filename, seed)
+            @info("Created parameter file for seed = $seed at $(pwd())")
         end
-        @info("Created parameter file for seed = $seed at $dirname")
     end
-    return dirnames
 end
 
 initdirs(seeds)
