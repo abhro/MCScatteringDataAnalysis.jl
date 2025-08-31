@@ -4,6 +4,12 @@ using Format
 
 include("mc-batch-params.jl")
 
+"""
+    writeparams(filename, seed)
+
+Write Fortran parameter block using `params` from mc-batch-params.jl to `filename`.
+Includes `seed` as the `ISEED` parameter
+"""
 function writeparams(filename, seed)
     seedline = "ISEED $seed Seed for random number generator"
     open(filename, "w") do f
