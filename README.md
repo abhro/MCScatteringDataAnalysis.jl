@@ -2,6 +2,8 @@
 
 Collection of scripts and notebooks for analyzing the data created by the MonteCarlo\_cr program.
 
+For the original Fortran program producing the data, see the [MonteCarlo\_cr repository](https://github.fit.edu/dwarren/MonteCarlo_cr).
+
 ## Setting up the environment
 Ensure you have [Julia installed](https://julialang.org/install) on your device. Then, clone the repository.
 
