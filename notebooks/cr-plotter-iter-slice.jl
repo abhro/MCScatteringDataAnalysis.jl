@@ -169,13 +169,17 @@ map_layer = let
     do_plot_pf*pf_map + do_plot_sf*sf_map + do_plot_ISM*ISM_map
 end;
 
+# ╔═╡ d9b28dbe-b3d6-47d6-91c9-21b9350d5069
+const idx_CR_p_gdf = axes(CR_p_gdf_iter, 1);
+
+# ╔═╡ f4be57bc-395d-4237-950d-c6d0d2b3e12c
+const index_binder = @bind plot_iter NumberField(idx_CR_p_gdf, default = 1);
+
 # ╔═╡ d7d554cf-2f16-49e1-849d-25b5088e85ff
 md"""
 Select which iteration to plot:
 
-`plot_iter` = $(
-    @bind plot_iter NumberField(axes(CR_p_gdf_iter, 1))
-)
+`plot_iter` = $(index_binder)
 """
 
 # ╔═╡ 19a41e11-d031-498c-adbb-082e682fb67e
@@ -213,6 +217,13 @@ let f = Figure(), df = CR_e_gdf_iter[plot_iter]
     legend!(f[1,1], plt; legend_properties...)
     f
 end
+
+# ╔═╡ b352849e-eca0-4ac5-acbe-9f48d0507f38
+md"""
+Select which iteration to plot:
+
+`plot_iter` = $(index_binder)
+"""
 
 # ╔═╡ 1529a53f-a084-40fc-80b0-3f9f31a5868e
 md"""
@@ -398,12 +409,15 @@ end
 # ╠═3fccf366-bf6d-4c7a-a3d1-916b8f13afd3
 # ╠═968fd2bf-172b-462e-8c45-4ab7cf21f41e
 # ╟─ecf80697-b786-4b02-9563-f3d082383b76
-# ╟─d7d554cf-2f16-49e1-849d-25b5088e85ff
+# ╠═d9b28dbe-b3d6-47d6-91c9-21b9350d5069
+# ╠═f4be57bc-395d-4237-950d-c6d0d2b3e12c
 # ╟─19a41e11-d031-498c-adbb-082e682fb67e
 # ╠═c2b3d96a-216e-4abe-8b0f-625419ac072f
 # ╟─47a47a1d-4247-4a1a-a629-0a580253b41d
+# ╟─d7d554cf-2f16-49e1-849d-25b5088e85ff
 # ╟─220c3ca5-e0b5-4f5c-86b0-e5d7cdd67558
 # ╟─7879a41a-a284-452b-9505-a239209f1ed0
+# ╟─b352849e-eca0-4ac5-acbe-9f48d0507f38
 # ╟─1529a53f-a084-40fc-80b0-3f9f31a5868e
 # ╠═6537effb-12e6-4f4e-b34f-15dd33547921
 # ╟─f4930314-a64c-4b6a-bcef-c0d9dcf2ef81
