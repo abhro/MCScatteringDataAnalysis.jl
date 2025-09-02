@@ -5,7 +5,10 @@ using Markdown
 using InteractiveUtils
 
 # ╔═╡ a877d102-099f-11f0-37d1-39f0ef1f87e3
+# ╠═╡ skip_as_script = true
+#=╠═╡
 import Pkg; Pkg.activate(Base.current_project(), io=devnull)
+  ╠═╡ =#
 
 # ╔═╡ a357df88-fae3-40ad-b636-a3fbfd5358bb
 using PlutoUI

@@ -5,7 +5,10 @@ using Markdown
 using InteractiveUtils
 
 # ╔═╡ 8cecd3b0-d2b1-11ef-35c7-1fb9d13a3262
+# ╠═╡ skip_as_script = true
+#=╠═╡
 import Pkg; Pkg.activate(Base.current_project())
+  ╠═╡ =#
 
 # ╔═╡ a0c6b97e-f294-4c6e-ac80-7bfc902d58e7
 using JLD2, DataFrames
