@@ -426,9 +426,13 @@ Truncate all outlier data
 
 # ╔═╡ 59444b54-893e-4f4e-b746-97de78417043
 log_dNdp_cur_trunc = filter(x -> 31 ≤ x ≤ 33.9, log_dNdp);
+# log_dNdp_cur_trunc = filter(x -> x ≤ 31.3, log_dNdp);
 
 # ╔═╡ afabc297-408f-4643-8296-40be885adafc
 log_dNdp_cur_trunc |> length
+
+# ╔═╡ 60bd9873-0246-432d-9e68-bfe2aa0956b2
+log_dNdp |> length
 
 # ╔═╡ 98675d19-3b1b-4be0-9e48-ab0ffd019647
 md"""
@@ -896,6 +900,7 @@ end
 # ╟─2374b968-1172-48db-8ddd-7b4deae7817c
 # ╠═59444b54-893e-4f4e-b746-97de78417043
 # ╠═afabc297-408f-4643-8296-40be885adafc
+# ╠═60bd9873-0246-432d-9e68-bfe2aa0956b2
 # ╠═0c230911-62b3-4133-9f17-758bfeb627a2
 # ╟─98675d19-3b1b-4be0-9e48-ab0ffd019647
 # ╠═2e79471f-3430-4b1c-91fe-80434de63cb2
