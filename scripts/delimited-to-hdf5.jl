@@ -4,7 +4,7 @@ using Glob
 using DelimitedFiles
 using Printf: @sprintf
 
-include("colspecs.jl")
+using MCScatteringDataAnalysis
 
 
 # A data row must not start with 3333..., those lines are for Fortran's pgf plotter

@@ -1,22 +1,9 @@
-using StaticArrays
+using StaticArrays: SVector
 
 #=
 This file lays out the columns and data types for various fixed width format
 files written by the mc_cr program
 =#
-
-@kwdef struct ColumnSpecification
-    colname::Symbol
-    eltype::Type
-    uses_sentinels::Bool
-    ColumnSpecification(colname, eltype, uses_sentinels = false) =
-        new(colname, eltype, uses_sentinels)
-end
-const CS = ColumnSpecification
-colname(cs::CS) = cs.colname
-name(cs::CS) = cs.colname
-Base.eltype(cs::CS) = cs.eltype
-uses_sentinels(cs::CS) = cs.uses_sentinels
 
 # from Fortran subroutine `print_dNdp_esc`
 # the Fortran file unit in use is 527

@@ -8,6 +8,26 @@ using BiNormalDistributions: BiNormal
 using HypothesisTests: OneSampleADTest, ExactOneSampleKSTest, ShapiroWilkTest
 using LsqFit: curve_fit
 
+"""
+    ColumnSpecification(colname, eltype, uses_sentinels = false)
+
+Helper datatype for parsing text data created by the mc\\_cr program.
+"""
+@kwdef struct ColumnSpecification
+    colname::Symbol
+    eltype::Type
+    uses_sentinels::Bool
+    ColumnSpecification(colname, eltype, uses_sentinels = false) =
+        new(colname, eltype, uses_sentinels)
+end
+const CS = ColumnSpecification
+colname(cs::CS) = cs.colname
+name(cs::CS) = cs.colname
+Base.eltype(cs::CS) = cs.eltype
+uses_sentinels(cs::CS) = cs.uses_sentinels
+
+include("colspecs.jl")
+
 sse(ŷ, y) = sum((y - ŷ).^2)
 export sse
 
