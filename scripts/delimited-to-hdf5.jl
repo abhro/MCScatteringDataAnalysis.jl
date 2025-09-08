@@ -30,6 +30,14 @@ include("mc-batch-params.jl")
 
 const datadirs = runpath .* [format("Seed-{:0>3}", s) for s in seeds]
 
+"""
+    DelimitedFiles.readdlm(source, T; colspec)
+
+Type-pirated version of `readdlm()` that reads a delimited file into a DataFrame.
+Note that `T` must be a type such that `T <: DataFrames.AbstractDataFrame`.
+
+The specification for each column is given through `colspec`.
+"""
 function DelimitedFiles.readdlm(source, T::Type{<:AbstractDataFrame}; colspec)
     rawmat = readdlm(source)
     colnames = name.(colspec)
@@ -47,6 +55,19 @@ function DelimitedFiles.readdlm(source, T::Type{<:AbstractDataFrame}; colspec)
     return df
 end
 
+"""
+    read_one_file_over_all_dirs(dirs, filename, colspec; tags, tagname, predicate)
+
+### Arguments
+- `dirs`
+- `filename`
+- `colspec`
+- `tags`
+- `tagname`
+- `predicate`
+
+### Returns
+"""
 function read_one_file_over_all_dirs(
     dirs::AbstractVector, filename, colspec::AbstractVector{<:ColumnSpecification};
     tags = seeds, tagname = :initial_seed, predicate = data_row_predicate)
@@ -74,6 +95,23 @@ function read_one_file_over_all_dirs(
     return bigdf
 end
 
+"""
+    read_multiple_file_over_all_dirs(
+        dirs, filename_pattern, colspec;
+        dirtags, filetags, dirtagname, filetagname, predicate)
+
+### Arguments
+- `dirs`:
+- `filename_pattern`:
+- `colspec`:
+- `dirtags`:
+- `filetags`:
+- `dirtagname`:
+- `filetagname`:
+- `predicate`:
+
+### Returns
+"""
 function read_multiple_file_over_all_dirs(
     dirs::AbstractVector, filename_pattern, colspec::AbstractVector{<:ColumnSpecification};
     dirtags = seeds, filetags, dirtagname = :initial_seed, filetagname = :iteration,
