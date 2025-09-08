@@ -110,45 +110,47 @@ function read_multiple_file_over_all_dirs(
 end
 
 
-# read and save the coupled spectra
-@info("Reading coupled spectra data")
-spectradf = read_one_file_over_all_dirs(
-    datadirs, "mc_coupled_spectra.dat", coupled_spectra_cols)
-@info("Writing coupled spectra data")
-save_object("coupled-spectra.jld2", spectradf)
+function (@main)()
+    # read and save the coupled spectra
+    @info("Reading coupled spectra data")
+    spectradf = read_one_file_over_all_dirs(
+        datadirs, "mc_coupled_spectra.dat", coupled_spectra_cols)
+    @info("Writing coupled spectra data")
+    save_object("coupled-spectra.jld2", spectradf)
 
-# read and save the coupled weights
-@info("Reading coupled weights data")
-weightsdf = read_one_file_over_all_dirs(
-    datadirs, "mc_coupled_wts.dat", coupled_weights_cols)
-@info("Writing coupled weights data")
-save_object("coupled-weights.jld2", weightsdf)
+    # read and save the coupled weights
+    @info("Reading coupled weights data")
+    weightsdf = read_one_file_over_all_dirs(
+        datadirs, "mc_coupled_wts.dat", coupled_weights_cols)
+    @info("Writing coupled weights data")
+    save_object("coupled-weights.jld2", weightsdf)
 
-# read and save the esc files
-@info("Reading dN/dp esc data")
-escdf = read_one_file_over_all_dirs(datadirs, "mc_dNdp_esc.dat", esc_cols)
-@info("Writing dN/dp esc data")
-save_object("dNdp-esc.jld2", escdf)
+    # read and save the esc files
+    @info("Reading dN/dp esc data")
+    escdf = read_one_file_over_all_dirs(datadirs, "mc_dNdp_esc.dat", esc_cols)
+    @info("Writing dN/dp esc data")
+    save_object("dNdp-esc.jld2", escdf)
 
-# read and save the grid files
-@info("Reading grid data")
-griddf = read_one_file_over_all_dirs(datadirs, "mc_grid.dat", grid_cols)
-@info("Writing grid data")
-save_object("grid.jld2", griddf)
+    # read and save the grid files
+    @info("Reading grid data")
+    griddf = read_one_file_over_all_dirs(datadirs, "mc_grid.dat", grid_cols)
+    @info("Writing grid data")
+    save_object("grid.jld2", griddf)
 
 
-# iterate through the dNdp on CR grid
-@info("Reading cosmic ray dN/dp data")
-CRdf = read_multiple_file_over_all_dirs(
-    datadirs, "mc_dNdp_grid_CR_*.dat", CR_cols, filetags = 1:20)
-# save the dNdp on CR grid
-@info("Writing cosmic ray dN/dp data")
-save_object("dNdp-CR.jld2", CRdf)
+    # iterate through the dNdp on CR grid
+    @info("Reading cosmic ray dN/dp data")
+    CRdf = read_multiple_file_over_all_dirs(
+        datadirs, "mc_dNdp_grid_CR_*.dat", CR_cols, filetags = 1:20)
+    # save the dNdp on CR grid
+    @info("Writing cosmic ray dN/dp data")
+    save_object("dNdp-CR.jld2", CRdf)
 
-# iterate through the dNdp on therm grid
-@info("Reading thermal dN/dp data")
-thermdf = read_multiple_file_over_all_dirs(
-    datadirs, "mc_dNdp_grid_therm_*.dat", therm_cols, filetags = 1:20)
-# save the dNdp on therm grid
-@info("Writing thermal dN/dp data")
-save_object("dNdp-therm.jld2", thermdf)
+    # iterate through the dNdp on therm grid
+    @info("Reading thermal dN/dp data")
+    thermdf = read_multiple_file_over_all_dirs(
+        datadirs, "mc_dNdp_grid_therm_*.dat", therm_cols, filetags = 1:20)
+    # save the dNdp on therm grid
+    @info("Writing thermal dN/dp data")
+    save_object("dNdp-therm.jld2", thermdf)
+end
