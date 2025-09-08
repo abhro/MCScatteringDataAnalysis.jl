@@ -10,6 +10,20 @@ using MCScatteringDataAnalysis
 # A data row must not start with 3333..., those lines are for Fortran's pgf plotter
 const data_row_predicate = !startswith("3333")
 
+"""
+    filteredstream(filename::AbstractString; predicate = data_row_predicate)
+
+Read `filename` and return a stream over it such that each line satisfies `predicate`.
+
+### Arguments
+- `filename`: Path to a file
+- `predicate`: (keyword, optional) A function taking a `String` and
+  returning a `Bool` that determines the filter to be applied over each line.
+
+### Returns
+- `filtered_buffer`: An `IOBuffer` containing lines that match `predicate`
+  (i.e., filters lines that fail `predicate`.)
+"""
 function filteredstream(filename::AbstractString; predicate = data_row_predicate)
     filtered_buffer = IOBuffer()
     infilestream = open(filename)
