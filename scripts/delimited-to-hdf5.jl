@@ -93,7 +93,7 @@ function read_multiple_file_over_all_dirs(
         cd(dir) do
             filenames = glob(filename_pattern) |> sort
             length(filenames) == length(filetags) || throw(DimensionMismatch(
-                "In directory " * dir * ": number of files must match number of file tags"
+                "In directory $dir: number of files must match number of file tags"
             ))
 
             for (filetag, filename) in zip(filetags, filenames)
