@@ -2,7 +2,7 @@ using JLD2
 using DataFrames
 using Glob
 using DelimitedFiles
-using Printf: @sprintf
+using Format
 
 using MCScatteringDataAnalysis
 
@@ -28,7 +28,7 @@ end
 # include file to get `seeds` and `runpath`
 include("mc-batch-params.jl")
 
-const datadirs = runpath .* [@sprintf("%03i", s) for s in seeds]
+const datadirs = runpath .* [format("Seed-{:0>3}", s) for s in seeds]
 
 function DelimitedFiles.readdlm(source, T::Type{<:AbstractDataFrame}; colspec)
     rawmat = readdlm(source)
