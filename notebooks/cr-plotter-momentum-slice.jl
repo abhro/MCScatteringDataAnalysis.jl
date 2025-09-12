@@ -550,16 +550,16 @@ let df = CR_p_gdf_momentum[proton_momentum_index], distribs = normal_distrib_pro
     ax = Axis(
         f[1,1];
         xlabel = "log(dN/dp)", ylabel = "pdf",
-        title = "Histogram of protons dN/dp at p = 10^$log_p_nat_at_slice mₚc",
+        title = "Histogram of protons dN/dp at log p = $log_p_nat_at_slice (mₚc)",
         axis_properties...)
 
     if do_plot_pf
         N = df.log_dNdp_cr_pf |> skipmissing |> collect
-        !isempty(N) && stephist!(ax, N, label = "plasma frame"; bins, normalization, color = color_pf_p)
+        !isempty(N) && stephist!(ax, N, label = "plasma frame ($(length(N)) samples)"; bins, normalization, color = color_pf_p)
 
         distrib = distribs.pf[proton_momentum_index]
         if !ismissing(distrib)
-            plot!(ax, distrib, label = @sprintf("MLE fit 𝒩 (%.2f, %.2f)", params(distrib)...), color = color_pf_p)
+            plot!(ax, distrib, label = @sprintf("MLE fit 𝒩 (%.2f, %.2f)", params(distrib)...))
         end
 
         distrib = normal_distrib_protons_from_curves.pf[proton_momentum_index]
@@ -586,7 +586,7 @@ let df = CR_p_gdf_momentum[proton_momentum_index], distribs = normal_distrib_pro
     end
 
     try
-        axislegend(ax, framevisible = false)
+        axislegend(ax, framevisible = false, position = :rt)
     catch e
         # axislegend has no plots to work with, because the current index doesn't have any samples. stop it complaining.
     end
@@ -600,7 +600,7 @@ let
     ax = Axis(
         f[1,1];
         xlabel = "log(dN/dp)", ylabel = "pdf",
-        title = "Histogram of protons dN/dp at p = 10^$log_p_nat_at_slice mₚc",
+        title = "Histogram of protons dN/dp at log p = $log_p_nat_at_slice (mₚc)",
         axis_properties...)
 
     N = log_dNdp_cur_trunc
@@ -616,7 +616,7 @@ let
     plot!(ax, x, custom_dist, label = @sprintf("curve fit 𝒩 (%.2f, %.2f)", params(custom_dist)...), color = :orange, linewidth = 1)
 
     try
-        axislegend(ax, framevisible = false)
+        axislegend(ax, framevisible = false, position = :rt)
     catch e
         # axislegend has no plots to work with, because the current index doesn't have any samples. stop it complaining.
     end
@@ -633,7 +633,7 @@ let
         f[1,1];
         title = "Sample mean vs momentum slice",
         axis_properties...,
-        xlabel = "log p (nat)", ylabel = "μ",
+        xlabel = "log p (nat)", ylabel = "⟨log dN/dp⟩",
     )
 
     if do_plot_pf
@@ -745,12 +745,12 @@ let df = CR_e_gdf_momentum[electron_momentum_index], distribs = normal_distrib_e
     ax = Axis(
         f[1,1];
         xlabel = "log(dN/dp)", ylabel = "pdf",
-        title = "Histogram of electrons dN/dp at p = 10^$log_p_nat_at_slice_e mₚc",
+        title = "Histogram of electrons dN/dp at log p = $log_p_nat_at_slice_e (mₚc)",
         axis_properties...)
 
     if do_plot_pf
         N = df.log_dNdp_cr_pf |> skipmissing |> collect
-        !isempty(N) && stephist!(ax, N, label = "plasma frame"; bins, normalization, color = color_pf_e)
+        !isempty(N) && stephist!(ax, N, label = "plasma frame ($(length(N)) samples)"; bins, normalization, color = color_pf_e)
         distrib = distribs.pf[electron_momentum_index]
         if !ismissing(distrib)
             plot!(ax, distrib, label = @sprintf("𝒩 (%.2f, %.2f)", params(distrib)...), color = color_pf_e)
@@ -776,7 +776,7 @@ let df = CR_e_gdf_momentum[electron_momentum_index], distribs = normal_distrib_e
     end
 
     try
-        axislegend(ax, position = :lt, framevisible = false)
+        axislegend(ax, position = :rt, framevisible = false)
     catch e
         # axislegend has no plots to work with, because the current index doesn't have any samples. stop it complaining.
     end
