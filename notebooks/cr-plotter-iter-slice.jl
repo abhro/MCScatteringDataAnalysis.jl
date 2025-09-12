@@ -156,7 +156,7 @@ Choose which frames to plot:
 
 # ╔═╡ 3fccf366-bf6d-4c7a-a3d1-916b8f13afd3
 map_layer = let
-    x_map = :log_p_nat => "log (p) (nat)"
+    x_map = :log_p_nat => "log p (nat)"
     y_label = "log(dN/dp)"
 
     # A little type-piracy makes the world go round
