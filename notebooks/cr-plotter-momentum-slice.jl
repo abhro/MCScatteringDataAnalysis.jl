@@ -694,7 +694,7 @@ let
         title = "Sample standard deviation vs momentum slice",
         axis_properties...,
         xlabel = "log p (nat)", ylabel = "σ",
-        yscale = log10,
+        # yscale = log10,
     )
     markersize = 4
 
