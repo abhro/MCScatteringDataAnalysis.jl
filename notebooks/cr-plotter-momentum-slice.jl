@@ -626,10 +626,8 @@ let
     x, y = get_hist_curve(N; nbins=bins)
     # lines!(ax, x, y, label = "bin-centered \"histogram\"", linewidth = 0.5)
     stephist!(ax, N, label = "data"; bins, normalization, color = :teal, linewidth = 0.5)
-    distrib = fitdistribution(Normal, allowmissing(log_dNdp_cur_trunc))
-    if !ismissing(distrib)
-        plot!(ax, x, distrib, label = @sprintf("MLE fit 𝒩 (%.2f, %.2f)", params(distrib)...), color = :indianred, linewidth = 1)
-    end
+    # distrib = fitdistribution(Normal, allowmissing(log_dNdp_cur_trunc))
+    # ismissing(distrib) || plot!(ax, x, distrib, label = @sprintf("MLE fit 𝒩 (%.2f, %.2f)", params(distrib)...), color = :indianred, linewidth = 1)
     custom_dist = normal_distrib_protons_from_curves.pf[proton_momentum_index]
     plot!(ax, x, custom_dist, label = @sprintf("curve fit 𝒩 (%.2f, %.2f)", params(custom_dist)...), color = :orange, linewidth = 1)
 
