@@ -22,7 +22,7 @@ function initdirs(seeds)
     mkpath(runpath)
     cd(runpath)
     for seed in seeds
-        dirname = format("Seed-{:0>3}", seed)
+        dirname = format("Seed-{:0>4}", seed)
         # Create the folder
         mkdir(dirname)
 

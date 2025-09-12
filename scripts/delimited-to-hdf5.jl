@@ -44,7 +44,7 @@ end
 # include file to get `seeds` and `runpath`
 include("mc-batch-params.jl")
 
-const datadirs = runpath .* [format("Seed-{:0>3}", s) for s in seeds]
+const datadirs = joinpath.(runpath, [format("Seed-{:0>4}", s) for s in seeds])
 
 """
     DelimitedFiles.readdlm(source, T; colspec)
