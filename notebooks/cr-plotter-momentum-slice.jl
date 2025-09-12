@@ -181,6 +181,28 @@ plot_sf_binder = @bind do_plot_sf CheckBox(default=false);
 # ╔═╡ 60deb76f-3efe-4e0d-b176-9f0169259dca
 plot_ISM_binder = @bind do_plot_ISM CheckBox(default=false);
 
+# ╔═╡ 105361e9-cafd-4755-bcbd-fdcbcb07b291
+map_layer = let
+    x_map = :log_dNdp_cr_pf => "log(dN/dp)"
+    y_label = "log(dN/dp)"
+
+    pf_map = mapping(x_map, :log_dNdp_cr_pf => y_label, color = direct("plasma frame"))
+    sf_map = mapping(x_map, :log_dNdp_cr_sf => y_label, color = direct("shock frame"))
+    ISM_map = mapping(x_map, :log_dNdp_cr_ISM => y_label, color = direct("ISM frame"))
+
+    combined_layer = zerolayer()
+    if do_plot_pf
+        combined_layer += pf_map
+    end
+    if do_plot_sf
+        combined_layer += sf_map
+    end
+    if do_plot_ISM
+        combined_layer += ISM_map
+    end
+    combined_layer
+end
+
 # ╔═╡ 4553a97d-6b78-4268-90de-d8bee348d3d4
 plot_electrons_binder = @bind do_plot_electrons CheckBox(default=true);
 
@@ -225,28 +247,6 @@ md"""
 md"""
 #### Kurtosis
 """
-
-# ╔═╡ 44cb6acf-7fee-4e3e-8253-d91e5a76299a
-md"""
-### With Algebra of Graphics
-"""
-
-# ╔═╡ 6d5eb940-6739-4781-9dda-7433cae3cf50
-# A little type-piracy makes the world go round
-Base.:*(x::Bool, l::AoG.Layer) = x ? l : AoG.zerolayer()
-
-# ╔═╡ 2f44c2c5-7fc6-4c93-be6e-0cffb863afd4
-visual_layer = AoG.histogram(Stairs; bins, normalization);
-
-# ╔═╡ 105361e9-cafd-4755-bcbd-fdcbcb07b291
-map_layer = let
-    x_map = :log_dNdp_cr_pf => "log(dN/dp)"
-    y_label = "log(dN/dp)"
-    pf_map = mapping(x_map, :log_dNdp_cr_pf => y_label, color = direct("plasma frame"))
-    sf_map = mapping(x_map, :log_dNdp_cr_sf => y_label, color = direct("shock frame"))
-    ISM_map = mapping(x_map, :log_dNdp_cr_ISM => y_label, color = direct("ISM frame"))
-    do_plot_pf*pf_map + do_plot_sf*sf_map + do_plot_ISM*ISM_map
-end;
 
 # ╔═╡ ce8b1307-dc78-463b-9f41-04fe5dded525
 md"""
@@ -878,7 +878,7 @@ end
 # ╟─f91132bd-28af-4a6c-9a77-5c5b0ed4a08a
 # ╠═f86707a1-9d79-4df8-8798-3f7ea1d1797c
 # ╠═50b1a87f-49ff-4d93-aa6e-f042a87b875e
-# ╠═105361e9-cafd-4755-bcbd-fdcbcb07b291
+# ╟─105361e9-cafd-4755-bcbd-fdcbcb07b291
 # ╟─1b9f507c-1585-4ad1-8090-bdde6de972d6
 # ╠═d6513272-7232-43e6-ac88-a58462181041
 # ╠═59be6983-6e37-4a70-8929-69176a5f807e
@@ -896,9 +896,6 @@ end
 # ╟─adf24143-4be1-46c7-a63a-fe4dd490791d
 # ╟─bb3a74ce-78ee-487e-a413-4c0e035e8818
 # ╟─67533f87-b016-45fe-b582-53c3c225c056
-# ╟─44cb6acf-7fee-4e3e-8253-d91e5a76299a
-# ╠═6d5eb940-6739-4781-9dda-7433cae3cf50
-# ╠═2f44c2c5-7fc6-4c93-be6e-0cffb863afd4
 # ╟─ce8b1307-dc78-463b-9f41-04fe5dded525
 # ╠═71404de8-f8b2-4d26-b7d7-41064cae1447
 # ╠═6c16fc5a-7113-4b6e-abf2-de1275cceda5
