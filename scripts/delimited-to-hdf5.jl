@@ -165,7 +165,7 @@ end
 
 using MCScatteringDataAnalysis: coupled_spectra_cols, coupled_weights_cols, esc_cols, grid_cols, CR_cols, therm_cols
 
-function (@main)()
+function (@main)(args)
     # read and save the coupled spectra
     @info("Reading coupled spectra data")
     spectradf = read_one_file_over_all_dirs(

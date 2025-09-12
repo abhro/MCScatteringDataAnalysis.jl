@@ -27,7 +27,7 @@ function dehistogram(gdf::GroupedDataFrame)
 end
 
 
-function (@main)()
+function (@main)(args)
     CR_df = let
         df = load_object("dNdp-CR.jld2")
         gdf = groupby(df, [:initial_seed, :iteration])
