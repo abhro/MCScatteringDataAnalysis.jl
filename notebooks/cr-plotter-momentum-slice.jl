@@ -367,6 +367,53 @@ let df = CR_p_gdf_momentum[electron_momentum_index]
 end
   ╠═╡ =#
 
+# ╔═╡ a6a63cb1-1a13-4cc2-9730-b78dd3d3aee4
+md"""
+## Inspect tail
+"""
+
+# ╔═╡ 5dc367ca-2882-4b98-8f29-2b5390426a9b
+log_dNdp = CR_p_gdf_momentum[proton_momentum_index].log_dNdp_cr_pf |> skipmissing |> collect;
+
+# ╔═╡ 464e92d7-e414-4ddd-a81e-978f271961b2
+md"""
+Proton momentum slice to plot (index): $proton_index_binder (min: $(minimum(idx_CR_p_gdf)), max: $(maximum(idx_CR_p_gdf)))
+"""
+
+# ╔═╡ daded5be-4319-4a0a-8491-84a7273a844b
+md"""
+Sum-of-squared errors for analytical fit and histogram curve fit:
+"""
+
+# ╔═╡ aebbf1a7-d047-4fa6-aa36-4b9ae8b68127
+md"""
+(log-)Likelihoods for analytical fit and histogram curve fit:
+"""
+
+# ╔═╡ 29ec59ad-0e22-462a-ab6d-2065a56fc001
+x, y = get_hist_curve(log_dNdp; nbins=bins)
+
+# ╔═╡ 6cb898b3-98c5-4f3a-8d77-3deef7cf5358
+md"""
+---
+"""
+
+# ╔═╡ 2374b968-1172-48db-8ddd-7b4deae7817c
+md"""
+Truncate all outlier data
+"""
+
+# ╔═╡ 59444b54-893e-4f4e-b746-97de78417043
+# log_dNdp_cur_trunc = filter(x -> 31 ≤ x ≤ 33.9, log_dNdp);
+# log_dNdp_cur_trunc = filter(x -> x ≤ 31, log_dNdp);
+log_dNdp_cur_trunc = filter(x -> x ≥ 33.75, log_dNdp);
+
+# ╔═╡ afabc297-408f-4643-8296-40be885adafc
+log_dNdp_cur_trunc |> length
+
+# ╔═╡ 60bd9873-0246-432d-9e68-bfe2aa0956b2
+log_dNdp |> length
+
 # ╔═╡ f3132403-113d-4b30-9fd0-379d28ade3c7
 md"""
 ## Normal distribution inference
@@ -375,6 +422,15 @@ md"""
 # ╔═╡ e6b9701d-3d27-4c0c-b0b9-9879527f369c
 normal_distrib_protons = fitdistributions(v -> fitdistribution(Normal, v), CR_p_gdf_momentum)
 # normal_distrib_protons = fitdistributions(fitnormal, CR_p_gdf_momentum)
+
+# ╔═╡ 54452e38-227e-4d06-ae74-7347aae2c021
+fitted_dist_MLE = normal_distrib_protons.pf[proton_momentum_index]
+
+# ╔═╡ 5bbd6e99-87e1-401c-a09e-065e2d426370
+SSE_hist(log_dNdp, fitted_dist_MLE)
+
+# ╔═╡ 55d8c831-27e6-4914-a836-7a05281e8fb3
+sum(logpdf.(fitted_dist_MLE, log_dNdp))
 
 # ╔═╡ e75ea9c0-59ca-4097-b4f6-6a3af04dc308
 normal_distrib_electrons = fitdistributions(v -> fitdistribution(Normal, v), CR_e_gdf_momentum)
@@ -386,6 +442,15 @@ Approach it like curve-fitting
 
 # ╔═╡ f2fe3844-2be8-4da6-9656-40312304556b
 normal_distrib_protons_from_curves = fitdistributions(v -> fit_dist_to_histogram(Normal, v; nbins=bins), CR_p_gdf_momentum)
+
+# ╔═╡ b0d555b3-5087-4405-8343-ce304d482ca9
+fitted_dist_curve = normal_distrib_protons_from_curves.pf[proton_momentum_index]
+
+# ╔═╡ 5ab05dc9-3a98-4297-a47b-c4e0111b8c51
+SSE_hist(log_dNdp, fitted_dist_curve)
+
+# ╔═╡ 89f8d7a8-ea2e-4906-9460-da16154b0404
+sum(logpdf.(fitted_dist_curve, log_dNdp))
 
 # ╔═╡ da107273-c428-4c68-80a9-8f82cb211497
 md"""
@@ -416,6 +481,9 @@ md"""
 # ╔═╡ 222df0cb-0760-48a2-902e-91d32e451a11
 sse_scores_p = get_sse_scores(CR_p_gdf_momentum, normal_distrib_protons.pf, col = :log_dNdp_cr_pf)
 
+# ╔═╡ 32f07cd2-f62f-41e0-9211-8ac333bdd98d
+sse_scores_p |> skipmissing |> findmax
+
 # ╔═╡ cbea4ff4-b132-4abb-97c6-e406a339ced6
 sse_scores_e = get_sse_scores(CR_e_gdf_momentum, normal_distrib_electrons.pf, col = :log_dNdp_cr_pf)
 
@@ -424,69 +492,6 @@ md"""
 Plot p-values in log scale? (Uncheck for linear)
 $p_values_scale_checkbox_binder
 """
-
-# ╔═╡ 54452e38-227e-4d06-ae74-7347aae2c021
-fitted_dist_MLE = normal_distrib_protons.pf[proton_momentum_index]
-
-# ╔═╡ b0d555b3-5087-4405-8343-ce304d482ca9
-fitted_dist_curve = normal_distrib_protons_from_curves.pf[proton_momentum_index]
-
-# ╔═╡ 5dc367ca-2882-4b98-8f29-2b5390426a9b
-log_dNdp = CR_p_gdf_momentum[proton_momentum_index].log_dNdp_cr_pf |> skipmissing |> collect;
-
-# ╔═╡ 464e92d7-e414-4ddd-a81e-978f271961b2
-md"""
-Proton momentum slice to plot (index): $proton_index_binder (min: $(minimum(idx_CR_p_gdf)), max: $(maximum(idx_CR_p_gdf)))
-"""
-
-# ╔═╡ daded5be-4319-4a0a-8491-84a7273a844b
-md"""
-Sum-of-squared errors for analytical fit and histogram curve fit:
-"""
-
-# ╔═╡ 5bbd6e99-87e1-401c-a09e-065e2d426370
-SSE_hist(log_dNdp, fitted_dist_MLE)
-
-# ╔═╡ 5ab05dc9-3a98-4297-a47b-c4e0111b8c51
-SSE_hist(log_dNdp, fitted_dist_curve)
-
-# ╔═╡ aebbf1a7-d047-4fa6-aa36-4b9ae8b68127
-md"""
-(log-)Likelihoods for analytical fit and histogram curve fit:
-"""
-
-# ╔═╡ 55d8c831-27e6-4914-a836-7a05281e8fb3
-sum(logpdf.(fitted_dist_MLE, log_dNdp))
-
-# ╔═╡ 89f8d7a8-ea2e-4906-9460-da16154b0404
-sum(logpdf.(fitted_dist_curve, log_dNdp))
-
-# ╔═╡ 29ec59ad-0e22-462a-ab6d-2065a56fc001
-x, y = get_hist_curve(log_dNdp; nbins=bins)
-
-# ╔═╡ 32f07cd2-f62f-41e0-9211-8ac333bdd98d
-sse_scores_p |> skipmissing |> findmax
-
-# ╔═╡ 6cb898b3-98c5-4f3a-8d77-3deef7cf5358
-md"""
----
-"""
-
-# ╔═╡ 2374b968-1172-48db-8ddd-7b4deae7817c
-md"""
-Truncate all outlier data
-"""
-
-# ╔═╡ 59444b54-893e-4f4e-b746-97de78417043
-# log_dNdp_cur_trunc = filter(x -> 31 ≤ x ≤ 33.9, log_dNdp);
-# log_dNdp_cur_trunc = filter(x -> x ≤ 31, log_dNdp);
-log_dNdp_cur_trunc = filter(x -> x ≥ 33.75, log_dNdp);
-
-# ╔═╡ afabc297-408f-4643-8296-40be885adafc
-log_dNdp_cur_trunc |> length
-
-# ╔═╡ 60bd9873-0246-432d-9e68-bfe2aa0956b2
-log_dNdp |> length
 
 # ╔═╡ 98675d19-3b1b-4be0-9e48-ab0ffd019647
 md"""
@@ -537,11 +542,6 @@ ks_scores_e = get_ks_scores(CR_e_gdf_momentum, normal_distrib_electrons.pf, col 
 md"""
 Plot p-values in log scale? (Uncheck for linear)
 $p_values_scale_checkbox_binder
-"""
-
-# ╔═╡ a6a63cb1-1a13-4cc2-9730-b78dd3d3aee4
-md"""
-## Inspect tail
 """
 
 # ╔═╡ 8d03de5e-d344-4efd-b9af-dd5391028780
