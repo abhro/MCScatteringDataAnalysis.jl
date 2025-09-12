@@ -187,11 +187,18 @@ md"""
 ### Individual iterations
 """
 
+# ╔═╡ 338974d9-8168-4d9e-9c1e-4492bff1cf30
+md"""
+Select which iteration to plot:
+
+`plot_iter` = $(index_binder)
+"""
+
+# ╔═╡ bc0dcf3d-94d4-4c75-8698-13c7fb708314
+CR_p_gdf_iter[plot_iter]
+
 # ╔═╡ c2b3d96a-216e-4abe-8b0f-625419ac072f
-# ╠═╡ disabled = true
-#=╠═╡
 CR_e_gdf_iter[plot_iter]
-  ╠═╡ =#
 
 # ╔═╡ 47a47a1d-4247-4a1a-a629-0a580253b41d
 md"""
@@ -412,7 +419,9 @@ end
 # ╠═d9b28dbe-b3d6-47d6-91c9-21b9350d5069
 # ╠═f4be57bc-395d-4237-950d-c6d0d2b3e12c
 # ╟─19a41e11-d031-498c-adbb-082e682fb67e
+# ╟─338974d9-8168-4d9e-9c1e-4492bff1cf30
 # ╠═c2b3d96a-216e-4abe-8b0f-625419ac072f
+# ╠═bc0dcf3d-94d4-4c75-8698-13c7fb708314
 # ╟─47a47a1d-4247-4a1a-a629-0a580253b41d
 # ╟─d7d554cf-2f16-49e1-849d-25b5088e85ff
 # ╟─220c3ca5-e0b5-4f5c-86b0-e5d7cdd67558
