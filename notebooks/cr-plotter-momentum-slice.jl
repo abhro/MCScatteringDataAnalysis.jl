@@ -287,9 +287,9 @@ md"""
 #=╠═╡
 let df = CR_p_gdf_momentum[proton_momentum_index]
 
-    f = Figure()
+    fig = Figure()
     ax = Axis(
-        f[1,1];
+        fig[1,1];
         title = "dN/dp of Cosmic rays (protons) against iteration, momentum slice",
         xlabel = "Iteration", ylabel = "log(dN/dp)")
 
@@ -301,8 +301,8 @@ let df = CR_p_gdf_momentum[proton_momentum_index]
     #ylims!(ax, -100, -98)
     leg = axislegend(ax, position = :rb, framevisible = false)
     #leg.framevisible = false
-    #Legend(f[1,2], ax)
-    f
+    #Legend(fig[1,2], ax)
+    fig
 end
   ╠═╡ =#
 
@@ -311,9 +311,9 @@ end
 #=╠═╡
 let df = CR_p_gdf_momentum[electron_momentum_index]
 
-    f = Figure()
+    fig = Figure()
     ax = Axis(
-        f[1,1];
+        fig[1,1];
         #aspect = AxisAspect(1.2),
         title = "dN/dp of Cosmic rays (electrons) against iteration, momentum slice",
         #axis_properties...,
@@ -326,8 +326,8 @@ let df = CR_p_gdf_momentum[electron_momentum_index]
     #xlims!(ax, -16, -3)
     #ylims!(ax, -100, -98)
     axislegend(ax, position = :rb, framevisible = false)
-    #Legend(f[1,2], ax)
-    f
+    #Legend(fig[1,2], ax)
+    fig
 end
   ╠═╡ =#
 
@@ -547,9 +547,9 @@ Value of proton momentum at slice: log(*p*/*m*ₚ*c*) = $log_p_nat_at_slice
 
 # ╔═╡ 4051e244-4c84-4983-8cb9-bc7f53daa9f6
 let df = CR_p_gdf_momentum[proton_momentum_index], distribs = normal_distrib_protons
-    f = Figure()
+    fig = Figure()
     ax = Axis(
-        f[1,1];
+        fig[1,1];
         xlabel = "log(dN/dp)", ylabel = "pdf",
         title = "Histogram of protons dN/dp at log p = $log_p_nat_at_slice (mₚc)",
         axis_properties...)
@@ -591,15 +591,15 @@ let df = CR_p_gdf_momentum[proton_momentum_index], distribs = normal_distrib_pro
     catch e
         # axislegend has no plots to work with, because the current index doesn't have any samples. stop it complaining.
     end
-    f
+    fig
 end
 
 # ╔═╡ 0c230911-62b3-4133-9f17-758bfeb627a2
 let
     # bins = 200
-    f = Figure()
+    fig = Figure()
     ax = Axis(
-        f[1,1];
+        fig[1,1];
         xlabel = "log(dN/dp)", ylabel = "pdf",
         title = "Truncated Histogram of protons dN/dp at log p = $log_p_nat_at_slice (mₚc)",
         axis_properties...)
@@ -619,15 +619,15 @@ let
     catch e
         # axislegend has no plots to work with, because the current index doesn't have any samples. stop it complaining.
     end
-    f
+    fig
 end
 
 # ╔═╡ 4786bdb6-a387-4333-b9d1-c672dc041910
 let
     # bins = 200
-    f = Figure()
+    fig = Figure()
     ax = Axis(
-        f[1,1];
+        fig[1,1];
         xlabel = "log(dN/dp)", ylabel = "pdf",
         title = "Histogram (left-tail) of protons dN/dp at log p = $log_p_nat_at_slice (mₚc)",
         axis_properties...)
@@ -640,15 +640,15 @@ let
     # lines!(ax, x, fitted_dist_MLE, label = "MLE fit dist", linewidth = 0.5)
     # lines!(ax, x, fitted_dist_curve, label = "curve-fit dist", linewidth = 0.5)
     axislegend(ax, framevisible = false, position = :lt)
-    f
+    fig
 end
 
 # ╔═╡ f7484fdb-37a6-4300-a08d-0e552bc4ef49
 let
     # bins = 200
-    f = Figure()
+    fig = Figure()
     ax = Axis(
-        f[1,1];
+        fig[1,1];
         xlabel = "log(dN/dp)", ylabel = "pdf",
         title = "Histogram (right-tail) of protons dN/dp at log p = $log_p_nat_at_slice (mₚc)",
         axis_properties...)
@@ -664,7 +664,7 @@ let
     # lines!(ax, x, fitted_dist_curve, label = "curve-fit dist", linewidth = 0.5)
 
     axislegend(ax, framevisible = false, position = :rt)
-    f
+    fig
 end
 
 # ╔═╡ 589661b1-6a64-4db5-ac40-c1565c29c3cc
@@ -672,9 +672,9 @@ const electron_log_p_nat = keys(CR_e_gdf_momentum) .|> values .|> first;
 
 # ╔═╡ 91bba2da-c925-4123-bb8a-c1f9be8619e9
 let
-    f = Figure()
+    fig = Figure()
     ax = Axis(
-        f[1,1];
+        fig[1,1];
         title = "Sample mean vs momentum slice",
         axis_properties...,
         xlabel = "log p (nat)", ylabel = "⟨log dN/dp⟩",
@@ -709,14 +709,14 @@ let
     end
     axislegend(ax, framevisible = false)
 
-    f
+    fig
 end
 
 # ╔═╡ b6ce51e5-b4ff-49eb-83db-ecf3e8a081ac
 let
-    f = Figure()
+    fig = Figure()
     ax = Axis(
-        f[1,1];
+        fig[1,1];
         title = "Sample standard deviation vs momentum slice",
         axis_properties...,
         xlabel = "log p (nat)", ylabel = "σ",
@@ -734,14 +734,14 @@ let
 
     axislegend(ax, position = :lt, framevisible = false)
 
-    f
+    fig
 end
 
 # ╔═╡ adf24143-4be1-46c7-a63a-fe4dd490791d
 let
-    f = Figure()
+    fig = Figure()
     ax = Axis(
-        f[1,1];
+        fig[1,1];
         title = "Sample skewness vs momentum slice",
         axis_properties...,
         xlabel = "log p (nat)", ylabel = "γ",
@@ -753,14 +753,14 @@ let
 
     axislegend(ax, position = :lb, framevisible = false)
 
-    f
+    fig
 end
 
 # ╔═╡ 67533f87-b016-45fe-b582-53c3c225c056
 let
-    f = Figure()
+    fig = Figure()
     ax = Axis(
-        f[1,1];
+        fig[1,1];
         title = "Sample kurtosis vs momentum slice",
         axis_properties...,
         xlabel = "log p (nat)", ylabel = "Kurtosis",
@@ -772,7 +772,7 @@ let
 
     axislegend(ax, position = :lt, framevisible = false)
 
-    f
+    fig
 end
 
 # ╔═╡ 6c16fc5a-7113-4b6e-abf2-de1275cceda5
@@ -785,9 +785,9 @@ Value of electron momentum at slice: log(*p*/*m*ₚ*c*) = $log_p_nat_at_slice_e
 
 # ╔═╡ 88822f52-aab8-4931-9091-1909da6c604b
 let df = CR_e_gdf_momentum[electron_momentum_index], distribs = normal_distrib_electrons
-    f = Figure()
+    fig = Figure()
     ax = Axis(
-        f[1,1];
+        fig[1,1];
         xlabel = "log(dN/dp)", ylabel = "pdf",
         title = "Histogram of electrons dN/dp at log p = $log_p_nat_at_slice_e (mₚc)",
         axis_properties...)
@@ -824,14 +824,14 @@ let df = CR_e_gdf_momentum[electron_momentum_index], distribs = normal_distrib_e
     catch e
         # axislegend has no plots to work with, because the current index doesn't have any samples. stop it complaining.
     end
-    f
+    fig
 end
 
 # ╔═╡ e7a26d10-0e00-444d-a8f9-27874a8f821e
 let
-    f = Figure()
+    fig = Figure()
     ax = Axis(
-        f[1,1];
+        fig[1,1];
         title = "Root-Sum-of-Squared-Errors vs momentum slice",
         axis_properties...,
         xminorticksvisible = true, yminorticksvisible = true,
@@ -844,14 +844,14 @@ let
 
     axislegend(ax, position = plot_p_values_in_logscale ? :ct : :ct, framevisible = false)
 
-    f
+    fig
 end
 
 # ╔═╡ cee91c99-adc0-4185-a7c3-e2164b95a003
 let
-    f = Figure()
+    fig = Figure()
     ax = Axis(
-        f[1,1];
+        fig[1,1];
         title = "Anderson–Darling p-value vs momentum slice",
         axis_properties...,
         xlabel = "log p (nat)",
@@ -863,14 +863,14 @@ let
 
     axislegend(ax, position = :lt, framevisible = false)
 
-    f
+    fig
 end
 
 # ╔═╡ a49ff5ab-6077-4bb2-b694-6f3662982745
 let
-    f = Figure()
+    fig = Figure()
     ax = Axis(
-        f[1,1];
+        fig[1,1];
         title = "Shapiro–Wilk p-value vs momentum slice",
         axis_properties...,
         xlabel = "log p (nat)",
@@ -882,14 +882,14 @@ let
 
     axislegend(ax, position = plot_p_values_in_logscale ? :cb : :lt)
 
-    f
+    fig
 end
 
 # ╔═╡ 08542eea-964a-4f1d-aae5-2b50a628588a
 let
-    f = Figure()
+    fig = Figure()
     ax = Axis(
-        f[1,1];
+        fig[1,1];
         title = "Kolmogorov–Smirnov p-value vs momentum slice",
         axis_properties...,
         xlabel = "log p (nat)",
@@ -901,7 +901,7 @@ let
 
     axislegend(ax, position = plot_p_values_in_logscale ? :cb : :lt, framevisible = false)
 
-    f
+    fig
 end
 
 # ╔═╡ Cell order:
