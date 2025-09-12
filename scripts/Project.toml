@@ -7,3 +7,7 @@ Format = "1fa38f19-a742-5d3f-a2b9-30dd87b9d5f8"
 Glob = "c27321d9-0574-5035-807b-f59d2c89b15c"
 JLD2 = "033835bb-8acc-5ee8-8aae-3f567f8a3819"
 Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
+MCScatteringDataAnalysis = "bf7559df-1170-47f2-96bf-287de9cbd746"
+
+[sources]
+MCScatteringDataAnalysis = {path = ".."}
