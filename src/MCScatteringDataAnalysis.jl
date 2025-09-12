@@ -90,7 +90,8 @@ function SSE_hist(occurrences::AbstractVector{T}, dist;
     dist_y = pdf.(dist, x)
     residuals = hist_y - dist_y
     if relative
-        residuals ./= dist_y .+ bias
+        #residuals ./= dist_y .+ bias
+        residuals ./= max.(dist_y, hist_y)
     end
     score = norm(residuals)
     return score
