@@ -16,7 +16,7 @@ function dehistogram(gdf::GroupedDataFrame)
         # -> Choose the upper bounds for de-histogramming the data, because the lowest
         #    bin covers -99.0 to -19.3 g⋅cm/s, which is too wide. The highest bin covers
         #    -2.3997 to -2.2997 g⋅cm/s
-        # -> runs into a fencpost problem. complete last cell (343 for each grouped df)
+        # -> runs into a fencepost problem. complete last cell (343 for each grouped df)
         #    has a unrepeated value?
 
         # push that copy into a bigger temp df
