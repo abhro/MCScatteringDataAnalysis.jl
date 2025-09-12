@@ -538,6 +538,11 @@ Plot p-values in log scale? (Uncheck for linear)
 $p_values_scale_checkbox_binder
 """
 
+# ╔═╡ a6a63cb1-1a13-4cc2-9730-b78dd3d3aee4
+md"""
+## Inspect tail
+"""
+
 # ╔═╡ 8d03de5e-d344-4efd-b9af-dd5391028780
 md"""
 ## Constants and functions
@@ -968,6 +973,7 @@ end
 # ╠═cbea4ff4-b132-4abb-97c6-e406a339ced6
 # ╟─79dc57bb-d66d-4608-a775-9dfc58af1995
 # ╟─e7a26d10-0e00-444d-a8f9-27874a8f821e
+# ╟─a6a63cb1-1a13-4cc2-9730-b78dd3d3aee4
 # ╠═54452e38-227e-4d06-ae74-7347aae2c021
 # ╠═b0d555b3-5087-4405-8343-ce304d482ca9
 # ╠═5dc367ca-2882-4b98-8f29-2b5390426a9b
