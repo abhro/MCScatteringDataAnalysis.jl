@@ -262,7 +262,10 @@ Choose which frames to plot:
 """
 
 # ╔═╡ febdc8a1-00bb-47a7-83d2-6cccef5190f5
+# ╠═╡ disabled = true
+#=╠═╡
 CR_p_gdf_momentum[proton_momentum_index]
+  ╠═╡ =#
 
 # ╔═╡ 35710ad9-f2e4-487b-be19-c29500633726
 md"""
