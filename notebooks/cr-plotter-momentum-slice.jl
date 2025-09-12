@@ -364,13 +364,26 @@ md"""
 
 # ╔═╡ 2374b968-1172-48db-8ddd-7b4deae7817c
 md"""
-Truncate all outlier data
+Truncate all middle data
 """
 
+# ╔═╡ c79d7166-e0a5-465e-b78d-6eeee331a99c
+cutoff_log_dNdp = (; low = 31, high = 33.8);
+
+# ╔═╡ a2c5161c-7cbd-4314-8fda-59a8e1750da1
+log_dNdp_cur_lowtail = filter(x -> x ≤ cutoff_log_dNdp.low, log_dNdp);
+
+# ╔═╡ e5d14c88-fea2-4117-97ab-0aebf3711a5b
+log_dNdp_cur_hightail = filter(x -> x ≥ cutoff_log_dNdp.high, log_dNdp);
+
 # ╔═╡ 59444b54-893e-4f4e-b746-97de78417043
-# log_dNdp_cur_trunc = filter(x -> 31 ≤ x ≤ 33.9, log_dNdp);
-# log_dNdp_cur_trunc = filter(x -> x ≤ 31, log_dNdp);
-log_dNdp_cur_trunc = filter(x -> x ≥ 33.75, log_dNdp);
+log_dNdp_cur_trunc = filter(x -> cutoff_log_dNdp.low ≤ x ≤ cutoff_log_dNdp.high, log_dNdp);
+
+# ╔═╡ 316b7ed7-4fe8-40dc-8b1a-551a0100c57c
+log_dNdp_cur_lowtail |> length
+
+# ╔═╡ 07300c09-2361-40e0-a502-b018496184c8
+log_dNdp_cur_hightail |> length
 
 # ╔═╡ afabc297-408f-4643-8296-40be885adafc
 log_dNdp_cur_trunc |> length
@@ -588,7 +601,7 @@ let
     ax = Axis(
         f[1,1];
         xlabel = "log(dN/dp)", ylabel = "pdf",
-        title = "Histogram of protons dN/dp at log p = $log_p_nat_at_slice (mₚc)",
+        title = "Truncated Histogram of protons dN/dp at log p = $log_p_nat_at_slice (mₚc)",
         axis_properties...)
 
     N = log_dNdp_cur_trunc
@@ -596,8 +609,8 @@ let
     x, y = get_hist_curve(N; nbins=bins)
     # lines!(ax, x, y, label = "bin-centered \"histogram\"", linewidth = 0.5)
     stephist!(ax, N, label = "data"; bins, normalization, color = :teal, linewidth = 0.5)
-    # distrib = fitdistribution(Normal, allowmissing(log_dNdp_cur_trunc))
-    # ismissing(distrib) || plot!(ax, x, distrib, label = @sprintf("MLE fit 𝒩 (%.2f, %.2f)", params(distrib)...), color = :indianred, linewidth = 1)
+    distrib = fitdistribution(Normal, allowmissing(log_dNdp_cur_trunc))
+    ismissing(distrib) || plot!(ax, x, distrib, label = @sprintf("MLE fit 𝒩 (%.2f, %.2f)", params(distrib)...), color = :indianred, linewidth = 1)
     custom_dist = normal_distrib_protons_from_curves.pf[proton_momentum_index]
     plot!(ax, x, custom_dist, label = @sprintf("curve fit 𝒩 (%.2f, %.2f)", params(custom_dist)...), color = :orange, linewidth = 1)
 
@@ -606,6 +619,51 @@ let
     catch e
         # axislegend has no plots to work with, because the current index doesn't have any samples. stop it complaining.
     end
+    f
+end
+
+# ╔═╡ 4786bdb6-a387-4333-b9d1-c672dc041910
+let
+    # bins = 200
+    f = Figure()
+    ax = Axis(
+        f[1,1];
+        xlabel = "log(dN/dp)", ylabel = "pdf",
+        title = "Histogram (left-tail) of protons dN/dp at log p = $log_p_nat_at_slice (mₚc)",
+        axis_properties...)
+
+    N = log_dNdp_cur_lowtail
+    isempty(N) && error("Not the correct momentum slice")
+    x, y = get_hist_curve(N; nbins=bins)
+    # lines!(ax, x, y, label = "bin-centered \"histogram\"", linewidth = 0.5)
+    stephist!(ax, N, label = "data"; bins, normalization, color = :teal, linewidth = 0.5)
+    # lines!(ax, x, fitted_dist_MLE, label = "MLE fit dist", linewidth = 0.5)
+    # lines!(ax, x, fitted_dist_curve, label = "curve-fit dist", linewidth = 0.5)
+    axislegend(ax, framevisible = false, position = :lt)
+    f
+end
+
+# ╔═╡ f7484fdb-37a6-4300-a08d-0e552bc4ef49
+let
+    # bins = 200
+    f = Figure()
+    ax = Axis(
+        f[1,1];
+        xlabel = "log(dN/dp)", ylabel = "pdf",
+        title = "Histogram (right-tail) of protons dN/dp at log p = $log_p_nat_at_slice (mₚc)",
+        axis_properties...)
+
+    N = log_dNdp_cur_hightail
+    isempty(N) && error("Not the correct momentum slice")
+    x, y = get_hist_curve(N; nbins=bins)
+    # lines!(ax, x, y, label = "bin-centered \"histogram\"", linewidth = 0.5)
+    stephist!(ax, N, label = "data"; bins, normalization, color = :teal, linewidth = 0.5)
+    # distrib = fitdistribution(Normal, allowmissing(log_dNdp_cur_trunc))
+    # ismissing(distrib) || plot!(ax, x, distrib, label = @sprintf("MLE fit 𝒩 (%.2f, %.2f)", params(distrib)...), color = :indianred, linewidth = 1)
+    # lines!(ax, x, fitted_dist_MLE, label = "MLE fit dist", linewidth = 0.5)
+    # lines!(ax, x, fitted_dist_curve, label = "curve-fit dist", linewidth = 0.5)
+
+    axislegend(ax, framevisible = false, position = :rt)
     f
 end
 
@@ -928,10 +986,17 @@ end
 # ╠═32f07cd2-f62f-41e0-9211-8ac333bdd98d
 # ╟─6cb898b3-98c5-4f3a-8d77-3deef7cf5358
 # ╟─2374b968-1172-48db-8ddd-7b4deae7817c
+# ╠═c79d7166-e0a5-465e-b78d-6eeee331a99c
+# ╠═a2c5161c-7cbd-4314-8fda-59a8e1750da1
+# ╠═e5d14c88-fea2-4117-97ab-0aebf3711a5b
 # ╠═59444b54-893e-4f4e-b746-97de78417043
+# ╠═316b7ed7-4fe8-40dc-8b1a-551a0100c57c
+# ╠═07300c09-2361-40e0-a502-b018496184c8
 # ╠═afabc297-408f-4643-8296-40be885adafc
 # ╠═60bd9873-0246-432d-9e68-bfe2aa0956b2
-# ╠═0c230911-62b3-4133-9f17-758bfeb627a2
+# ╟─0c230911-62b3-4133-9f17-758bfeb627a2
+# ╟─4786bdb6-a387-4333-b9d1-c672dc041910
+# ╟─f7484fdb-37a6-4300-a08d-0e552bc4ef49
 # ╟─f3132403-113d-4b30-9fd0-379d28ade3c7
 # ╠═e6b9701d-3d27-4c0c-b0b9-9879527f369c
 # ╠═e75ea9c0-59ca-4097-b4f6-6a3af04dc308
