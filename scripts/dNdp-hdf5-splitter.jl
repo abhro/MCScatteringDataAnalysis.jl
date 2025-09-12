@@ -47,9 +47,9 @@ function (@main)(args)
 
     @info "Splitting DataFrame into protons and electrons and de-histogramming"
     CR_p_df, CR_e_df = let
-        # split CR_df based on ion and iteration number because each of them is
+        # split CR_df based on ion and run_id because each of them is
         # a complete run which needs to be de-histogrammed
-        gdf = groupby(CR_df, [:iter, :ion])
+        gdf = groupby(CR_df, [:run_id, :ion])
         CR_df_dehistogrammed = dehistogram(gdf)
 
         # if all three dN/dp_cr is missing, drop that row
@@ -75,8 +75,8 @@ function (@main)(args)
 
     # Separate each of the proton and electron DataFrames based on iteration.
     @info "Grouping dataframes by iterations"
-    CR_p_gdf_iteration = groupby(CR_p_df, :iter)
-    CR_e_gdf_iteration = groupby(CR_e_df, :iter)
+    CR_p_gdf_iteration = groupby(CR_p_df, :run_id)
+    CR_e_gdf_iteration = groupby(CR_e_df, :run_id)
     save_object("dNdp-CR-protons-iteration-split.jld2", CR_p_gdf_iteration)
     @info "Saved dNdp-CR-protons-iteration-split.jld2"
     save_object("dNdp-CR-electrons-iteration-split.jld2", CR_e_gdf_iteration)
