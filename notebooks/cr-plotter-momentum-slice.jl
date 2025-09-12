@@ -69,17 +69,17 @@ md"""
 
 # ╔═╡ a5526239-2f05-4618-8868-0f552855d574
 md"""
-## Preamble
+# Preamble
 """
 
 # ╔═╡ cd809ca8-2cc4-435d-ab8b-b7b24fa40ed1
 md"""
-### Import packages
+## Import packages
 """
 
 # ╔═╡ 5c6b130f-0a51-4131-bab7-40b059c4cc11
 md"""
-### Configure notebook appearance
+## Configure notebook appearance
 """
 
 # ╔═╡ b544df91-fe2d-4396-892c-7faea2edd141
@@ -99,7 +99,7 @@ main {
 
 # ╔═╡ 8dfe6f3c-f693-4c73-8152-8c43c1c1ff42
 md"""
-## Read data file
+# Read data file
 """
 
 # ╔═╡ d70a4da5-1589-4b41-af32-05671f27be4d
@@ -141,12 +141,12 @@ const electron_index_binder = @bind electron_momentum_index NumberField(idx_CR_e
 
 # ╔═╡ 628130bf-da25-4799-8e5e-3d2db15b1e49
 md"""
-## Plot Cosmic Ray data
+# Plot Cosmic Ray data
 """
 
 # ╔═╡ ecf233ad-d75e-4aa5-bf7e-ff3e7b1d8755
 md"""
-### Plotting configuration
+## Plotting configuration
 """
 
 # ╔═╡ 59a22149-3397-4e97-9f7b-5d502aacf293
@@ -208,7 +208,7 @@ plot_electrons_binder = @bind do_plot_electrons CheckBox(default=true);
 
 # ╔═╡ 3bf64608-0fa2-4fcb-9782-fd7a8de47bda
 md"""
-### Sample statistics
+## Sample statistics
 """
 
 # ╔═╡ 70717f68-e97b-401e-bcf7-0684ade30b07
@@ -230,27 +230,27 @@ Should we plot electrons? $plot_electrons_binder
 
 # ╔═╡ 932c2a77-0198-4df4-a4bd-30d0bda93946
 md"""
-#### Means
+### Means
 """
 
 # ╔═╡ 5767b9ac-64c2-4d2f-ad42-961184c7edc7
 md"""
-#### Standard deviations
+### Standard deviations
 """
 
 # ╔═╡ 7495e7e9-3d50-4401-baef-d2e3c11e6b46
 md"""
-#### Skewness
+### Skewness
 """
 
 # ╔═╡ bb3a74ce-78ee-487e-a413-4c0e035e8818
 md"""
-#### Kurtosis
+### Kurtosis
 """
 
 # ╔═╡ ce8b1307-dc78-463b-9f41-04fe5dded525
 md"""
-### Histograms
+## Histograms
 """
 
 # ╔═╡ ecf80697-b786-4b02-9563-f3d082383b76
@@ -276,7 +276,7 @@ Electron momentum slice to plot (index): $electron_index_binder (min: $(minimum(
 
 # ╔═╡ 9ea7a3a4-987d-416d-88d1-672e3cce23c5
 md"""
-### dN/dp vs. iteration
+## dN/dp vs. iteration
 """
 
 # ╔═╡ b7a96870-784e-4ce0-830d-d245fc16e5f4
@@ -330,7 +330,7 @@ end
 
 # ╔═╡ a6a63cb1-1a13-4cc2-9730-b78dd3d3aee4
 md"""
-## Inspect tail
+# Inspect tail
 """
 
 # ╔═╡ 5dc367ca-2882-4b98-8f29-2b5390426a9b
@@ -377,7 +377,7 @@ log_dNdp |> length
 
 # ╔═╡ f3132403-113d-4b30-9fd0-379d28ade3c7
 md"""
-## Normal distribution inference
+# Normal distribution inference
 """
 
 # ╔═╡ e6b9701d-3d27-4c0c-b0b9-9879527f369c
@@ -415,7 +415,7 @@ sum(logpdf.(fitted_dist_curve, log_dNdp))
 
 # ╔═╡ da107273-c428-4c68-80a9-8f82cb211497
 md"""
-## Hypothesis tests
+# Hypothesis tests
 """
 
 # ╔═╡ f330af91-60a6-46ac-bdc5-ec49c216fccb
@@ -436,7 +436,7 @@ Should we plot electrons? $plot_electrons_binder
 
 # ╔═╡ 94a91acd-a878-4c3c-9716-8bed60bf8c6c
 md"""
-### Root-sum-squared errors
+## Root-sum-squared errors
 """
 
 # ╔═╡ 222df0cb-0760-48a2-902e-91d32e451a11
@@ -456,7 +456,7 @@ $p_values_scale_checkbox_binder
 
 # ╔═╡ 98675d19-3b1b-4be0-9e48-ab0ffd019647
 md"""
-### Anderson–Darling test
+## Anderson–Darling test
 """
 
 # ╔═╡ 2e79471f-3430-4b1c-91fe-80434de63cb2
@@ -473,7 +473,7 @@ $p_values_scale_checkbox_binder
 
 # ╔═╡ b499bf86-3e7a-441a-809a-934a1a8dd402
 md"""
-### Shapiro–Wilk test
+## Shapiro–Wilk test
 """
 
 # ╔═╡ a2dca585-2b84-4958-8ba6-af51602c4d8a
@@ -490,7 +490,7 @@ $p_values_scale_checkbox_binder
 
 # ╔═╡ 2ab2979f-1ad4-4168-b59c-a25e57d4826a
 md"""
-### Kolmogorov–Smirnov test
+## Kolmogorov–Smirnov test
 """
 
 # ╔═╡ fc4dddd0-cfca-407e-ad94-622f53b148b3
@@ -507,7 +507,7 @@ $p_values_scale_checkbox_binder
 
 # ╔═╡ 8d03de5e-d344-4efd-b9af-dd5391028780
 md"""
-## Constants and functions
+# Constants and functions
 """
 
 # ╔═╡ 377aaf8f-b909-4c42-bc77-912fd300c300
