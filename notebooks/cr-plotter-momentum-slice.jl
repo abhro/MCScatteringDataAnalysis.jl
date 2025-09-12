@@ -300,7 +300,6 @@ let df = CR_p_gdf_momentum[proton_momentum_index]
     #xlims!(ax, -16, -3)
     #ylims!(ax, -100, -98)
     leg = axislegend(ax, position = :rb, framevisible = false)
-    #leg.framevisible = false
     #Legend(fig[1,2], ax)
     fig
 end
