@@ -542,7 +542,7 @@ log_p_nat_at_slice = proton_log_p_nat[proton_momentum_index];
 
 # ╔═╡ 89bcb29b-0b1c-4e3a-91cb-282c05df2bc5
 md"""
-Value of proton momentum at slice: 10^$(log_p_nat_at_slice) *m*ₚ*c*
+Value of proton momentum at slice: log(*p*/*m*ₚ*c*) = $log_p_nat_at_slice
 """
 
 # ╔═╡ 4051e244-4c84-4983-8cb9-bc7f53daa9f6
@@ -780,7 +780,7 @@ log_p_nat_at_slice_e = electron_log_p_nat[electron_momentum_index];
 
 # ╔═╡ c9b9969c-2c7f-436e-b5a1-603138a4e196
 md"""
-Value of electron momentum at slice: 10^$(log_p_nat_at_slice_e) *m*ₚ*c*
+Value of electron momentum at slice: log(*p*/*m*ₚ*c*) = $log_p_nat_at_slice_e
 """
 
 # ╔═╡ 88822f52-aab8-4931-9091-1909da6c604b
