@@ -282,6 +282,9 @@ Choose which frames to plot:
 - ISM frame: $plot_ISM_binder
 """
 
+# ╔═╡ febdc8a1-00bb-47a7-83d2-6cccef5190f5
+CR_p_gdf_momentum[proton_momentum_index]
+
 # ╔═╡ 35710ad9-f2e4-487b-be19-c29500633726
 md"""
 Proton momentum slice to plot (index): $proton_index_binder (min: $(minimum(idx_CR_p_gdf)), max: $(maximum(idx_CR_p_gdf)))
@@ -922,6 +925,7 @@ end
 # ╟─89bcb29b-0b1c-4e3a-91cb-282c05df2bc5
 # ╟─c9b9969c-2c7f-436e-b5a1-603138a4e196
 # ╟─ecf80697-b786-4b02-9563-f3d082383b76
+# ╠═febdc8a1-00bb-47a7-83d2-6cccef5190f5
 # ╟─35710ad9-f2e4-487b-be19-c29500633726
 # ╟─4051e244-4c84-4983-8cb9-bc7f53daa9f6
 # ╟─7be1e6da-0eb9-45e5-a4f9-bb6deedc3def
