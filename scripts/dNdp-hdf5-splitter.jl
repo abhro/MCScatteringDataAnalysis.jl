@@ -29,7 +29,9 @@ end
 
 function (@main)(args)
     CR_df = let
-        df = load_object("dNdp-CR.jld2")
+        filename = args[1]
+        @info "Reading $filename"
+        df = load_object(filename)
         gdf = groupby(df, [:initial_seed, :iteration])
         insertcols!(df, 1, :run_id => groupindices(gdf))
         # drop the two columns which are now redundant (or not I guess)
