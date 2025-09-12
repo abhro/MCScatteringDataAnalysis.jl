@@ -167,9 +167,6 @@ const bins = 90;
 # ╔═╡ 50b1a87f-49ff-4d93-aa6e-f042a87b875e
 const color_pf_p, color_sf_p, color_ISM_p, color_pf_e, color_sf_e, color_ISM_e = Makie.wong_colors();
 
-# ╔═╡ 3f90a70b-580d-4816-a990-a0da0b789c34
-visual_layer = visual(StepHist);
-
 # ╔═╡ 1b9f507c-1585-4ad1-8090-bdde6de972d6
 md"""
 Define the PlutoUI binders for selecting which frames to plot
@@ -186,21 +183,6 @@ plot_ISM_binder = @bind do_plot_ISM CheckBox(default=false);
 
 # ╔═╡ 4553a97d-6b78-4268-90de-d8bee348d3d4
 plot_electrons_binder = @bind do_plot_electrons CheckBox(default=true);
-
-# ╔═╡ 105361e9-cafd-4755-bcbd-fdcbcb07b291
-map_layer = let
-    x_map = :log_dNdp_cr_pf => "log(dN/dp)"
-    y_label = "log(dN/dp)"
-
-    # A little type-piracy makes the world go round
-    Base.:*(b::Bool, l::Layer) = b ? l : zerolayer()
-
-    pf_map = mapping(x_map, :log_dNdp_cr_pf => y_label, color = direct("plasma frame"))
-    sf_map = mapping(x_map, :log_dNdp_cr_sf => y_label, color = direct("shock frame"))
-    ISM_map = mapping(x_map, :log_dNdp_cr_ISM => y_label, color = direct("ISM frame"))
-
-    do_plot_pf*pf_map + do_plot_sf*sf_map + do_plot_ISM*ISM_map
-end;
 
 # ╔═╡ 3bf64608-0fa2-4fcb-9782-fd7a8de47bda
 md"""
@@ -250,42 +232,21 @@ md"""
 """
 
 # ╔═╡ 6d5eb940-6739-4781-9dda-7433cae3cf50
-#=╠═╡
+# A little type-piracy makes the world go round
 Base.:*(x::Bool, l::AoG.Layer) = x ? l : AoG.zerolayer()
-  ╠═╡ =#
-
-# ╔═╡ aa3a5985-3d14-4e6e-b2b2-5f7f731c3336
-#=╠═╡
-data = AoG.data(df);
-  ╠═╡ =#
 
 # ╔═╡ 2f44c2c5-7fc6-4c93-be6e-0cffb863afd4
-#=╠═╡
 visual_layer = AoG.histogram(Stairs; bins, normalization);
-  ╠═╡ =#
 
-# ╔═╡ b15d71e1-ac37-422e-98f0-a0a03238fe35
-#=╠═╡
-map_layer = AoG.mapping(
-    [:log_dNdp_cr_pf, :log_dNdp_cr_sf, :log_dNdp_cr_ISM],
-    color = dims(1) => renamer(["Plasma frame", "Shock frame", "ISM frame"]));
-  ╠═╡ =#
-
-# ╔═╡ 1333eaeb-8aae-49d5-aabc-3622b9d6ae35
-#=╠═╡
-layer = data * map_layer * visual_layer;
-  ╠═╡ =#
-
-# ╔═╡ 4979cc00-15c1-40da-b538-021a067d1065
-#=╠═╡
-draw(
-    layer;
-    figure = (;
-        title = "Histogram of protons dN/dp at p = 10^$log_p_nat_at_slice mₚc",
-        titlealign = :center,
-    ),
-)
-  ╠═╡ =#
+# ╔═╡ 105361e9-cafd-4755-bcbd-fdcbcb07b291
+map_layer = let
+    x_map = :log_dNdp_cr_pf => "log(dN/dp)"
+    y_label = "log(dN/dp)"
+    pf_map = mapping(x_map, :log_dNdp_cr_pf => y_label, color = direct("plasma frame"))
+    sf_map = mapping(x_map, :log_dNdp_cr_sf => y_label, color = direct("shock frame"))
+    ISM_map = mapping(x_map, :log_dNdp_cr_ISM => y_label, color = direct("ISM frame"))
+    do_plot_pf*pf_map + do_plot_sf*sf_map + do_plot_ISM*ISM_map
+end;
 
 # ╔═╡ ce8b1307-dc78-463b-9f41-04fe5dded525
 md"""
@@ -918,7 +879,6 @@ end
 # ╠═f86707a1-9d79-4df8-8798-3f7ea1d1797c
 # ╠═50b1a87f-49ff-4d93-aa6e-f042a87b875e
 # ╠═105361e9-cafd-4755-bcbd-fdcbcb07b291
-# ╠═3f90a70b-580d-4816-a990-a0da0b789c34
 # ╟─1b9f507c-1585-4ad1-8090-bdde6de972d6
 # ╠═d6513272-7232-43e6-ac88-a58462181041
 # ╠═59be6983-6e37-4a70-8929-69176a5f807e
@@ -938,11 +898,7 @@ end
 # ╟─67533f87-b016-45fe-b582-53c3c225c056
 # ╟─44cb6acf-7fee-4e3e-8253-d91e5a76299a
 # ╠═6d5eb940-6739-4781-9dda-7433cae3cf50
-# ╠═aa3a5985-3d14-4e6e-b2b2-5f7f731c3336
 # ╠═2f44c2c5-7fc6-4c93-be6e-0cffb863afd4
-# ╠═b15d71e1-ac37-422e-98f0-a0a03238fe35
-# ╠═1333eaeb-8aae-49d5-aabc-3622b9d6ae35
-# ╠═4979cc00-15c1-40da-b538-021a067d1065
 # ╟─ce8b1307-dc78-463b-9f41-04fe5dded525
 # ╠═71404de8-f8b2-4d26-b7d7-41064cae1447
 # ╠═6c16fc5a-7113-4b6e-abf2-de1275cceda5
