@@ -62,6 +62,9 @@ using LinearAlgebra
 # ╔═╡ fd47dab7-426c-44fc-8038-00e378324e41
 using HypothesisTests
 
+# ╔═╡ 70f93b37-a977-4dce-9fdd-a0497603a864
+using MCScatteringDataAnalysis: get_onesample_scores
+
 # ╔═╡ f0e77bbd-e420-49f1-9b40-f9d994888b93
 md"""
 # Plot fluxes for each momentum slice
@@ -428,6 +431,9 @@ SSE_hist(log_dNdp, fitted_dist_curve)
 # ╔═╡ 89f8d7a8-ea2e-4906-9460-da16154b0404
 sum(logpdf.(fitted_dist_curve, log_dNdp))
 
+# ╔═╡ 97291776-74f0-428a-ab4f-3c498b630000
+normal_distrib_electrons_from_curves = fitdistributions(v -> fit_dist_to_histogram(Normal, v; nbins=bins), CR_e_gdf_momentum)
+
 # ╔═╡ da107273-c428-4c68-80a9-8f82cb211497
 md"""
 # Hypothesis tests
@@ -460,8 +466,15 @@ sse_scores_p = get_sse_scores(CR_p_gdf_momentum, normal_distrib_protons.pf, col 
 # ╔═╡ 32f07cd2-f62f-41e0-9211-8ac333bdd98d
 sse_scores_p |> skipmissing |> findmax
 
+# ╔═╡ c5d56d28-15d5-464f-9055-7bbfc9826e72
+# sse_scores_p_curve = get_sse_scores(CR_p_gdf_momentum, normal_distrib_protons_from_curves.pf, col = :log_dNdp_cr_pf)
+sse_scores_p_curve = get_onesample_scores((t...; kwd...) -> SSE_hist(t...; kwd..., relative = true, bias = 10), CR_p_gdf_momentum, normal_distrib_protons_from_curves.pf; col = :log_dNdp_cr_pf)
+
 # ╔═╡ cbea4ff4-b132-4abb-97c6-e406a339ced6
 sse_scores_e = get_sse_scores(CR_e_gdf_momentum, normal_distrib_electrons.pf, col = :log_dNdp_cr_pf)
+
+# ╔═╡ 85feafa4-a572-40ca-9975-fb0d3d5309f7
+sse_scores_e_curve = get_onesample_scores((t...; kwd...) -> SSE_hist(t...; kwd..., relative = true, bias = 0.5), CR_e_gdf_momentum, normal_distrib_electrons_from_curves.pf; col = :log_dNdp_cr_pf)
 
 # ╔═╡ 79dc57bb-d66d-4608-a775-9dfc58af1995
 md"""
@@ -549,7 +562,7 @@ let df = CR_p_gdf_momentum[proton_momentum_index], distribs = normal_distrib_pro
     fig = Figure()
     ax = Axis(
         fig[1,1];
-        xlabel = "log(dN/dp)", ylabel = "pdf",
+        xlabel = "log(dN/dp)", ylabel = "pdf",# yscale = log10,
         title = "Histogram of protons dN/dp at log p = $log_p_nat_at_slice (mₚc)",
         axis_properties...)
 
@@ -559,12 +572,12 @@ let df = CR_p_gdf_momentum[proton_momentum_index], distribs = normal_distrib_pro
 
         distrib = distribs.pf[proton_momentum_index]
         if !ismissing(distrib)
-            plot!(ax, distrib, label = @sprintf("MLE fit 𝒩 (%.2f, %.2f)", params(distrib)...))
+            plot!(ax, distrib, label = @sprintf("MLE fit 𝒩 (%.2f, %.2f)", params(distrib)...), color = :indianred)
         end
 
         distrib = normal_distrib_protons_from_curves.pf[proton_momentum_index]
         if !ismissing(distrib)
-            plot!(ax, distrib, label = @sprintf("Curve fit 𝒩 (%.2f, %.2f)", params(distrib)...))
+            plot!(ax, distrib, label = @sprintf("Curve fit 𝒩 (%.2f, %.2f)", params(distrib)...), color = :orange)
         end
     end
 
@@ -711,6 +724,29 @@ let
     fig
 end
 
+# ╔═╡ 930a7033-e01a-434a-a88a-1bd901dc6bdc
+let
+    fig = Figure()
+    ax = Axis(
+        fig[1,1];
+        title = "Curve-fit σ vs momentum slice",
+        axis_properties...,
+        xlabel = "log p (nat)", ylabel = "σ",
+        # yscale = log10,
+    )
+    markersize = 4
+    sigmas = [ismissing(dist) ? missing : dist.σ for dist in normal_distrib_protons_from_curves.pf]
+    scatterlines!(ax, proton_log_p_nat, sigmas, color = color_pf_p, label = "protons, plasma frame"; markersize)
+    if do_plot_electrons
+        sigmas = [ismissing(dist) ? missing : dist.σ for dist in normal_distrib_electrons_from_curves.pf]
+        scatterlines!(ax, electron_log_p_nat, sigmas, color = color_pf_e, label = "electrons, plasma frame"; markersize)
+    end
+
+    axislegend(ax, position = :lt, framevisible = false)
+
+    fig
+end
+
 # ╔═╡ b6ce51e5-b4ff-49eb-83db-ecf3e8a081ac
 let
     fig = Figure()
@@ -796,7 +832,11 @@ let df = CR_e_gdf_momentum[electron_momentum_index], distribs = normal_distrib_e
         !isempty(N) && stephist!(ax, N, label = "plasma frame ($(length(N)) samples)"; bins, normalization, color = color_pf_e)
         distrib = distribs.pf[electron_momentum_index]
         if !ismissing(distrib)
-            plot!(ax, distrib, label = @sprintf("𝒩 (%.2f, %.2f)", params(distrib)...), color = color_pf_e)
+            plot!(ax, distrib, label = @sprintf("MLE fit 𝒩 (%.2f, %.2f)", params(distrib)...), color = :lightgoldenrod4)
+        end
+        distrib = normal_distrib_electrons_from_curves.pf[electron_momentum_index]
+        if !ismissing(distrib)
+            plot!(ax, distrib, label = @sprintf("Curve fit 𝒩 (%.2f, %.2f)", params(distrib)...), color = :honeydew4)
         end
     end
 
@@ -819,7 +859,7 @@ let df = CR_e_gdf_momentum[electron_momentum_index], distribs = normal_distrib_e
     end
 
     try
-        axislegend(ax, position = :rt, framevisible = false)
+        axislegend(ax, framevisible = false, position = :lt)
     catch e
         # axislegend has no plots to work with, because the current index doesn't have any samples. stop it complaining.
     end
@@ -838,10 +878,14 @@ let
         yscale = p_val_yscale,
     )
 
-    scatterlines!(ax, proton_log_p_nat, sse_scores_p, color = color_pf_p, label = "protons, plasma frame"; markersize)
-    do_plot_electrons && scatterlines!(ax, electron_log_p_nat, sse_scores_e, color = color_pf_e, label = "electrons, plasma frame"; markersize)
+    # scatterlines!(ax, proton_log_p_nat, sse_scores_p, color = color_pf_p, label = "protons, plasma frame (MLE)"; markersize)
+    scatterlines!(ax, proton_log_p_nat, sse_scores_p_curve, label = "protons, plasma frame (curve)"; markersize, color = :darkgreen)
+    if do_plot_electrons
+        # scatterlines!(ax, electron_log_p_nat, sse_scores_e, color = color_pf_e, label = "electrons, plasma frame (MLE)"; markersize)
+        scatterlines!(ax, electron_log_p_nat, sse_scores_e_curve, color = :orange, label = "electrons, plasma frame (curve)"; markersize)
+    end
 
-    axislegend(ax, position = plot_p_values_in_logscale ? :ct : :ct, framevisible = false)
+    axislegend(ax, position = plot_p_values_in_logscale ? :ct : :cb, framevisible = false)
 
     fig
 end
@@ -951,6 +995,7 @@ end
 # ╟─932c2a77-0198-4df4-a4bd-30d0bda93946
 # ╟─91bba2da-c925-4123-bb8a-c1f9be8619e9
 # ╟─5767b9ac-64c2-4d2f-ad42-961184c7edc7
+# ╟─930a7033-e01a-434a-a88a-1bd901dc6bdc
 # ╟─b6ce51e5-b4ff-49eb-83db-ecf3e8a081ac
 # ╟─7495e7e9-3d50-4401-baef-d2e3c11e6b46
 # ╟─adf24143-4be1-46c7-a63a-fe4dd490791d
@@ -1001,6 +1046,7 @@ end
 # ╠═e75ea9c0-59ca-4097-b4f6-6a3af04dc308
 # ╟─3860d0cf-20f4-4256-9286-8757afc38ef9
 # ╠═f2fe3844-2be8-4da6-9656-40312304556b
+# ╠═97291776-74f0-428a-ab4f-3c498b630000
 # ╟─da107273-c428-4c68-80a9-8f82cb211497
 # ╠═49902e99-870d-4d19-afb0-1de612c185df
 # ╠═4ac32bef-af81-4f7e-8e97-7eac4dd2bf69
@@ -1011,9 +1057,12 @@ end
 # ╟─b51148d5-cce6-4310-b7d4-dcbb6d4ac66b
 # ╟─94a91acd-a878-4c3c-9716-8bed60bf8c6c
 # ╠═222df0cb-0760-48a2-902e-91d32e451a11
+# ╠═70f93b37-a977-4dce-9fdd-a0497603a864
+# ╠═c5d56d28-15d5-464f-9055-7bbfc9826e72
 # ╠═cbea4ff4-b132-4abb-97c6-e406a339ced6
+# ╠═85feafa4-a572-40ca-9975-fb0d3d5309f7
 # ╟─79dc57bb-d66d-4608-a775-9dfc58af1995
-# ╟─e7a26d10-0e00-444d-a8f9-27874a8f821e
+# ╠═e7a26d10-0e00-444d-a8f9-27874a8f821e
 # ╟─98675d19-3b1b-4be0-9e48-ab0ffd019647
 # ╠═2e79471f-3430-4b1c-91fe-80434de63cb2
 # ╠═bd8f636c-6033-434e-a220-a07397679431
