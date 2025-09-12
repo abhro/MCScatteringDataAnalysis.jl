@@ -64,6 +64,11 @@ function (@main)(args)
     end
     @debug "Got dehistogrammed data" CR_p_df CR_e_df CR_p_df[1,:] CR_e_df[1,:]
 
+    save_object("dNdp-CR-proton.jld2", CR_p_df)
+    @info "Saved dNdp-CR-proton.jld2"
+    save_object("dNdp-CR-electron.jld2", CR_e_df)
+    @info "Saved dNdp-CR-electron.jld2"
+
     # Separate each of the proton and electron DataFrames by momentum.
     @info "Grouping dataframes by momenta"
     CR_p_gdf_momentum = groupby(CR_p_df, :log_p_nat)
