@@ -190,7 +190,7 @@ md"""
 """
 
 # ╔═╡ 70717f68-e97b-401e-bcf7-0684ade30b07
-gdf_sample_stats(statistic, gdf; column = :log_dNdp_cr_pf) = [
+gdf_sample_stats(statistic, gdf; column) = [
     statistic(collect(skipmissing(df[!,column]))) for df in gdf];
 
 # ╔═╡ e85bc3ef-97a4-4d0e-937e-3ca290a28086
@@ -633,14 +633,33 @@ let
         xlabel = "log p (nat)", ylabel = "μ",
     )
 
-    means = gdf_sample_stats(mean, CR_p_gdf_momentum)
-    lines!(ax, proton_log_p_nat, means, color = color_pf_p, label = "protons, plasma frame")
+    if do_plot_pf
+        means = gdf_sample_stats(mean, CR_p_gdf_momentum; column = :log_dNdp_cr_pf)
+        lines!(ax, proton_log_p_nat, means, color = color_pf_p, label = "protons, plasma frame")
 
-    if do_plot_electrons
-        means = gdf_sample_stats(mean, CR_e_gdf_momentum)
-        lines!(ax, electron_log_p_nat, means, color = color_pf_e, label = "electrons, plasma frame")
+        if do_plot_electrons
+            means = gdf_sample_stats(mean, CR_e_gdf_momentum; column = :log_dNdp_cr_pf)
+            lines!(ax, electron_log_p_nat, means, color = color_pf_e, label = "electrons, plasma frame")
+        end
     end
+    if do_plot_sf
+        means = gdf_sample_stats(mean, CR_p_gdf_momentum; column = :log_dNdp_cr_sf)
+        lines!(ax, proton_log_p_nat, means, color = color_sf_p, label = "protons, plasma frame")
 
+        if do_plot_electrons
+            means = gdf_sample_stats(mean, CR_e_gdf_momentum; column = :log_dNdp_cr_sf)
+            lines!(ax, electron_log_p_nat, means, color = color_sf_e, label = "electrons, plasma frame")
+        end
+    end
+    if do_plot_ISM
+        means = gdf_sample_stats(mean, CR_p_gdf_momentum; column = :log_dNdp_cr_ISM)
+        lines!(ax, proton_log_p_nat, means, color = color_ISM_p, label = "protons, plasma frame")
+
+        if do_plot_electrons
+            means = gdf_sample_stats(mean, CR_e_gdf_momentum; column = :log_dNdp_cr_ISM)
+            lines!(ax, electron_log_p_nat, means, color = color_ISM_e, label = "electrons, plasma frame")
+        end
+    end
     axislegend(ax, framevisible = false)
 
     f
@@ -658,11 +677,11 @@ let
     )
     markersize = 4
 
-    std_devs = gdf_sample_stats(std, CR_p_gdf_momentum)
+    std_devs = gdf_sample_stats(std, CR_p_gdf_momentum; column = :log_dNdp_cr_pf)
     scatterlines!(ax, proton_log_p_nat, std_devs, color = color_pf_p, label = "protons, plasma frame"; markersize)
 
     if do_plot_electrons
-        std_devs = gdf_sample_stats(std, CR_e_gdf_momentum)
+        std_devs = gdf_sample_stats(std, CR_e_gdf_momentum; column = :log_dNdp_cr_pf)
         scatterlines!(ax, electron_log_p_nat, std_devs, color = color_pf_e, label = "electrons, plasma frame"; markersize)
     end
 
@@ -701,8 +720,8 @@ let
         #yscale = log10,
     )
 
-    scatterlines!(ax, proton_log_p_nat, gdf_sample_stats(kurtosis, CR_p_gdf_momentum), color = color_pf_p, label = "protons, plasma frame"; markersize)
-    scatterlines!(ax, electron_log_p_nat, gdf_sample_stats(kurtosis, CR_e_gdf_momentum), color = color_pf_e, label = "electrons, plasma frame"; markersize)
+    scatterlines!(ax, proton_log_p_nat, gdf_sample_stats(kurtosis, CR_p_gdf_momentum; column = :log_dNdp_cr_pf), color = color_pf_p, label = "protons, plasma frame"; markersize)
+    do_plot_electrons && scatterlines!(ax, electron_log_p_nat, gdf_sample_stats(kurtosis, CR_e_gdf_momentum; column = :log_dNdp_cr_pf), color = color_pf_e, label = "electrons, plasma frame"; markersize)
 
     axislegend(ax, position = :lt, framevisible = false)
 
