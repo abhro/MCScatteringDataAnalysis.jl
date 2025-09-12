@@ -67,11 +67,6 @@ md"""
 # Plot fluxes for each momentum slice
 """
 
-# ╔═╡ a5526239-2f05-4618-8868-0f552855d574
-md"""
-# Preamble
-"""
-
 # ╔═╡ cd809ca8-2cc4-435d-ab8b-b7b24fa40ed1
 md"""
 ## Import packages
@@ -848,7 +843,6 @@ end
 
 # ╔═╡ Cell order:
 # ╟─f0e77bbd-e420-49f1-9b40-f9d994888b93
-# ╟─a5526239-2f05-4618-8868-0f552855d574
 # ╠═f1ee2cb0-8274-11ef-0826-f55183647219
 # ╟─cd809ca8-2cc4-435d-ab8b-b7b24fa40ed1
 # ╠═7899ae97-fbc2-43e5-ac77-c6d725f0371e
