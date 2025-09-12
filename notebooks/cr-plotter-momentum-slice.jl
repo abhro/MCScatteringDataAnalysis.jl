@@ -128,6 +128,11 @@ const idx_CR_p_gdf = axes(CR_p_gdf_momentum, 1);
 # ╔═╡ f8d26a2c-2789-4b04-8bb7-71bf19686bbd
 const idx_CR_e_gdf = axes(CR_e_gdf_momentum, 1);
 
+# ╔═╡ 5c65e63d-e6bd-41fa-adbf-0e1717075956
+md"""
+UI element variables for selecting which momentum slice we want to inspect
+"""
+
 # ╔═╡ b679ff7a-89f4-4f92-9dec-2ba3c538d715
 const proton_index_binder = @bind proton_momentum_index NumberField(idx_CR_p_gdf, default = 13);
 
@@ -867,6 +872,7 @@ end
 # ╟─d85427f4-86ed-4c04-980a-a4152b5875e8
 # ╠═1572a05b-77db-43a4-81cd-d9eb3c9bf2e0
 # ╠═f8d26a2c-2789-4b04-8bb7-71bf19686bbd
+# ╟─5c65e63d-e6bd-41fa-adbf-0e1717075956
 # ╠═b679ff7a-89f4-4f92-9dec-2ba3c538d715
 # ╠═59f400ef-3b5b-424c-ae08-41b94d220ce9
 # ╟─628130bf-da25-4799-8e5e-3d2db15b1e49
