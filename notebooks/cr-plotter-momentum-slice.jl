@@ -167,6 +167,23 @@ const bins = 90;
 # ╔═╡ 50b1a87f-49ff-4d93-aa6e-f042a87b875e
 const color_pf_p, color_sf_p, color_ISM_p, color_pf_e, color_sf_e, color_ISM_e = Makie.wong_colors();
 
+
+# ╔═╡ 1b9f507c-1585-4ad1-8090-bdde6de972d6
+md"""
+Define the PlutoUI binders for selecting which frames to plot
+"""
+
+# ╔═╡ d6513272-7232-43e6-ac88-a58462181041
+plot_pf_binder = @bind do_plot_pf CheckBox(default=true);
+
+# ╔═╡ 59be6983-6e37-4a70-8929-69176a5f807e
+plot_sf_binder = @bind do_plot_sf CheckBox(default=false);
+
+# ╔═╡ 60deb76f-3efe-4e0d-b176-9f0169259dca
+plot_ISM_binder = @bind do_plot_ISM CheckBox(default=false);
+
+# ╔═╡ 4553a97d-6b78-4268-90de-d8bee348d3d4
+plot_electrons_binder = @bind do_plot_electrons CheckBox(default=true);
 # ╔═╡ 3bf64608-0fa2-4fcb-9782-fd7a8de47bda
 md"""
 ### Sample statistics
@@ -175,6 +192,19 @@ md"""
 # ╔═╡ 70717f68-e97b-401e-bcf7-0684ade30b07
 gdf_sample_stats(statistic, gdf; column = :log_dNdp_cr_pf) = [
     statistic(collect(skipmissing(df[!,column]))) for df in gdf];
+
+# ╔═╡ e85bc3ef-97a4-4d0e-937e-3ca290a28086
+md"""
+Choose which frames to plot:
+- Plasma frame: $plot_pf_binder
+- Shock frame: $plot_sf_binder
+- ISM frame: $plot_ISM_binder
+"""
+
+# ╔═╡ 88527827-9710-4c63-964f-691aa8909d1f
+md"""
+Should we plot electrons? $plot_electrons_binder
+"""
 
 # ╔═╡ 932c2a77-0198-4df4-a4bd-30d0bda93946
 md"""
@@ -247,9 +277,9 @@ md"""
 # ╔═╡ ecf80697-b786-4b02-9563-f3d082383b76
 md"""
 Choose which frames to plot:
-- Plasma frame: $(@bind do_plot_pf CheckBox(default=true))
-- Shock frame: $(@bind do_plot_sf CheckBox(default=false))
-- ISM frame: $(@bind do_plot_ISM CheckBox(default=false))
+- Plasma frame: $plot_pf_binder
+- Shock frame: $plot_sf_binder
+- ISM frame: $plot_ISM_binder
 """
 
 # ╔═╡ 35710ad9-f2e4-487b-be19-c29500633726
@@ -351,6 +381,11 @@ p_values_scale_checkbox_binder = @bind plot_p_values_in_logscale CheckBox();
 
 # ╔═╡ 04dad413-0dc0-4ceb-81c2-e208ef082f38
 p_val_yscale = plot_p_values_in_logscale ? log10 : identity;
+
+# ╔═╡ b51148d5-cce6-4310-b7d4-dcbb6d4ac66b
+md"""
+Should we plot electrons? $plot_electrons_binder
+"""
 
 # ╔═╡ 94a91acd-a878-4c3c-9716-8bed60bf8c6c
 md"""
@@ -498,25 +533,6 @@ Vector of momentum slices
 # ╔═╡ e8406a6a-ecc2-49d2-b67a-503b4ef5764b
 const proton_log_p_nat = keys(CR_p_gdf_momentum) .|> values .|> first;
 
-# ╔═╡ adf24143-4be1-46c7-a63a-fe4dd490791d
-let
-    f = Figure()
-    ax = Axis(
-        f[1,1];
-        title = "Sample skewness vs momentum slice",
-        axis_properties...,
-        xlabel = "log p (nat)", ylabel = "γ",
-        #yscale = log10,
-    )
-
-    scatterlines!(ax, proton_log_p_nat, gdf_sample_stats(skewness, CR_p_gdf_momentum), color = color_pf_p, label = "protons, plasma frame"; markersize)
-    # scatterlines!(ax, electron_log_p_nat, gdf_sample_stats(skewness, CR_e_gdf_momentum), color = color_pf_e, label = "electrons, plasma frame"; markersize)
-
-    axislegend(ax, position = :lb, framevisible = false)
-
-    f
-end
-
 # ╔═╡ 71404de8-f8b2-4d26-b7d7-41064cae1447
 log_p_nat_at_slice = proton_log_p_nat[proton_momentum_index];
 
@@ -604,25 +620,6 @@ let
     f
 end
 
-# ╔═╡ cee91c99-adc0-4185-a7c3-e2164b95a003
-let
-    f = Figure()
-    ax = Axis(
-        f[1,1];
-        title = "Anderson–Darling p-value vs momentum slice",
-        axis_properties...,
-        xlabel = "log p (nat)",
-        yscale = p_val_yscale,
-    )
-
-    scatterlines!(ax, proton_log_p_nat, passmissing(pvalue).(ad_scores_p), color = color_pf_p, label = "protons, plasma frame"; markersize)
-    # scatterlines!(ax, electron_log_p_nat, passmissing(pvalue).(ad_scores_e), color = color_pf_e, label = "electrons, plasma frame"; markersize)
-
-    axislegend(ax, position = :lt, framevisible = false)
-
-    f
-end
-
 # ╔═╡ 589661b1-6a64-4db5-ac40-c1565c29c3cc
 const electron_log_p_nat = keys(CR_e_gdf_momentum) .|> values .|> first;
 
@@ -639,8 +636,10 @@ let
     means = gdf_sample_stats(mean, CR_p_gdf_momentum)
     lines!(ax, proton_log_p_nat, means, color = color_pf_p, label = "protons, plasma frame")
 
-    means = gdf_sample_stats(mean, CR_e_gdf_momentum)
-    lines!(ax, electron_log_p_nat, means, color = color_pf_e, label = "electrons, plasma frame")
+    if do_plot_electrons
+        means = gdf_sample_stats(mean, CR_e_gdf_momentum)
+        lines!(ax, electron_log_p_nat, means, color = color_pf_e, label = "electrons, plasma frame")
+    end
 
     axislegend(ax, framevisible = false)
 
@@ -662,10 +661,31 @@ let
     std_devs = gdf_sample_stats(std, CR_p_gdf_momentum)
     scatterlines!(ax, proton_log_p_nat, std_devs, color = color_pf_p, label = "protons, plasma frame"; markersize)
 
-    std_devs = gdf_sample_stats(std, CR_e_gdf_momentum)
-    scatterlines!(ax, electron_log_p_nat, std_devs, color = color_pf_e, label = "electrons, plasma frame"; markersize)
+    if do_plot_electrons
+        std_devs = gdf_sample_stats(std, CR_e_gdf_momentum)
+        scatterlines!(ax, electron_log_p_nat, std_devs, color = color_pf_e, label = "electrons, plasma frame"; markersize)
+    end
 
     axislegend(ax, position = :lt, framevisible = false)
+
+    f
+end
+
+# ╔═╡ adf24143-4be1-46c7-a63a-fe4dd490791d
+let
+    f = Figure()
+    ax = Axis(
+        f[1,1];
+        title = "Sample skewness vs momentum slice",
+        axis_properties...,
+        xlabel = "log p (nat)", ylabel = "γ",
+        #yscale = log10,
+    )
+
+    scatterlines!(ax, proton_log_p_nat, gdf_sample_stats(skewness, CR_p_gdf_momentum; column = :log_dNdp_cr_pf), color = color_pf_p, label = "protons, plasma frame"; markersize)
+    do_plot_electrons && scatterlines!(ax, electron_log_p_nat, gdf_sample_stats(skewness, CR_e_gdf_momentum; column = :log_dNdp_cr_pf), color = color_pf_e, label = "electrons, plasma frame"; markersize)
+
+    axislegend(ax, position = :lb, framevisible = false)
 
     f
 end
@@ -754,9 +774,28 @@ let
     )
 
     scatterlines!(ax, proton_log_p_nat, sse_scores_p, color = color_pf_p, label = "protons, plasma frame"; markersize)
-    scatterlines!(ax, electron_log_p_nat, sse_scores_e, color = color_pf_e, label = "electrons, plasma frame"; markersize)
+    do_plot_electrons && scatterlines!(ax, electron_log_p_nat, sse_scores_e, color = color_pf_e, label = "electrons, plasma frame"; markersize)
 
     axislegend(ax, position = plot_p_values_in_logscale ? :ct : :ct, framevisible = false)
+
+    f
+end
+
+# ╔═╡ cee91c99-adc0-4185-a7c3-e2164b95a003
+let
+    f = Figure()
+    ax = Axis(
+        f[1,1];
+        title = "Anderson–Darling p-value vs momentum slice",
+        axis_properties...,
+        xlabel = "log p (nat)",
+        yscale = p_val_yscale,
+    )
+
+    scatterlines!(ax, proton_log_p_nat, passmissing(pvalue).(ad_scores_p), color = color_pf_p, label = "protons, plasma frame"; markersize)
+    do_plot_electrons && scatterlines!(ax, electron_log_p_nat, passmissing(pvalue).(ad_scores_e), color = color_pf_e, label = "electrons, plasma frame"; markersize)
+
+    axislegend(ax, position = :lt, framevisible = false)
 
     f
 end
@@ -773,7 +812,7 @@ let
     )
 
     scatterlines!(ax, proton_log_p_nat, passmissing(pvalue).(sw_scores_p), color = color_pf_p, label = "protons, plasma frame"; markersize)
-    scatterlines!(ax, electron_log_p_nat, passmissing(pvalue).(sw_scores_e), color = color_pf_e, label = "electrons, plasma frame"; markersize)
+    do_plot_electrons && scatterlines!(ax, electron_log_p_nat, passmissing(pvalue).(sw_scores_e), color = color_pf_e, label = "electrons, plasma frame"; markersize)
 
     axislegend(ax, position = plot_p_values_in_logscale ? :cb : :lt)
 
@@ -792,7 +831,7 @@ let
     )
 
     scatterlines!(ax, proton_log_p_nat, passmissing(pvalue).(ks_scores_p), color = color_pf_p, label = "protons, plasma frame"; markersize)
-    scatterlines!(ax, electron_log_p_nat, passmissing(pvalue).(ks_scores_e), color = color_pf_e, label = "electrons, plasma frame"; markersize)
+    do_plot_electrons && scatterlines!(ax, electron_log_p_nat, passmissing(pvalue).(ks_scores_e), color = color_pf_e, label = "electrons, plasma frame"; markersize)
 
     axislegend(ax, position = plot_p_values_in_logscale ? :cb : :lt, framevisible = false)
 
@@ -834,8 +873,15 @@ end
 # ╟─f91132bd-28af-4a6c-9a77-5c5b0ed4a08a
 # ╠═f86707a1-9d79-4df8-8798-3f7ea1d1797c
 # ╠═50b1a87f-49ff-4d93-aa6e-f042a87b875e
+# ╟─1b9f507c-1585-4ad1-8090-bdde6de972d6
+# ╠═d6513272-7232-43e6-ac88-a58462181041
+# ╠═59be6983-6e37-4a70-8929-69176a5f807e
+# ╠═60deb76f-3efe-4e0d-b176-9f0169259dca
+# ╠═4553a97d-6b78-4268-90de-d8bee348d3d4
 # ╟─3bf64608-0fa2-4fcb-9782-fd7a8de47bda
 # ╠═70717f68-e97b-401e-bcf7-0684ade30b07
+# ╟─e85bc3ef-97a4-4d0e-937e-3ca290a28086
+# ╟─88527827-9710-4c63-964f-691aa8909d1f
 # ╟─932c2a77-0198-4df4-a4bd-30d0bda93946
 # ╟─91bba2da-c925-4123-bb8a-c1f9be8619e9
 # ╟─5767b9ac-64c2-4d2f-ad42-961184c7edc7
@@ -899,6 +945,7 @@ end
 # ╠═afabc297-408f-4643-8296-40be885adafc
 # ╠═60bd9873-0246-432d-9e68-bfe2aa0956b2
 # ╠═0c230911-62b3-4133-9f17-758bfeb627a2
+# ╟─b51148d5-cce6-4310-b7d4-dcbb6d4ac66b
 # ╟─98675d19-3b1b-4be0-9e48-ab0ffd019647
 # ╠═2e79471f-3430-4b1c-91fe-80434de63cb2
 # ╠═bd8f636c-6033-434e-a220-a07397679431
