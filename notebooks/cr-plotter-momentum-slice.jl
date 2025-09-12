@@ -478,8 +478,9 @@ Truncate all outlier data
 """
 
 # ╔═╡ 59444b54-893e-4f4e-b746-97de78417043
-log_dNdp_cur_trunc = filter(x -> 31 ≤ x ≤ 33.9, log_dNdp);
-# log_dNdp_cur_trunc = filter(x -> x ≤ 31.3, log_dNdp);
+# log_dNdp_cur_trunc = filter(x -> 31 ≤ x ≤ 33.9, log_dNdp);
+# log_dNdp_cur_trunc = filter(x -> x ≤ 31, log_dNdp);
+log_dNdp_cur_trunc = filter(x -> x ≥ 33.75, log_dNdp);
 
 # ╔═╡ afabc297-408f-4643-8296-40be885adafc
 log_dNdp_cur_trunc |> length
