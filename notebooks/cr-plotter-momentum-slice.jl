@@ -630,20 +630,20 @@ let
     end
     if do_plot_sf
         means = gdf_sample_stats(mean, CR_p_gdf_momentum; column = :log_dNdp_cr_sf)
-        lines!(ax, proton_log_p_nat, means, color = color_sf_p, label = "protons, plasma frame")
+        lines!(ax, proton_log_p_nat, means, color = color_sf_p, label = "protons, shock frame")
 
         if do_plot_electrons
             means = gdf_sample_stats(mean, CR_e_gdf_momentum; column = :log_dNdp_cr_sf)
-            lines!(ax, electron_log_p_nat, means, color = color_sf_e, label = "electrons, plasma frame")
+            lines!(ax, electron_log_p_nat, means, color = color_sf_e, label = "electrons, shock frame")
         end
     end
     if do_plot_ISM
         means = gdf_sample_stats(mean, CR_p_gdf_momentum; column = :log_dNdp_cr_ISM)
-        lines!(ax, proton_log_p_nat, means, color = color_ISM_p, label = "protons, plasma frame")
+        lines!(ax, proton_log_p_nat, means, color = color_ISM_p, label = "protons, ISM frame")
 
         if do_plot_electrons
             means = gdf_sample_stats(mean, CR_e_gdf_momentum; column = :log_dNdp_cr_ISM)
-            lines!(ax, electron_log_p_nat, means, color = color_ISM_e, label = "electrons, plasma frame")
+            lines!(ax, electron_log_p_nat, means, color = color_ISM_e, label = "electrons, ISM frame")
         end
     end
     axislegend(ax, framevisible = false)
