@@ -167,6 +167,8 @@ const bins = 90;
 # ╔═╡ 50b1a87f-49ff-4d93-aa6e-f042a87b875e
 const color_pf_p, color_sf_p, color_ISM_p, color_pf_e, color_sf_e, color_ISM_e = Makie.wong_colors();
 
+# ╔═╡ 3f90a70b-580d-4816-a990-a0da0b789c34
+visual_layer = visual(StepHist);
 
 # ╔═╡ 1b9f507c-1585-4ad1-8090-bdde6de972d6
 md"""
@@ -184,6 +186,22 @@ plot_ISM_binder = @bind do_plot_ISM CheckBox(default=false);
 
 # ╔═╡ 4553a97d-6b78-4268-90de-d8bee348d3d4
 plot_electrons_binder = @bind do_plot_electrons CheckBox(default=true);
+
+# ╔═╡ 105361e9-cafd-4755-bcbd-fdcbcb07b291
+map_layer = let
+    x_map = :log_dNdp_cr_pf => "log(dN/dp)"
+    y_label = "log(dN/dp)"
+
+    # A little type-piracy makes the world go round
+    Base.:*(b::Bool, l::Layer) = b ? l : zerolayer()
+
+    pf_map = mapping(x_map, :log_dNdp_cr_pf => y_label, color = direct("plasma frame"))
+    sf_map = mapping(x_map, :log_dNdp_cr_sf => y_label, color = direct("shock frame"))
+    ISM_map = mapping(x_map, :log_dNdp_cr_ISM => y_label, color = direct("ISM frame"))
+
+    do_plot_pf*pf_map + do_plot_sf*sf_map + do_plot_ISM*ISM_map
+end;
+
 # ╔═╡ 3bf64608-0fa2-4fcb-9782-fd7a8de47bda
 md"""
 ### Sample statistics
@@ -895,6 +913,8 @@ end
 # ╟─f91132bd-28af-4a6c-9a77-5c5b0ed4a08a
 # ╠═f86707a1-9d79-4df8-8798-3f7ea1d1797c
 # ╠═50b1a87f-49ff-4d93-aa6e-f042a87b875e
+# ╠═105361e9-cafd-4755-bcbd-fdcbcb07b291
+# ╠═3f90a70b-580d-4816-a990-a0da0b789c34
 # ╟─1b9f507c-1585-4ad1-8090-bdde6de972d6
 # ╠═d6513272-7232-43e6-ac88-a58462181041
 # ╠═59be6983-6e37-4a70-8929-69176a5f807e
