@@ -77,7 +77,7 @@ function (@main)(args)
     @info "Grouping dataframes by iterations"
     CR_p_gdf_iteration = groupby(CR_p_df, :iter)
     CR_e_gdf_iteration = groupby(CR_e_df, :iter)
-    save_object("dNdp-CR-protons-iteration-split.jld2", CR_e_gdf_iteration)
+    save_object("dNdp-CR-protons-iteration-split.jld2", CR_p_gdf_iteration)
     @info "Saved dNdp-CR-protons-iteration-split.jld2"
     save_object("dNdp-CR-electrons-iteration-split.jld2", CR_e_gdf_iteration)
     @info "Saved dNdp-CR-electrons-iteration-split.jld2"
