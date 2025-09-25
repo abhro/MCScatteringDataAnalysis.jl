@@ -175,13 +175,6 @@ const idx_CR_p_gdf = axes(CR_p_gdf_iter, 1);
 # ╔═╡ f4be57bc-395d-4237-950d-c6d0d2b3e12c
 const index_binder = @bind plot_iter NumberField(idx_CR_p_gdf, default = 1);
 
-# ╔═╡ d7d554cf-2f16-49e1-849d-25b5088e85ff
-md"""
-Select which iteration to plot:
-
-`plot_iter` = $(index_binder)
-"""
-
 # ╔═╡ 19a41e11-d031-498c-adbb-082e682fb67e
 md"""
 ### Individual iterations
@@ -194,17 +187,24 @@ Select which iteration to plot:
 `plot_iter` = $(index_binder)
 """
 
-# ╔═╡ bc0dcf3d-94d4-4c75-8698-13c7fb708314
-CR_p_gdf_iter[plot_iter]
-
 # ╔═╡ c2b3d96a-216e-4abe-8b0f-625419ac072f
 CR_e_gdf_iter[plot_iter]
+
+# ╔═╡ bc0dcf3d-94d4-4c75-8698-13c7fb708314
+CR_p_gdf_iter[plot_iter]
 
 # ╔═╡ 47a47a1d-4247-4a1a-a629-0a580253b41d
 md"""
 at `plot_iter = 1`, there's a weird kick at the end. why?
 
 Dr. Warren suggestion: momentum splitting. to be investigated
+"""
+
+# ╔═╡ d7d554cf-2f16-49e1-849d-25b5088e85ff
+md"""
+Select which iteration to plot:
+
+`plot_iter` = $(index_binder)
 """
 
 # ╔═╡ 220c3ca5-e0b5-4f5c-86b0-e5d7cdd67558
