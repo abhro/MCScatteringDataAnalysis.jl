@@ -568,6 +568,7 @@ let df = CR_p_gdf_momentum[proton_momentum_index], distribs = normal_distrib_pro
 
     if do_plot_pf
         N = df.log_dNdp_cr_pf |> skipmissing |> collect
+        # N ./= std(N)
         !isempty(N) && stephist!(ax, N, label = "plasma frame ($(length(N)) samples)"; bins, normalization, color = color_pf_p)
 
         distrib = distribs.pf[proton_momentum_index]
