@@ -101,7 +101,7 @@ md"""
 """
 
 # ╔═╡ d70a4da5-1589-4b41-af32-05671f27be4d
-const datadir = "G:/My Drive/MC Scattering/Run-data/Lorentz-5-processed";
+const datadir = "G:/My Drive/MC-Scattering/Lorentz-5-processed";
 
 # ╔═╡ bdb9591b-b7ac-47e6-98bc-f18921bb64f9
 CR_p_gdf_momentum = load_object(joinpath(datadir, "dNdp-CR-protons-momentum-split.jld2"));
