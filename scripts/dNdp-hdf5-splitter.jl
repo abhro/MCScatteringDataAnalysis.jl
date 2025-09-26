@@ -48,6 +48,8 @@ function (@main)(args)
         df
     end
 
+    outdir = args[2]
+
     @info "Splitting DataFrame into protons and electrons and de-histogramming"
     CR_p_df, CR_e_df = let
         # split CR_df based on ion and run_id because each of them is
@@ -67,27 +69,27 @@ function (@main)(args)
     end
     @debug "Got dehistogrammed data" CR_p_df CR_e_df CR_p_df[1,:] CR_e_df[1,:]
 
-    save_object("dNdp-CR-proton.jld2", CR_p_df)
+    save_object(joinpath(outdir, "dNdp-CR-proton.jld2"), CR_p_df)
     @info "Saved dNdp-CR-proton.jld2"
-    save_object("dNdp-CR-electron.jld2", CR_e_df)
+    save_object(joinpath(outdir, "dNdp-CR-electron.jld2"), CR_e_df)
     @info "Saved dNdp-CR-electron.jld2"
 
     # Separate each of the proton and electron DataFrames by momentum.
     @info "Grouping dataframes by momenta"
     CR_p_gdf_momentum = groupby(CR_p_df, :log_p_nat)
     CR_e_gdf_momentum = groupby(CR_e_df, :log_p_nat)
-    save_object("dNdp-CR-protons-momentum-split.jld2", CR_p_gdf_momentum)
+    save_object(joinpath(outdir, "dNdp-CR-protons-momentum-split.jld2"), CR_p_gdf_momentum)
     @info "Saved dNdp-CR-protons-momentum-split.jld2"
-    save_object("dNdp-CR-electrons-momentum-split.jld2", CR_e_gdf_momentum)
+    save_object(joinpath(outdir, "dNdp-CR-electrons-momentum-split.jld2"), CR_e_gdf_momentum)
     @info "Saved dNdp-CR-electrons-momentum-split.jld2"
 
     # Separate each of the proton and electron DataFrames based on iteration.
     @info "Grouping dataframes by iterations"
     CR_p_gdf_iteration = groupby(CR_p_df, :run_id)
     CR_e_gdf_iteration = groupby(CR_e_df, :run_id)
-    save_object("dNdp-CR-protons-iteration-split.jld2", CR_p_gdf_iteration)
+    save_object(joinpath(outdir, "dNdp-CR-protons-iteration-split.jld2"), CR_p_gdf_iteration)
     @info "Saved dNdp-CR-protons-iteration-split.jld2"
-    save_object("dNdp-CR-electrons-iteration-split.jld2", CR_e_gdf_iteration)
+    save_object(joinpath(outdir, "dNdp-CR-electrons-iteration-split.jld2"), CR_e_gdf_iteration)
     @info "Saved dNdp-CR-electrons-iteration-split.jld2"
 
 
