@@ -121,4 +121,4 @@ ENDIN
  **** End of input data ****
 """
 
-const runpath = joinpath("G:", "My Drive", "MC Scattering", "Run-data", "Lorentz-5-raw")
+const runpath = joinpath("G:", "My Drive", "MC-Scattering", "Lorentz-5-raw")
