@@ -111,9 +111,9 @@ Binormal properties.pdf
 ################################################################################
 
 # Exported html version of notebooks
-notebook/*.html
+notebooks/*.html
 # Backup versions of notebooks
-notebook/* backup *.jl
+notebooks/* backup *.jl
 
 ################################################################################
 #                               Microsoft Office                               #
