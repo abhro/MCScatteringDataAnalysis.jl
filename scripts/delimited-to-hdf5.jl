@@ -6,7 +6,10 @@ using Format: format
 import Comonicon
 
 using MCScatteringDataAnalysis
-using MCScatteringDataAnalysis: ColumnSpecification, name, uses_sentinels
+using MCScatteringDataAnalysis: ColumnSpecification, name, uses_sentinels,
+                                coupled_spectra_cols, coupled_weights_cols,
+                                esc_cols, grid_cols, CR_cols, therm_cols
+
 
 
 # A data row must not start with 3333..., those lines are for Fortran's pgf plotter
@@ -165,8 +168,6 @@ function read_multiple_file_over_all_dirs(
 
     return bigdf
 end
-
-using MCScatteringDataAnalysis: coupled_spectra_cols, coupled_weights_cols, esc_cols, grid_cols, CR_cols, therm_cols
 
 function (@main)(args)
     # read and save the coupled spectra
