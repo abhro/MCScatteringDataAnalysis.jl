@@ -1,3 +1,6 @@
+using DrWatson
+@quickactivate "MCScatteringDataAnalysis"
+
 using JLD2: save_object
 using DataFrames: AbstractDataFrame, DataFrame, insertcols!
 using Glob: glob

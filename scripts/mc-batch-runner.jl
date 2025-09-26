@@ -1,4 +1,5 @@
-#!julia --project
+using DrWatson
+@quickactivate "MCScatteringDataAnalysis"
 
 using Dates
 

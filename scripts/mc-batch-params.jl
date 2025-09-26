@@ -1,3 +1,6 @@
+using DrWatson
+@quickactivate "MCScatteringDataAnalysis"
+
 const seeds = 1:1000
 
 const param_filename = "mc_in.txt"

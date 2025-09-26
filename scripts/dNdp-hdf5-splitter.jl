@@ -1,3 +1,6 @@
+using DrWatson
+@quickactivate "MCScatteringDataAnalysis"
+
 using JLD2
 using DataFrames
 
