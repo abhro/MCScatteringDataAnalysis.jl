@@ -496,6 +496,11 @@ Plot p-values in log scale? (Uncheck for linear)
 $p_values_scale_checkbox_binder
 """
 
+# ╔═╡ e68032c7-36bd-4817-9bae-09e7dcb04802
+md"""
+Should we plot electrons? $plot_electrons_binder
+"""
+
 # ╔═╡ b499bf86-3e7a-441a-809a-934a1a8dd402
 md"""
 ## Shapiro–Wilk test
@@ -1065,6 +1070,7 @@ end
 # ╠═2e79471f-3430-4b1c-91fe-80434de63cb2
 # ╠═bd8f636c-6033-434e-a220-a07397679431
 # ╟─89b7b4d0-fb46-4436-a48d-0731cef1dc2c
+# ╟─e68032c7-36bd-4817-9bae-09e7dcb04802
 # ╟─cee91c99-adc0-4185-a7c3-e2164b95a003
 # ╟─b499bf86-3e7a-441a-809a-934a1a8dd402
 # ╠═a2dca585-2b84-4958-8ba6-af51602c4d8a
