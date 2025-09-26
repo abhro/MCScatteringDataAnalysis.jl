@@ -383,7 +383,7 @@ centers(q.edges |> only)
 q.weights
 
 # ╔═╡ e6a6cbe6-d8e4-40e1-8c29-aea7703f35a9
-brute_fitted = fit_dist_to_histogram(testset, params = params(manual_bn))
+brute_fitted = fit_dist_to_histogram(Normal, testset; nbins = bins)
 
 # ╔═╡ a97412e6-9681-4afa-8ceb-6f37f2f6dd0b
 brute_fit_dist = first(brute_fitted)
@@ -799,7 +799,6 @@ quantile(mixture_model_test, 0.3)
 # ╟─a5526239-2f05-4618-8868-0f552855d574
 # ╠═f1ee2cb0-8274-11ef-0826-f55183647219
 # ╠═e5e0e4e2-2df1-4536-9cc5-bdcec6fc13de
-# ╠═afaef7b7-a46f-4a4f-a97b-00fda180cf0d
 # ╟─cd809ca8-2cc4-435d-ab8b-b7b24fa40ed1
 # ╠═7899ae97-fbc2-43e5-ac77-c6d725f0371e
 # ╠═b137e7fa-f2ce-4cb1-85d7-87078a9aa9cc
