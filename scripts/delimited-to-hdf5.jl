@@ -148,8 +148,8 @@ function read_multiple_file_over_all_dirs(
     bigdf = DataFrame()
 
     # iterate through all directories
-    # (assume all these files are grouped by the "tags", i.e. each in a
-    # different directory has a different tag)
+    # (assume all these files are grouped by the "tags",
+    # i.e., each in a different directory has a different tag)
     for (dirtag, dir) in zip(dirtags, dirs)
 
         # go in to the directory first before reading multiple files
