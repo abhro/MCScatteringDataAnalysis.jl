@@ -1,0 +1,1 @@
+This file exists so that the `data/` folder is tracked with git. Store the raw or processed data in this folder, but note that they will not be a part of the repository history.
