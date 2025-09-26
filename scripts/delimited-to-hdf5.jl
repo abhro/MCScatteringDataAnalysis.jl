@@ -117,16 +117,19 @@ end
         dirtags, filetags, dirtagname, filetagname, predicate)
 
 ### Arguments
-- `dirs`:
-- `filename_pattern`:
-- `colspec`:
-- `dirtags`:
-- `filetags`:
+- `dirs`: List of directories to read files from.
+- `filename_pattern`: Glob pattern for filenames within each directory
+- `colspec`: Column specification to use when reading data file.
+- `dirtags`: How to tag files using directory-level information.
+- `filetags`: How to tag each file from the same directory.
 - `dirtagname`:
 - `filetagname`:
 - `predicate`:
 
 ### Returns
+
+A `DataFrame` containing columns as specified in `colspec`.
+It also has two extra columns as specified by `dirtagname` and `filetagname`.
 """
 function read_multiple_file_over_all_dirs(
     dirs::AbstractVector, filename_pattern, colspec::AbstractVector{<:ColumnSpecification};
