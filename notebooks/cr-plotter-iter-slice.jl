@@ -201,7 +201,7 @@ Dr. Warren suggestion: momentum splitting. to be investigated
 md"""
 Select which iteration to plot:
 
-`plot_iter` = $(index_binder)
+`plot_iter` = $(index_binder) (min: $(minimum(idx_CR_p_gdf)), max: $(maximum(idx_CR_p_gdf)))
 """
 
 # ╔═╡ 220c3ca5-e0b5-4f5c-86b0-e5d7cdd67558
@@ -226,7 +226,7 @@ end
 md"""
 Select which iteration to plot:
 
-`plot_iter` = $(index_binder)
+`plot_iter` = $(index_binder) (min: $(minimum(idx_CR_p_gdf)), max: $(maximum(idx_CR_p_gdf)))
 """
 
 # ╔═╡ 1529a53f-a084-40fc-80b0-3f9f31a5868e
