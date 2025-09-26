@@ -1,14 +1,14 @@
 ### A Pluto.jl notebook ###
-# v0.20.17
+# v0.20.18
 
 using Markdown
 using InteractiveUtils
 
 # ╔═╡ a877d102-099f-11f0-37d1-39f0ef1f87e3
-# ╠═╡ skip_as_script = true
-#=╠═╡
-import Pkg; Pkg.activate(Base.current_project(), io=devnull)
-  ╠═╡ =#
+using DrWatson
+
+# ╔═╡ e5e0e4e2-2df1-4536-9cc5-bdcec6fc13de
+@quickactivate "MCScatteringDataAnalysis"
 
 # ╔═╡ a357df88-fae3-40ad-b636-a3fbfd5358bb
 using PlutoUI
@@ -483,6 +483,7 @@ substitute(cm(BiNormal, 6), μ=>mean_binormal) |> simplify |> terms
 # ╟─857d8253-936d-4226-b9af-87553e65e0fb
 # ╟─c7a48d7b-4bf7-429e-89de-18bbf5a8a7fd
 # ╠═a877d102-099f-11f0-37d1-39f0ef1f87e3
+# ╠═e5e0e4e2-2df1-4536-9cc5-bdcec6fc13de
 # ╠═a357df88-fae3-40ad-b636-a3fbfd5358bb
 # ╠═c875992e-a423-4376-9c58-88fc7a7c1a8c
 # ╟─b6466bc4-ff63-4d88-9913-c2b1b80ea9eb

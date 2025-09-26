@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.20.17
+# v0.20.18
 
 using Markdown
 using InteractiveUtils
@@ -17,10 +17,10 @@ macro bind(def, element)
 end
 
 # ╔═╡ f1ee2cb0-8274-11ef-0826-f55183647219
-# ╠═╡ skip_as_script = true
-#=╠═╡
-import Pkg; Pkg.activate(Base.current_project())
-  ╠═╡ =#
+using DrWatson
+
+# ╔═╡ e5e0e4e2-2df1-4536-9cc5-bdcec6fc13de
+@quickactivate "MCScatteringDataAnalysis"
 
 # ╔═╡ 7899ae97-fbc2-43e5-ac77-c6d725f0371e
 using JLD2, DataFrames
@@ -88,14 +88,11 @@ md"""
 ## Read data file
 """
 
-# ╔═╡ ee3eab6d-7913-4650-a5c3-aabf0747a58a
-const datadir = "G:/My Drive/MC-Scattering/Lorentz-5-processed";
-
 # ╔═╡ 3bc899e5-ce26-4384-bf7b-f0bb3820f08d
-CR_p_gdf_iter = load_object(joinpath(datadir, "dNdp-CR-protons-iteration-split.jld2"));
+CR_p_gdf_iter = load_object(datadir("Lorentz-5-processed", "dNdp-CR-protons-iteration-split.jld2"));
 
 # ╔═╡ 80b16c96-b0f3-42a8-8544-7fbd9c06a1d9
-CR_e_gdf_iter = load_object(joinpath(datadir, "dNdp-CR-electrons-iteration-split.jld2"));
+CR_e_gdf_iter = load_object(datadir("Lorentz-5-processed", "dNdp-CR-electrons-iteration-split.jld2"));
 
 # ╔═╡ 3a2e4aee-bc90-493e-84b1-79897934f16a
 # ╠═╡ disabled = true
@@ -389,6 +386,7 @@ end
 # ╟─f08edae2-4f29-4274-b010-07cfb3826f1e
 # ╟─a5526239-2f05-4618-8868-0f552855d574
 # ╠═f1ee2cb0-8274-11ef-0826-f55183647219
+# ╠═e5e0e4e2-2df1-4536-9cc5-bdcec6fc13de
 # ╟─cd809ca8-2cc4-435d-ab8b-b7b24fa40ed1
 # ╠═7899ae97-fbc2-43e5-ac77-c6d725f0371e
 # ╠═b137e7fa-f2ce-4cb1-85d7-87078a9aa9cc
@@ -402,7 +400,6 @@ end
 # ╠═b544df91-fe2d-4396-892c-7faea2edd141
 # ╟─4415022a-54dc-4f3d-a651-f66ae63dd051
 # ╟─8dfe6f3c-f693-4c73-8152-8c43c1c1ff42
-# ╠═ee3eab6d-7913-4650-a5c3-aabf0747a58a
 # ╠═3bc899e5-ce26-4384-bf7b-f0bb3820f08d
 # ╠═80b16c96-b0f3-42a8-8544-7fbd9c06a1d9
 # ╠═3a2e4aee-bc90-493e-84b1-79897934f16a

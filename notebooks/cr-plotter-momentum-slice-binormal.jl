@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.20.17
+# v0.20.18
 
 using Markdown
 using InteractiveUtils
@@ -17,10 +17,10 @@ macro bind(def, element)
 end
 
 # ╔═╡ f1ee2cb0-8274-11ef-0826-f55183647219
-# ╠═╡ skip_as_script = true
-#=╠═╡
-import Pkg; Pkg.activate(Base.current_project())
-  ╠═╡ =#
+using DrWatson
+
+# ╔═╡ e5e0e4e2-2df1-4536-9cc5-bdcec6fc13de
+@quickactivate "MCScatteringDataAnalysis"
 
 # ╔═╡ 7899ae97-fbc2-43e5-ac77-c6d725f0371e
 using JLD2, DataFrames
@@ -124,14 +124,11 @@ md"""
 ## Read data file
 """
 
-# ╔═╡ c159f801-b129-4919-85ef-29eedf977f14
-const datadir = "G:/My Drive/MC Scattering/Processed-data";
-
 # ╔═╡ bdb9591b-b7ac-47e6-98bc-f18921bb64f9
-CR_p_gdf_momentum = load_object(joinpath(datadir, "dNdp-CR-protons-momentum-split.jld2"));
+CR_p_gdf_momentum = load_object(datadir("Lorentz-5-processed", "dNdp-CR-protons-momentum-split.jld2"));
 
 # ╔═╡ 3777306e-eb41-413b-80a9-72cdc0228a94
-CR_e_gdf_momentum = load_object(joinpath(datadir, "dNdp-CR-electrons-momentum-split.jld2"));
+CR_e_gdf_momentum = load_object(datadir("Lorentz-5-processed", "dNdp-CR-electrons-momentum-split.jld2"));
 
 # ╔═╡ bfc6a515-8189-487b-be08-746d865a78ae
 md"""
@@ -801,6 +798,8 @@ quantile(mixture_model_test, 0.3)
 # ╟─4a0e2184-0950-4b19-9b8b-061150d17ec5
 # ╟─a5526239-2f05-4618-8868-0f552855d574
 # ╠═f1ee2cb0-8274-11ef-0826-f55183647219
+# ╠═e5e0e4e2-2df1-4536-9cc5-bdcec6fc13de
+# ╠═afaef7b7-a46f-4a4f-a97b-00fda180cf0d
 # ╟─cd809ca8-2cc4-435d-ab8b-b7b24fa40ed1
 # ╠═7899ae97-fbc2-43e5-ac77-c6d725f0371e
 # ╠═b137e7fa-f2ce-4cb1-85d7-87078a9aa9cc
@@ -820,7 +819,6 @@ quantile(mixture_model_test, 0.3)
 # ╠═b544df91-fe2d-4396-892c-7faea2edd141
 # ╟─4415022a-54dc-4f3d-a651-f66ae63dd051
 # ╟─8dfe6f3c-f693-4c73-8152-8c43c1c1ff42
-# ╠═c159f801-b129-4919-85ef-29eedf977f14
 # ╠═bdb9591b-b7ac-47e6-98bc-f18921bb64f9
 # ╠═3777306e-eb41-413b-80a9-72cdc0228a94
 # ╟─bfc6a515-8189-487b-be08-746d865a78ae

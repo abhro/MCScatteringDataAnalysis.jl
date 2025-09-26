@@ -1,6 +1,11 @@
 #!julia
 
+using DrWatson
+@quickactivate "MCScatteringDataAnalysis"
+
 import Pluto
+
+cd(projectdir("notebooks"))
 
 Pluto.run(;
     host = "0.0.0.0",
