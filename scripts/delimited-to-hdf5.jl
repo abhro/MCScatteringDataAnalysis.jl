@@ -103,8 +103,8 @@ function read_one_file_over_all_dirs(
     # (assume all these files are grouped by the "tags", i.e. each in a
     # different directory has a different tag)
     for (tag, dir) in zip(tags, dirs)
-        filename = joinpath(dir, filename)
-        df = readdlm(filteredstream(filename; predicate), DataFrame; colspec)
+        filepath = joinpath(dir, filename)
+        df = readdlm(filteredstream(filepath; predicate), DataFrame; colspec)
 
         # tag each thing with the same tag, based on which directory they're in
         # so each df here has the same value in all rows, but it'll be different
