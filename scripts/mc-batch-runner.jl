@@ -24,4 +24,4 @@ function runmcprogram(dirnames)
     end
 end
 
-runmcprogram(string.(runpath, seeds))
+(@main)(args) = runmcprogram(string.(runpath, seeds))
