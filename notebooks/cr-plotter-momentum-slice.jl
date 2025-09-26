@@ -447,11 +447,6 @@ p_values_scale_checkbox_binder = @bind plot_p_values_in_logscale CheckBox();
 # ╔═╡ 04dad413-0dc0-4ceb-81c2-e208ef082f38
 p_val_yscale = plot_p_values_in_logscale ? log10 : identity;
 
-# ╔═╡ b51148d5-cce6-4310-b7d4-dcbb6d4ac66b
-md"""
-Should we plot electrons? $plot_electrons_binder
-"""
-
 # ╔═╡ 94a91acd-a878-4c3c-9716-8bed60bf8c6c
 md"""
 ## Root-sum-squared errors
@@ -477,6 +472,11 @@ sse_scores_e_curve = get_onesample_scores((t...; kwd...) -> SSE_hist(t...; kwd..
 md"""
 Plot p-values in log scale? (Uncheck for linear)
 $p_values_scale_checkbox_binder
+"""
+
+# ╔═╡ b51148d5-cce6-4310-b7d4-dcbb6d4ac66b
+md"""
+Should we plot electrons? $plot_electrons_binder
 """
 
 # ╔═╡ 98675d19-3b1b-4be0-9e48-ab0ffd019647
@@ -518,6 +518,11 @@ Plot p-values in log scale? (Uncheck for linear)
 $p_values_scale_checkbox_binder
 """
 
+# ╔═╡ 79736549-5c2c-4193-9757-16a57b0a535d
+md"""
+Should we plot electrons? $plot_electrons_binder
+"""
+
 # ╔═╡ 2ab2979f-1ad4-4168-b59c-a25e57d4826a
 md"""
 ## Kolmogorov–Smirnov test
@@ -533,6 +538,11 @@ ks_scores_e = get_ks_scores(CR_e_gdf_momentum, normal_distrib_electrons.pf, col 
 md"""
 Plot p-values in log scale? (Uncheck for linear)
 $p_values_scale_checkbox_binder
+"""
+
+# ╔═╡ cabc5f90-2e66-41fc-956a-8d2cd0b36bf5
+md"""
+Should we plot electrons? $plot_electrons_binder
 """
 
 # ╔═╡ 8d03de5e-d344-4efd-b9af-dd5391028780
@@ -952,9 +962,9 @@ end
 
 # ╔═╡ Cell order:
 # ╟─f0e77bbd-e420-49f1-9b40-f9d994888b93
+# ╟─cd809ca8-2cc4-435d-ab8b-b7b24fa40ed1
 # ╠═f1ee2cb0-8274-11ef-0826-f55183647219
 # ╠═e5e0e4e2-2df1-4536-9cc5-bdcec6fc13de
-# ╟─cd809ca8-2cc4-435d-ab8b-b7b24fa40ed1
 # ╠═7899ae97-fbc2-43e5-ac77-c6d725f0371e
 # ╠═b137e7fa-f2ce-4cb1-85d7-87078a9aa9cc
 # ╠═800673a1-dcb4-471a-a628-74a92aee2941
@@ -1057,7 +1067,6 @@ end
 # ╠═fd47dab7-426c-44fc-8038-00e378324e41
 # ╠═d77a95bf-2d54-46d5-81ca-b671ee1db695
 # ╟─04dad413-0dc0-4ceb-81c2-e208ef082f38
-# ╟─b51148d5-cce6-4310-b7d4-dcbb6d4ac66b
 # ╟─94a91acd-a878-4c3c-9716-8bed60bf8c6c
 # ╠═222df0cb-0760-48a2-902e-91d32e451a11
 # ╠═70f93b37-a977-4dce-9fdd-a0497603a864
@@ -1065,6 +1074,7 @@ end
 # ╠═cbea4ff4-b132-4abb-97c6-e406a339ced6
 # ╠═85feafa4-a572-40ca-9975-fb0d3d5309f7
 # ╟─79dc57bb-d66d-4608-a775-9dfc58af1995
+# ╟─b51148d5-cce6-4310-b7d4-dcbb6d4ac66b
 # ╠═e7a26d10-0e00-444d-a8f9-27874a8f821e
 # ╟─98675d19-3b1b-4be0-9e48-ab0ffd019647
 # ╠═2e79471f-3430-4b1c-91fe-80434de63cb2
@@ -1076,11 +1086,13 @@ end
 # ╠═a2dca585-2b84-4958-8ba6-af51602c4d8a
 # ╠═ec6883c9-b6bb-4e7e-bd6d-e65d6e06144d
 # ╟─1b8925de-a9fe-4326-ad1a-a0a022ccbc6b
+# ╟─79736549-5c2c-4193-9757-16a57b0a535d
 # ╟─a49ff5ab-6077-4bb2-b694-6f3662982745
 # ╟─2ab2979f-1ad4-4168-b59c-a25e57d4826a
 # ╠═fc4dddd0-cfca-407e-ad94-622f53b148b3
 # ╠═cfdbbdea-c4fe-44ac-9de5-70720a138286
 # ╟─b825855d-bdfc-4aaa-ad9e-82ee4e8d1201
+# ╟─cabc5f90-2e66-41fc-956a-8d2cd0b36bf5
 # ╟─08542eea-964a-4f1d-aae5-2b50a628588a
 # ╟─8d03de5e-d344-4efd-b9af-dd5391028780
 # ╠═377aaf8f-b909-4c42-bc77-912fd300c300
