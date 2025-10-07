@@ -65,6 +65,9 @@ using HypothesisTests
 # ╔═╡ 70f93b37-a977-4dce-9fdd-a0497603a864
 using MCScatteringDataAnalysis: get_onesample_scores
 
+# ╔═╡ 2bf6b506-0908-4b84-9a7f-244afb367798
+include(srcdir("bhattacharya_distance.jl"))
+
 # ╔═╡ f0e77bbd-e420-49f1-9b40-f9d994888b93
 md"""
 # Plot fluxes for each momentum slice
@@ -272,6 +275,16 @@ md"""
 Proton momentum slice to plot (index): $proton_index_binder (min: $(minimum(idx_CR_p_gdf)), max: $(maximum(idx_CR_p_gdf)))
 """
 
+# ╔═╡ 452c9b2f-7138-4310-b0c6-df2be7ab8c76
+md"""
+Distribution agreement curve
+"""
+
+# ╔═╡ 2a184ee7-7e6f-4ce6-938b-9d4d10c0c83d
+md"""
+Proton momentum slice to plot (index): $proton_index_binder (min: $(minimum(idx_CR_p_gdf)), max: $(maximum(idx_CR_p_gdf)))
+"""
+
 # ╔═╡ 7be1e6da-0eb9-45e5-a4f9-bb6deedc3def
 md"""
 Electron momentum slice to plot (index): $electron_index_binder (min: $(minimum(idx_CR_e_gdf)), max: $(maximum(idx_CR_e_gdf)))
@@ -390,6 +403,11 @@ log_dNdp_cur_trunc |> length
 # ╔═╡ 60bd9873-0246-432d-9e68-bfe2aa0956b2
 log_dNdp |> length
 
+# ╔═╡ 46607c86-7310-4d81-9816-2283d28d1420
+md"""
+## Plot of tail
+"""
+
 # ╔═╡ f3132403-113d-4b30-9fd0-379d28ade3c7
 md"""
 # Normal distribution inference
@@ -430,6 +448,24 @@ sum(logpdf.(fitted_dist_curve, log_dNdp))
 
 # ╔═╡ 97291776-74f0-428a-ab4f-3c498b630000
 normal_distrib_electrons_from_curves = fitdistributions(v -> fit_dist_to_histogram(Normal, v; nbins=bins), CR_e_gdf_momentum)
+
+# ╔═╡ b99c020d-3165-40e9-8284-0a037b3f9900
+begin
+    distances = []
+    for (idx,df) in enumerate(CR_e_gdf_momentum)
+        distrib = normal_distrib_electrons.pf[idx]
+        distrib2 = normal_distrib_electrons_from_curves.pf[idx]
+        if !ismissing(distrib) && !ismissing(distrib2)
+            distance = bcdistance(distrib, distrib2)
+            push!(distances, distance)
+        else
+            push!(distances, missing)
+        end
+    end
+end
+
+# ╔═╡ 78a22648-c76a-4b5c-b552-9be000a60109
+distances
 
 # ╔═╡ da107273-c428-4c68-80a9-8f82cb211497
 md"""
@@ -543,6 +579,56 @@ $p_values_scale_checkbox_binder
 # ╔═╡ cabc5f90-2e66-41fc-956a-8d2cd0b36bf5
 md"""
 Should we plot electrons? $plot_electrons_binder
+"""
+
+# ╔═╡ dec211fb-33a0-4b16-ad5f-74dc010cfd6f
+md"""
+# Fitting histograms
+"""
+
+# ╔═╡ 4a32f313-8ba7-4354-9843-efd86607efb8
+md"""
+## Specified bin-width histograms
+"""
+
+# ╔═╡ 718cc153-ebdd-4b1c-84cb-c2c20017e557
+"""
+    edges(v, width)
+
+Given a sample vector `v` and a bin width `width`, return a range spanning all the values of `v` where adjacent elements are `width` apart.
+
+TODO: write better docstring
+"""
+function edges(v, width)
+    xmin, xmax = extrema(skipmissing(v))
+    return range(xmin, xmax, step=width)
+end
+
+# ╔═╡ 1ebdb43d-d9ec-49a0-bed6-983197bee517
+"""
+Like `fit(Histogram, v, ...)`, but specify bin `width` instead of `nbins`.
+"""
+function specific_width_histogram_fits(gdf, width, col = :log_dNdp_cr_pf, normalization = :pdf)
+    hists = Vector{Any}(undef, length(gdf))
+    for (i, df) in enumerate(gdf)
+        v = df[!,col] |> skipmissing |> collect
+        if length(v) < 3
+            hists[i] = missing
+            continue
+        end
+        hist = fit(Histogram, v, edges(v, width))
+        hist = normalize(hist; mode = normalization)
+        hists[i] = hist
+    end
+    return hists
+end
+
+# ╔═╡ 762fe736-070e-4624-b683-e1fcbeb0f1e0
+specific_hist_fits = specific_width_histogram_fits(CR_p_gdf_momentum, 0.01)
+
+# ╔═╡ 80df5127-2df2-4b8d-a2f9-b1d234a96e01
+md"""
+Proton momentum slice to plot (index): $proton_index_binder (min: $(minimum(idx_CR_p_gdf)), max: $(maximum(idx_CR_p_gdf)))
 """
 
 # ╔═╡ 8d03de5e-d344-4efd-b9af-dd5391028780
@@ -689,6 +775,25 @@ let
     # lines!(ax, x, fitted_dist_curve, label = "curve-fit dist", linewidth = 0.5)
 
     axislegend(ax, framevisible = false, position = :rt)
+    fig
+end
+
+# ╔═╡ 5e67c332-b2cb-45d6-8dff-eeea5acfb779
+let
+    fig = Figure()
+    ax = Axis(
+        fig[1,1];
+        xlabel = "log(dN/dp)", ylabel = "pdf",
+        title = "Histogram of protons dN/dp at log p = $log_p_nat_at_slice (mₚc)",
+        axis_properties...)
+
+    plot!(ax, specific_hist_fits[proton_momentum_index], label = "data"; color = :teal)
+
+    try
+        axislegend(ax, framevisible = false, position = :rt)
+    catch e
+        # axislegend has no plots to work with, because the current index doesn't have any samples. stop it complaining.
+    end
     fig
 end
 
@@ -879,6 +984,9 @@ let df = CR_e_gdf_momentum[electron_momentum_index], distribs = normal_distrib_e
     fig
 end
 
+# ╔═╡ 7534104f-885d-48c5-8ae0-ddae56fcd86d
+scatterlines(electron_log_p_nat, distances, axis = (; yscale = log10, xminorgridvisible = true, title = "Distribution agreement curve", xlabel = "log p (nat)", ylabel = "Bhattacharya distance"))
+
 # ╔═╡ e7a26d10-0e00-444d-a8f9-27874a8f821e
 let
     fig = Figure()
@@ -1022,6 +1130,12 @@ end
 # ╟─ecf80697-b786-4b02-9563-f3d082383b76
 # ╠═febdc8a1-00bb-47a7-83d2-6cccef5190f5
 # ╟─35710ad9-f2e4-487b-be19-c29500633726
+# ╠═2bf6b506-0908-4b84-9a7f-244afb367798
+# ╠═b99c020d-3165-40e9-8284-0a037b3f9900
+# ╟─452c9b2f-7138-4310-b0c6-df2be7ab8c76
+# ╠═7534104f-885d-48c5-8ae0-ddae56fcd86d
+# ╠═78a22648-c76a-4b5c-b552-9be000a60109
+# ╟─2a184ee7-7e6f-4ce6-938b-9d4d10c0c83d
 # ╟─4051e244-4c84-4983-8cb9-bc7f53daa9f6
 # ╟─7be1e6da-0eb9-45e5-a4f9-bb6deedc3def
 # ╟─88822f52-aab8-4931-9091-1909da6c604b
@@ -1051,6 +1165,7 @@ end
 # ╠═07300c09-2361-40e0-a502-b018496184c8
 # ╠═afabc297-408f-4643-8296-40be885adafc
 # ╠═60bd9873-0246-432d-9e68-bfe2aa0956b2
+# ╟─46607c86-7310-4d81-9816-2283d28d1420
 # ╟─0c230911-62b3-4133-9f17-758bfeb627a2
 # ╟─4786bdb6-a387-4333-b9d1-c672dc041910
 # ╟─f7484fdb-37a6-4300-a08d-0e552bc4ef49
@@ -1094,6 +1209,13 @@ end
 # ╟─b825855d-bdfc-4aaa-ad9e-82ee4e8d1201
 # ╟─cabc5f90-2e66-41fc-956a-8d2cd0b36bf5
 # ╟─08542eea-964a-4f1d-aae5-2b50a628588a
+# ╟─dec211fb-33a0-4b16-ad5f-74dc010cfd6f
+# ╟─4a32f313-8ba7-4354-9843-efd86607efb8
+# ╠═718cc153-ebdd-4b1c-84cb-c2c20017e557
+# ╠═1ebdb43d-d9ec-49a0-bed6-983197bee517
+# ╠═762fe736-070e-4624-b683-e1fcbeb0f1e0
+# ╟─80df5127-2df2-4b8d-a2f9-b1d234a96e01
+# ╠═5e67c332-b2cb-45d6-8dff-eeea5acfb779
 # ╟─8d03de5e-d344-4efd-b9af-dd5391028780
 # ╠═377aaf8f-b909-4c42-bc77-912fd300c300
 # ╟─32edc221-e586-4510-9427-977b22f62f6c
