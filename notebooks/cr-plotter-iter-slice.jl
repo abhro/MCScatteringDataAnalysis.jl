@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.20.18
+# v0.20.19
 
 using Markdown
 using InteractiveUtils
@@ -35,8 +35,9 @@ using PlutoUI
 using PlutoUI: Slider
 
 # ╔═╡ acbe8855-c586-46e3-a72b-a556df77b547
-#using WGLMakie
 using CairoMakie
+# using WGLMakie
+# using GLMakie
 
 # ╔═╡ 5eaf1fbb-9dc7-40e4-87b8-8a0af299f815
 begin

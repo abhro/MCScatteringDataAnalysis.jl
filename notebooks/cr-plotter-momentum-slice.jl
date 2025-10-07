@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.20.18
+# v0.20.19
 
 using Markdown
 using InteractiveUtils
@@ -32,8 +32,9 @@ using Distributions
 using MCScatteringDataAnalysis
 
 # ╔═╡ d8a66ccd-efdc-4b85-9af3-cfa5624c88e8
-# using CairoMakie
-using WGLMakie
+using CairoMakie
+# using WGLMakie
+# using GLMakie
 
 # ╔═╡ 547aad6f-32db-405d-9886-a727f1591101
 begin
