@@ -665,9 +665,9 @@ let df = CR_p_gdf_momentum[proton_momentum_index], distribs = normal_distrib_pro
         axis_properties...)
 
     if do_plot_pf
-        N = df.log_dNdp_cr_pf |> skipmissing |> collect
-        # N ./= std(N)
-        !isempty(N) && stephist!(ax, N, label = "plasma frame ($(length(N)) samples)"; bins, normalization, color = color_pf_p)
+        log_dNdp = df.log_dNdp_cr_pf |> skipmissing |> collect
+        # log_dNdp ./= std(log_dNdp)
+        !isempty(log_dNdp) && stephist!(ax, log_dNdp, label = "plasma frame ($(length(log_dNdp)) samples)"; bins, normalization, color = color_pf_p)
 
         distrib = distribs.pf[proton_momentum_index]
         if !ismissing(distrib)
@@ -681,16 +681,16 @@ let df = CR_p_gdf_momentum[proton_momentum_index], distribs = normal_distrib_pro
     end
 
     if do_plot_sf
-        N = df.log_dNdp_cr_sf |> skipmissing |> collect
-        !isempty(N) && hist!(ax, N, label = "shock frame"; bins, normalization, color = color_sf_p)
+        log_dNdp = df.log_dNdp_cr_sf |> skipmissing |> collect
+        !isempty(log_dNdp) && hist!(ax, log_dNdp, label = "shock frame"; bins, normalization, color = color_sf_p)
         distrib = distribs.sf[proton_momentum_index]
         if !ismissing(distrib)
             plot!(ax, distrib, label = @sprintf("𝒩 (%.2f, %.2f)", params(distrib)...), color = color_sf_p)
         end
     end
     if do_plot_ISM
-        N = df.log_dNdp_cr_ISM |> skipmissing |> collect
-        !isempty(N) && hist!(ax, N, label = "ISM frame"; bins, normalization, color = color_ISM_p)
+        log_dNdp = df.log_dNdp_cr_ISM |> skipmissing |> collect
+        !isempty(log_dNdp) && hist!(ax, log_dNdp, label = "ISM frame"; bins, normalization, color = color_ISM_p)
         distrib = distribs.ISM[proton_momentum_index]
         if !ismissing(distrib)
             plot!(ax, distrib, label = @sprintf("𝒩 (%.2f, %.2f)", params(distrib)...), color = color_ISM_p)
@@ -715,11 +715,11 @@ let
         title = "Truncated Histogram of protons dN/dp at log p = $log_p_nat_at_slice (mₚc)",
         axis_properties...)
 
-    N = log_dNdp_cur_trunc
-    isempty(N) && error("Not the correct momentum slice")
-    x, y = get_hist_curve(N; nbins=bins)
+    log_dNdp = log_dNdp_cur_trunc
+    isempty(log_dNdp) && error("Not the correct momentum slice")
+    x, y = get_hist_curve(log_dNdp; nbins=bins)
     # lines!(ax, x, y, label = "bin-centered \"histogram\"", linewidth = 0.5)
-    stephist!(ax, N, label = "data"; bins, normalization, color = :teal, linewidth = 0.5)
+    stephist!(ax, log_dNdp, label = "data"; bins, normalization, color = :teal, linewidth = 0.5)
     distrib = fitdistribution(Normal, allowmissing(log_dNdp_cur_trunc))
     ismissing(distrib) || plot!(ax, x, distrib, label = @sprintf("MLE fit 𝒩 (%.2f, %.2f)", params(distrib)...), color = :indianred, linewidth = 1)
     custom_dist = normal_distrib_protons_from_curves.pf[proton_momentum_index]
@@ -743,11 +743,11 @@ let
         title = "Histogram (left-tail) of protons dN/dp at log p = $log_p_nat_at_slice (mₚc)",
         axis_properties...)
 
-    N = log_dNdp_cur_lowtail
-    isempty(N) && error("Not the correct momentum slice")
-    x, y = get_hist_curve(N; nbins=bins)
+    log_dNdp = log_dNdp_cur_lowtail
+    isempty(log_dNdp) && error("Not the correct momentum slice")
+    x, y = get_hist_curve(log_dNdp; nbins=bins)
     # lines!(ax, x, y, label = "bin-centered \"histogram\"", linewidth = 0.5)
-    stephist!(ax, N, label = "data"; bins, normalization, color = :teal, linewidth = 0.5)
+    stephist!(ax, log_dNdp, label = "data"; bins, normalization, color = :teal, linewidth = 0.5)
     # lines!(ax, x, fitted_dist_MLE, label = "MLE fit dist", linewidth = 0.5)
     # lines!(ax, x, fitted_dist_curve, label = "curve-fit dist", linewidth = 0.5)
     axislegend(ax, framevisible = false, position = :lt)
@@ -764,11 +764,11 @@ let
         title = "Histogram (right-tail) of protons dN/dp at log p = $log_p_nat_at_slice (mₚc)",
         axis_properties...)
 
-    N = log_dNdp_cur_hightail
-    isempty(N) && error("Not the correct momentum slice")
-    x, y = get_hist_curve(N; nbins=bins)
+    log_dNdp = log_dNdp_cur_hightail
+    isempty(log_dNdp) && error("Not the correct momentum slice")
+    x, y = get_hist_curve(log_dNdp; nbins=bins)
     # lines!(ax, x, y, label = "bin-centered \"histogram\"", linewidth = 0.5)
-    stephist!(ax, N, label = "data"; bins, normalization, color = :teal, linewidth = 0.5)
+    stephist!(ax, log_dNdp, label = "data"; bins, normalization, color = :teal, linewidth = 0.5)
     # distrib = fitdistribution(Normal, allowmissing(log_dNdp_cur_trunc))
     # ismissing(distrib) || plot!(ax, x, distrib, label = @sprintf("MLE fit 𝒩 (%.2f, %.2f)", params(distrib)...), color = :indianred, linewidth = 1)
     # lines!(ax, x, fitted_dist_MLE, label = "MLE fit dist", linewidth = 0.5)
@@ -946,21 +946,21 @@ let df = CR_e_gdf_momentum[electron_momentum_index], distribs = normal_distrib_e
         axis_properties...)
 
     if do_plot_pf
-        N = df.log_dNdp_cr_pf |> skipmissing |> collect
-        !isempty(N) && stephist!(ax, N, label = "plasma frame ($(length(N)) samples)"; bins, normalization, color = color_pf_e)
+        log_dNdp = df.log_dNdp_cr_pf |> skipmissing |> collect
+        !isempty(log_dNdp) && stephist!(ax, log_dNdp, label = "plasma frame ($(length(log_dNdp)) samples)"; bins, normalization, color = color_pf_e)
         distrib = distribs.pf[electron_momentum_index]
         if !ismissing(distrib)
             plot!(ax, distrib, label = @sprintf("MLE fit 𝒩 (%.2f, %.2f)", params(distrib)...), color = :lightgoldenrod4)
         end
         distrib = normal_distrib_electrons_from_curves.pf[electron_momentum_index]
         if !ismissing(distrib)
-            plot!(ax, distrib, label = @sprintf("Curve fit 𝒩 (%.2f, %.2f)", params(distrib)...), color = :honeydew4)
+            plot!(ax, distrib, label = @sprintf("Curve fit 𝒩 (%.2f, %.2f)", params(distrib)...), color = :green)
         end
     end
 
     if do_plot_sf
-        N = df.log_dNdp_cr_sf |> skipmissing |> collect
-        !isempty(N) && stephist!(ax, N, label = "shock frame"; bins, normalization, color = color_sf_e)
+        log_dNdp = df.log_dNdp_cr_sf |> skipmissing |> collect
+        !isempty(log_dNdp) && stephist!(ax, log_dNdp, label = "shock frame"; bins, normalization, color = color_sf_e)
         distrib = distribs.sf[electron_momentum_index]
         if !ismissing(distrib)
             μ, σ = params(distrib)
@@ -968,8 +968,8 @@ let df = CR_e_gdf_momentum[electron_momentum_index], distribs = normal_distrib_e
         end
     end
     if do_plot_ISM
-        N = df.log_dNdp_cr_ISM |> skipmissing |> collect
-        !isempty(N) && stephist!(ax, N, label = "ISM frame"; bins, normalization, color = color_ISM_e)
+        log_dNdp = df.log_dNdp_cr_ISM |> skipmissing |> collect
+        !isempty(log_dNdp) && stephist!(ax, log_dNdp, label = "ISM frame"; bins, normalization, color = color_ISM_e)
         distrib = distribs.ISM[electron_momentum_index]
         if !ismissing(distrib)
             plot!(ax, distrib, label = @sprintf("𝒩 (%.2f, %.2f)", params(distrib)...), color = color_ISM_e)
