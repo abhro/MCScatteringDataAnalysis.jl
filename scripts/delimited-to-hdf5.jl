@@ -47,11 +47,6 @@ function filteredstream(filename::AbstractString; predicate = data_row_predicate
     return filtered_buffer
 end
 
-# include file to get `seeds` and `runpath`
-include("mc-batch-params.jl")
-
-const datadirs = joinpath.(runpath, format.("Seed-{:0>4}", seeds))
-
 """
     DelimitedFiles.readdlm(source, T; colspec)
 
@@ -89,6 +84,7 @@ end
 - `predicate`
 
 ### Returns
+A DataFrame containing.... (TODO: finish writing docstring)
 """
 function read_one_file_over_all_dirs(
     dirs::AbstractVector, filename, colspec::AbstractVector{<:ColumnSpecification};
@@ -173,12 +169,15 @@ function read_multiple_file_over_all_dirs(
 end
 
 function (@main)(args)
-    datadirs = glob("Seed-*", runpath)
-    replaced = replace.(datadirs, r".*Seed-0{0,3}"=>"")
-    tags = parse.(Int, replaced)
-    dirtags = tags
+    if length(args) != 2
+        println("Usage: $PROGRAM_FILE <raw data directory> <processed data directory>")
+        println("Note: processed data directory must be relative to the project data path")
+        exit(1)
+    end
+    datadirs = glob("Seed-*", args[1])
+    tags = parse.(Int, replace.(datadirs, r".*Seed-0{0,3}"=>""))
 
-    outdir = args[1]
+    outdir = datadir(args[2])
 
     # read and save the coupled spectra
     @info("Reading coupled spectra data")
@@ -227,4 +226,6 @@ function (@main)(args)
     outfilepath = joinpath(outdir, "dNdp-therm.csv.gz")
     @info("Writing thermal dN/dp data to $outfilepath")
     CSV.write(outfilepath, thermdf; compress=true)
+
+    return 0
 end
