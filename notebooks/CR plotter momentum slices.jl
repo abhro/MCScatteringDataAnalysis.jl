@@ -672,12 +672,12 @@ let df = CR_p_gdf_momentum[proton_momentum_index], distribs = normal_distrib_pro
 
         distrib = distribs.pf[proton_momentum_index]
         if !ismissing(distrib)
-            plot!(ax, distrib, label = @sprintf("MLE fit 𝒩 (%.2f, %.2f)", params(distrib)...), color = :indianred)
+            plot!(ax, distrib, label = @sprintf("MLE fit 𝒩 (%.6f, %.6f)", params(distrib)...), color = :indianred)
         end
 
-        distrib = normal_distrib_protons_from_curves.pf[proton_momentum_index]
-        if !ismissing(distrib)
-            plot!(ax, distrib, label = @sprintf("Curve fit 𝒩 (%.2f, %.2f)", params(distrib)...), color = :orange)
+        curve_fit_distrib = normal_distrib_protons_from_curves.pf[proton_momentum_index]
+        if !ismissing(curve_fit_distrib)
+            plot!(ax, curve_fit_distrib, label = @sprintf("Curve fit 𝒩 (%.6f, %.6f)", params(distrib)...), color = :orange)
         end
     end
 
@@ -699,7 +699,8 @@ let df = CR_p_gdf_momentum[proton_momentum_index], distribs = normal_distrib_pro
     end
 
     try
-        axislegend(ax, framevisible = false, position = :rt)
+        leg = axislegend(ax, framevisible = false, position = :rt)
+        # leg.tellheight = true
     catch e
         # axislegend has no plots to work with, because the current index doesn't have any samples. stop it complaining.
     end
@@ -1137,7 +1138,7 @@ end
 # ╠═7534104f-885d-48c5-8ae0-ddae56fcd86d
 # ╠═78a22648-c76a-4b5c-b552-9be000a60109
 # ╟─2a184ee7-7e6f-4ce6-938b-9d4d10c0c83d
-# ╟─4051e244-4c84-4983-8cb9-bc7f53daa9f6
+# ╠═4051e244-4c84-4983-8cb9-bc7f53daa9f6
 # ╟─7be1e6da-0eb9-45e5-a4f9-bb6deedc3def
 # ╟─88822f52-aab8-4931-9091-1909da6c604b
 # ╟─9ea7a3a4-987d-416d-88d1-672e3cce23c5
@@ -1191,7 +1192,7 @@ end
 # ╠═85feafa4-a572-40ca-9975-fb0d3d5309f7
 # ╟─79dc57bb-d66d-4608-a775-9dfc58af1995
 # ╟─b51148d5-cce6-4310-b7d4-dcbb6d4ac66b
-# ╠═e7a26d10-0e00-444d-a8f9-27874a8f821e
+# ╟─e7a26d10-0e00-444d-a8f9-27874a8f821e
 # ╟─98675d19-3b1b-4be0-9e48-ab0ffd019647
 # ╠═2e79471f-3430-4b1c-91fe-80434de63cb2
 # ╠═bd8f636c-6033-434e-a220-a07397679431
