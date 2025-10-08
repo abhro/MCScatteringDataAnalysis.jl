@@ -1,6 +1,7 @@
 using DrWatson
 @quickactivate "MCScatteringDataAnalysis"
 
+using CSV
 using JLD2
 using DataFrames
 
@@ -69,10 +70,12 @@ function (@main)(args)
     end
     @debug "Got dehistogrammed data" CR_p_df CR_e_df CR_p_df[1,:] CR_e_df[1,:]
 
-    save_object(joinpath(outdir, "dNdp-CR-proton.jld2"), CR_p_df)
-    @info "Saved dNdp-CR-proton.jld2"
-    save_object(joinpath(outdir, "dNdp-CR-electron.jld2"), CR_e_df)
-    @info "Saved dNdp-CR-electron.jld2"
+    outfilepath = joinpath(outdir, "dNdp-CR-protons.csv.gz")
+    CSV.write(outfilepath, CR_p_df; compress=true)
+    @info "Saved $outfilepath"
+    outfilepath = joinpath(outdir, "dNdp-CR-electrons.csv.gz")
+    CSV.write(outfilepath, CR_e_df; compress=true)
+    @info "Saved $outfilepath"
 
     # Separate each of the proton and electron DataFrames by momentum.
     @info "Grouping dataframes by momenta"

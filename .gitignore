@@ -89,6 +89,8 @@ fort.888
 mc_in.txt
 mc_out.txt
 *logs.txt
+*.csv
+*.csv.gz
 
 # Images
 *.png

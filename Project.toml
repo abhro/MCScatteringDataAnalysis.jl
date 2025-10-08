@@ -6,6 +6,7 @@ version = "0.0.1"
 [deps]
 AlgebraOfGraphics = "cbdf2221-f076-402e-a563-3d30da359d67"
 BiNormalDistributions = "35cb82aa-8885-40e5-a2ce-8461cb5c8dfc"
+CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
 CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
 Comonicon = "863f3e99-da2a-4334-8734-de3dacbe5542"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
@@ -43,6 +44,7 @@ Zygote = "e88e6eb3-aa80-5325-afca-941959d7151f"
 BiNormalDistributions = {url = "https://github.com/abhro/BiNormalDistributions.jl"}
 
 [compat]
+CSV = "0.10"
 CairoMakie = "0.15"
 Comonicon = "1"
 DataFrames = "1"
