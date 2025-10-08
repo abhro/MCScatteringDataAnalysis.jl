@@ -32,6 +32,10 @@ end
 
 
 function (@main)(args)
+    if length(args) != 2
+        println("Usage: $PROGRAM_FILE <dNdp file path> <processed data directory>")
+        exit(1)
+    end
     CR_df = let
         filename = args[1]
         @info "Reading $filename"
