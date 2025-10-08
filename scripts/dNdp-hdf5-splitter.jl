@@ -35,7 +35,7 @@ function (@main)(args)
     CR_df = let
         filename = args[1]
         @info "Reading $filename"
-        df = load_object(filename)
+        df = CSV.read(filename, DataFrame; buffer_in_memory = true)
         gdf = groupby(df, [:initial_seed, :iteration])
         insertcols!(df, 1, :run_id => groupindices(gdf))
         # drop the two columns which are now redundant (or not I guess)
