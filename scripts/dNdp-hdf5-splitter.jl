@@ -85,19 +85,25 @@ function (@main)(args)
     @info "Grouping dataframes by momenta"
     CR_p_gdf_momentum = groupby(CR_p_df, :log_p_nat)
     CR_e_gdf_momentum = groupby(CR_e_df, :log_p_nat)
-    save_object(joinpath(outdir, "dNdp-CR-protons-momentum-split.jld2"), CR_p_gdf_momentum)
-    @info "Saved dNdp-CR-protons-momentum-split.jld2"
-    save_object(joinpath(outdir, "dNdp-CR-electrons-momentum-split.jld2"), CR_e_gdf_momentum)
-    @info "Saved dNdp-CR-electrons-momentum-split.jld2"
+    @info "Saving dataframes grouped by momenta"
+    outfilepath = joinpath(outdir, "dNdp-CR-protons-momentum-split.jld2")
+    save_object(outfilepath, CR_p_gdf_momentum, compress=true)
+    @info "Saved $outfilepath"
+    outfilepath = joinpath(outdir, "dNdp-CR-electrons-momentum-split.jld2")
+    save_object(outfilepath, CR_e_gdf_momentum, compress=true)
+    @info "Saved $outfilepath"
 
     # Separate each of the proton and electron DataFrames based on iteration.
     @info "Grouping dataframes by iterations"
     CR_p_gdf_iteration = groupby(CR_p_df, :run_id)
     CR_e_gdf_iteration = groupby(CR_e_df, :run_id)
-    save_object(joinpath(outdir, "dNdp-CR-protons-iteration-split.jld2"), CR_p_gdf_iteration)
-    @info "Saved dNdp-CR-protons-iteration-split.jld2"
-    save_object(joinpath(outdir, "dNdp-CR-electrons-iteration-split.jld2"), CR_e_gdf_iteration)
-    @info "Saved dNdp-CR-electrons-iteration-split.jld2"
+    @info "Saving dataframes grouped by iterations"
+    outfilepath = joinpath(outdir, "dNdp-CR-protons-iteration-split.jld2")
+    save_object(outfilepath, CR_p_gdf_iteration, compress=true)
+    @info "Saved $outfilepath"
+    outfilepath = joinpath(outdir, "dNdp-CR-electrons-iteration-split.jld2")
+    save_object(outfilepath, CR_e_gdf_iteration, compress=true)
+    @info "Saved $outfilepath"
 
 
     # repeat for thermal dN/dp
