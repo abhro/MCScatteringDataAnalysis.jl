@@ -81,17 +81,6 @@ let f = Figure()
     f
 end
 
-# ╔═╡ 79b8174c-d208-41c8-80e5-13b3d60c09c1
-md"""
-# Constants and functions
-"""
-
-# ╔═╡ d609ab5f-9dca-4615-9041-b83c78548455
-
-
-# ╔═╡ 08d4f031-7778-4a07-be1f-6b33c176e1c6
-
-
 # ╔═╡ Cell order:
 # ╟─cd76c040-d2b5-11ef-3898-079cb259eed1
 # ╟─9e48bcdc-b9d3-4a71-81bf-d45a3a1f4037
@@ -108,6 +97,3 @@ md"""
 # ╠═61632ddf-55a6-4fd5-84c0-8344b007c70d
 # ╟─f802e55a-d945-4c88-a285-8d3b906211f2
 # ╠═da1ab6df-120a-4afd-a532-70faaa10dcc4
-# ╟─79b8174c-d208-41c8-80e5-13b3d60c09c1
-# ╠═d609ab5f-9dca-4615-9041-b83c78548455
-# ╠═08d4f031-7778-4a07-be1f-6b33c176e1c6
