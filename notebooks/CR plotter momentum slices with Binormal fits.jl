@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.20.18
+# v0.20.20
 
 using Markdown
 using InteractiveUtils
@@ -66,7 +66,7 @@ using LinearAlgebra
 using Optim
 
 # ╔═╡ ff76d92a-c68b-450e-b742-9b1706c5d310
-using OptimizationOptimisers
+using OptimizationOptimisers, OptimizationOptimJL
 
 # ╔═╡ 75e49b40-bff0-48f5-ab57-28b185f63cc9
 using BiNormalDistributions
@@ -743,7 +743,7 @@ Fit `BiNormal` distribution using method of moments.
 function fit_mom(::Type{BiNormal{T}}, x::AbstractVector{T}; solver = nothing) where {T}
 
     # calculate the first 8 moments  of the given dataset
-    f, s, p, q, r, u, v, w = moments(x, 8)
+    f, s, p, q, r, u, v, w = moment.(Ref(x), 1:8)
     @info("Computed moments", f, s, p, q, r, u, v, w)
 
 
@@ -756,8 +756,8 @@ function fit_mom(::Type{BiNormal{T}}, x::AbstractVector{T}; solver = nothing) wh
     #θ₀ = SVector(1, f, sqrt(s - f^2), 0, 0)
     θ₀ = [1, f, sqrt(s - f^2), 0, 0]
 
-    #prob = NonlinearLeastSquaresProblem(NonlinearFunction(fitter), θ₀, (f, s, p, q, r, u, v, w))
-    prob = OptimizationProblem(OptimizationFunction(fitter, AutoZygote()), θ₀, (f, s, p, q, r, u, v, w))
+    #prob = NonlinearLeastSquaresProblem(NonlinearFunction(probfunc), θ₀, (f, s, p, q, r, u, v, w))
+    prob = OptimizationProblem(OptimizationFunction(probfunc, AutoZygote()), θ₀, [f, s, p, q, r, u, v, w])
     @info("Created non-linear problem", prob)
 
     if isnothing(solver)
@@ -840,7 +840,7 @@ quantile(mixture_model_test, 0.3)
 # ╟─ecf80697-b786-4b02-9563-f3d082383b76
 # ╟─e87ce246-84e2-4e16-af0e-123dbee030bd
 # ╟─4051e244-4c84-4983-8cb9-bc7f53daa9f6
-# ╠═88822f52-aab8-4931-9091-1909da6c604b
+# ╟─88822f52-aab8-4931-9091-1909da6c604b
 # ╠═f95a0d36-5dd8-4190-98c6-06e8be2ad840
 # ╠═b88ef78f-6d6f-4b38-a9af-6da4f540f8c3
 # ╟─f3132403-113d-4b30-9fd0-379d28ade3c7
@@ -919,7 +919,7 @@ quantile(mixture_model_test, 0.3)
 # ╠═834bf416-d123-49a5-9a1a-4dcb96d6008b
 # ╟─3722ad07-8802-4a79-b89d-1cfbcc03fbbe
 # ╠═d8e08ef4-91af-44e8-a20b-098279d19427
-# ╠═166d52da-07a2-443e-878f-98502cc1db25
+# ╟─166d52da-07a2-443e-878f-98502cc1db25
 # ╠═b16a440a-8125-4bfa-8312-a3c342ec96d3
 # ╠═f5622ef4-396d-443d-ab54-31490f351dc3
 # ╠═cdb5fb97-da99-4958-8a7e-9c9dbbe55fe6
