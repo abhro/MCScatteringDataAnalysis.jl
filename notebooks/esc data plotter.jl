@@ -17,7 +17,8 @@ using CSV, DataFrames
 using PlutoUI
 
 # ╔═╡ 590b9a88-33ff-4400-82ba-40be75d8da23
-using CairoMakie
+# using CairoMakie
+using GLMakie
 
 # ╔═╡ cd76c040-d2b5-11ef-3898-079cb259eed1
 md"""
@@ -66,9 +67,9 @@ md"""
 """
 
 # ╔═╡ da1ab6df-120a-4afd-a532-70faaa10dcc4
-let f = Figure()
-    ax1 = Axis(f[1,1], title = "dN/dp, escaping, upstream")
-    ax2 = Axis(f[2,1], title = "dN/dp, escaping, downstream", xlabel = "log(p)")
+let fig = Figure()
+    ax1 = Axis(fig[1,1], title = "dN/dp, escaping, upstream")
+    ax2 = Axis(fig[2,1], title = "dN/dp, escaping, downstream", xlabel = "log(p)")
 
     for df in groupby(escdf, [:initial_seed, :itr])
         scatter!(ax1, df.log_p_cgs, df.log_dNdp_esc_UpS_IF, label = "Upstream")
@@ -78,7 +79,7 @@ let f = Figure()
     axislegend(ax1)
     axislegend(ax2)
 
-    f
+    fig
 end
 
 # ╔═╡ Cell order:
