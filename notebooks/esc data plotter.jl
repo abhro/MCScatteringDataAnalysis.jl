@@ -11,7 +11,7 @@ using DrWatson
 @quickactivate "MCScatteringDataAnalysis"
 
 # ╔═╡ b8029e47-60db-4574-af33-51d74b25bb60
-using JLD2, DataFrames
+using CSV, DataFrames
 
 # ╔═╡ 0c4a7349-4ecb-454c-9c8d-4dcf2b66ba94
 using PlutoUI
@@ -55,7 +55,7 @@ md"""
 """
 
 # ╔═╡ 8f8beeee-3b47-4463-a233-1024478a8cf8
-escdf = load_object(datadir("Lorentz-5-processed", "dNdp-esc.jld2"));
+escdf = CSV.read(datadir("Lorentz-5-processed", "dNdp-esc.csv.gz"), DataFrame);
 
 # ╔═╡ 61632ddf-55a6-4fd5-84c0-8344b007c70d
 escdf
