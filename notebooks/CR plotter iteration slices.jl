@@ -181,8 +181,7 @@ md"""
 # ╔═╡ 338974d9-8168-4d9e-9c1e-4492bff1cf30
 md"""
 Select which iteration to plot:
-
-`plot_iter` = $(index_binder)
+`plot_iter` = $(index_binder) (min: $(minimum(idx_CR_p_gdf)), max: $(maximum(idx_CR_p_gdf)))
 """
 
 # ╔═╡ c2b3d96a-216e-4abe-8b0f-625419ac072f
@@ -201,7 +200,6 @@ Dr. Warren suggestion: momentum splitting. to be investigated
 # ╔═╡ d7d554cf-2f16-49e1-849d-25b5088e85ff
 md"""
 Select which iteration to plot:
-
 `plot_iter` = $(index_binder) (min: $(minimum(idx_CR_p_gdf)), max: $(maximum(idx_CR_p_gdf)))
 """
 
@@ -332,7 +330,8 @@ let fig = Figure()
         xlabel = "log(p) (nat)", ylabel = "log(dN/dp) + σ log(p)",
         axis_properties...)
 
-    for (i, dfp) in enumerate(CR_p_gdf_iter[5620:5630])
+    iterations = 5620:5630
+    for (i, dfp) in enumerate(CR_p_gdf_iter[iterations])
         log_p, log_dNdp = dfp.log_p_nat, dfp.log_dNdp_cr_pf
         scatterlines!(ax, log_p, log_dNdp + σ*log_p, label = "plasma frame (iter $i)"; markersize)
     end
@@ -350,7 +349,8 @@ let fig = Figure()
         xlabel = "log(p) (nat)", ylabel = "log(dN/dp) + σ log(p)",
         axis_properties...)
 
-    for (i, dfe) in enumerate(CR_e_gdf_iter[5775:5779])
+    iterations = 5775:5779
+    for (i, dfe) in enumerate(CR_e_gdf_iter[iterations])
         log_p, log_dNdp = dfe.log_p_nat, dfe.log_dNdp_cr_pf
         scatterlines!(ax, log_p, log_dNdp + σ*log_p, label = "plasma frame (iter $i)"; markersize)
     end
