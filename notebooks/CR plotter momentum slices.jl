@@ -66,9 +66,6 @@ using HypothesisTests
 # ╔═╡ 70f93b37-a977-4dce-9fdd-a0497603a864
 using MCScatteringDataAnalysis: get_onesample_scores
 
-# ╔═╡ 2bf6b506-0908-4b84-9a7f-244afb367798
-include(srcdir("bhattacharya_distance.jl"))
-
 # ╔═╡ f0e77bbd-e420-49f1-9b40-f9d994888b93
 md"""
 # Plot fluxes for each momentum slice
@@ -1132,7 +1129,6 @@ end
 # ╟─ecf80697-b786-4b02-9563-f3d082383b76
 # ╠═febdc8a1-00bb-47a7-83d2-6cccef5190f5
 # ╟─35710ad9-f2e4-487b-be19-c29500633726
-# ╠═2bf6b506-0908-4b84-9a7f-244afb367798
 # ╠═b99c020d-3165-40e9-8284-0a037b3f9900
 # ╟─452c9b2f-7138-4310-b0c6-df2be7ab8c76
 # ╠═7534104f-885d-48c5-8ae0-ddae56fcd86d

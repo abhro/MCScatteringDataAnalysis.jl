@@ -37,6 +37,9 @@ export fitdistribution
 export fitdistributions
 export fitnormal
 
+include("bhattacharya_distance.jl")
+export bcdistance
+
 """
     CR_gdfstats(gdf)
 

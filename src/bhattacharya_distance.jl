@@ -1,7 +1,7 @@
 """
     bcdistance(N₁, N₂)
 
-Bhattacharyya distance between two normal distributions
+Bhattacharya distance between two normal distributions
 """
 function bcdistance(N₁, N₂)
     μ₁, σ₁ = params(N₁)
