@@ -329,6 +329,9 @@ md"""
 ### Multiple iterations
 """
 
+# ╔═╡ 6b5ff185-8eea-4e62-9cfd-3395de039b35
+proton_iterations = 5620:5630;
+
 # ╔═╡ 6c07e039-2575-49a6-a50d-531c40ee7965
 let fig = Figure()
     ax = Axis(
@@ -337,8 +340,7 @@ let fig = Figure()
         xlabel = "log(p) (nat)", ylabel = "log(dN/dp) + σ log(p)",
         axis_properties...)
 
-    iterations = 5620:5630
-    for (i, dfp) in enumerate(CR_p_gdf_iter[iterations])
+    for (i, dfp) in enumerate(CR_p_gdf_iter[proton_iterations])
         log_p, log_dNdp = dfp.log_p_nat, dfp.log_dNdp_cr_pf
         scatterlines!(ax, log_p, log_dNdp + σ*log_p, label = "plasma frame (iter $i)"; markersize)
     end
@@ -348,6 +350,9 @@ let fig = Figure()
     fig
 end
 
+# ╔═╡ d76b122b-9881-4b83-ab07-34ffe17d72c3
+electron_iterations = 5775:5779;
+
 # ╔═╡ 1f35f220-7739-4097-b51d-0ab6000be247
 let fig = Figure()
     ax = Axis(
@@ -356,8 +361,7 @@ let fig = Figure()
         xlabel = "log(p) (nat)", ylabel = "log(dN/dp) + σ log(p)",
         axis_properties...)
 
-    iterations = 5775:5779
-    for (i, dfe) in enumerate(CR_e_gdf_iter[iterations])
+    for (i, dfe) in enumerate(CR_e_gdf_iter[electron_iterations])
         log_p, log_dNdp = dfe.log_p_nat, dfe.log_dNdp_cr_pf
         scatterlines!(ax, log_p, log_dNdp + σ*log_p, label = "plasma frame (iter $i)"; markersize)
     end
@@ -485,7 +489,9 @@ end
 # ╟─64eb4739-9a79-4c8c-99a3-bd338b3af6a0
 # ╟─63db1015-02a2-4623-aa6a-b6bd772024fa
 # ╟─67f27108-eb9d-49b0-95ae-e016973e02b5
+# ╠═6b5ff185-8eea-4e62-9cfd-3395de039b35
 # ╟─6c07e039-2575-49a6-a50d-531c40ee7965
+# ╠═d76b122b-9881-4b83-ab07-34ffe17d72c3
 # ╟─1f35f220-7739-4097-b51d-0ab6000be247
 # ╟─e5dbf380-3480-4d96-881a-8c562b5fc6ab
 # ╠═4e26e9ec-b4f2-46f8-bada-945c00cb4907
