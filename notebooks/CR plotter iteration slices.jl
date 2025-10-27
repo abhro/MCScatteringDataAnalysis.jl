@@ -151,24 +151,38 @@ const color_pf_p, color_sf_p, color_ISM_p, color_pf_e, color_sf_e, color_ISM_e =
 # ╔═╡ 3cc54622-c4e4-4c59-8828-4aa899a51e51
 const markersize = 5;
 
+# ╔═╡ 113aaa26-2df1-412a-a0e1-0a5fd25e92dd
+md"""
+Create a method for multiplication that makes the AlgebraOfGraphics layers look a little more algebraic.
+"""
+
+# ╔═╡ 25204be4-5005-44a6-987d-f28789485a60
+# A little type-piracy makes the world go round
+Base.:*(b::Bool, l::Layer) = b ? l : zerolayer()
+
+# ╔═╡ 9ad1edfe-818d-4a26-8658-632369a90845
+x_map = :log_p_nat => "log p (nat)";
+
 # ╔═╡ 968fd2bf-172b-462e-8c45-4ab7cf21f41e
 visual_layer = visual(Lines);
 
-# ╔═╡ ecf80697-b786-4b02-9563-f3d082383b76
+# ╔═╡ cc0e1155-60cd-4b82-910a-9a80b489f58c
 md"""
-Choose which frames to plot:
-- Plasma frame: $(@bind do_plot_pf  CheckBox(default=true))
-- Shock frame:  $(@bind do_plot_sf  CheckBox(default=false))
-- ISM frame:    $(@bind do_plot_ISM CheckBox(default=false))
+Define controllers for which iterations to plot and which frames to plot withni them
 """
+
+# ╔═╡ 1abc4941-d902-450d-9694-aee830e6301d
+plot_pf_binder = @bind do_plot_pf  CheckBox(default=true);
+
+# ╔═╡ de79813e-1d8d-45c0-b291-203b7f19f23e
+plot_sf_binder = @bind do_plot_sf  CheckBox(default=false);
+
+# ╔═╡ c02fd290-c706-45a4-b963-c184d3bd6b2f
+plot_ISM_binder = @bind do_plot_ISM CheckBox(default=false);
 
 # ╔═╡ 3fccf366-bf6d-4c7a-a3d1-916b8f13afd3
 map_layer = let
-    x_map = :log_p_nat => "log p (nat)"
     y_label = "log(dN/dp)"
-
-    # A little type-piracy makes the world go round
-    Base.:*(b::Bool, l::Layer) = b ? l : zerolayer()
 
     pf_map = mapping(x_map, :log_dNdp_cr_pf => y_label, color = direct("plasma frame"))
     sf_map = mapping(x_map, :log_dNdp_cr_sf => y_label, color = direct("shock frame"))
@@ -186,6 +200,14 @@ const index_binder = @bind plot_iter NumberField(idx_CR_p_gdf, default = 1);
 # ╔═╡ 19a41e11-d031-498c-adbb-082e682fb67e
 md"""
 ### Individual iterations
+"""
+
+# ╔═╡ ecf80697-b786-4b02-9563-f3d082383b76
+md"""
+Choose which frames to plot:
+- Plasma frame: $plot_pf_binder
+- Shock frame:  $plot_sf_binder
+- ISM frame:    $plot_ISM_binder
 """
 
 # ╔═╡ 338974d9-8168-4d9e-9c1e-4492bff1cf30
@@ -235,12 +257,6 @@ let fig = Figure(), df = CR_e_gdf_iter[plot_iter]
     fig
 end
 
-# ╔═╡ b352849e-eca0-4ac5-acbe-9f48d0507f38
-md"""
-Select which iteration to plot:
-`plot_iter` = $(index_binder) (min: $(minimum(idx_CR_p_gdf)), max: $(maximum(idx_CR_p_gdf)))
-"""
-
 # ╔═╡ 1529a53f-a084-40fc-80b0-3f9f31a5868e
 md"""
 Plot of ``\log(p^σ dN/dp)`` vs. ``\log(p)``
@@ -249,80 +265,62 @@ Plot of ``\log(p^σ dN/dp)`` vs. ``\log(p)``
 # ╔═╡ 6537effb-12e6-4f4e-b34f-15dd33547921
 const σ = 2.23;
 
-# ╔═╡ f4930314-a64c-4b6a-bcef-c0d9dcf2ef81
-let
-    # Pick out the two DataFrames we're going to get the data from out of the
-    # larger GroupedDataFrame
-    dfp = CR_p_gdf_iter[plot_iter]
-    dfe = CR_e_gdf_iter[plot_iter]
+# ╔═╡ 79429dd7-acb7-4c5f-8843-e93e8c4ea68d
+flatten_log_dNdp = (log_p, log_dNdp) -> log_p * σ + log_dNdp;
 
-    # Create a Makie Figure object to place everything into
-    fig = Figure()
+# ╔═╡ dc6d55ec-e30d-4979-9d2c-a3b6b529cdf8
+md"""
+Create an AlgebraOfGraphics layer which transforms the ``\log(dN/dp)`` column to ``σ \log(p) + \log(dN/dp)``.
+"""
 
-    # The Axis is going to be the only thing in the Figure, set its properties
-    # here
-    ax = Axis(
-        fig[1,1]; title = "dN/dp of Cosmic rays, iteration $plot_iter",
-        xlabel = "log(p) (nat)", ylabel = "log(dN/dp) + σ log(p)", axis_properties...)
+# ╔═╡ c8f1dec5-0566-4ce2-8361-21b7d1fe7480
+σ_map_layer = let
+    y_label = "log(dN/dp) + σ log(p)"
 
-    # Plot each of plasma frame, shock frame, and ISM frame based on whether the
-    # corresponding toggle is set.
-    # TODO: Replace this with a better/more elegant solution.
-    if do_plot_pf
-        # Extract the two columns for easier manipulation in the plotting
-        # function call
-        log_p, log_dNdp = (dfp.log_p_nat, dfp.log_dNdp_cr_pf)
-        # Call `scatterlines!()`, which will actually plot the thing onto the
-        # axis.
-        scatterlines!(ax, log_p, log_dNdp .+ σ*log_p,
-                      label = "protons, plasma frame";
-                      color = color_pf_p, markersize)
+    pf_map = mapping(x_map, (:log_p_nat, :log_dNdp_cr_pf) => flatten_log_dNdp => y_label, color = direct("plasma frame"))
+    sf_map = mapping(x_map, (:log_p_nat, :log_dNdp_cr_sf) => flatten_log_dNdp => y_label, color = direct("shock frame"))
+    ISM_map = mapping(x_map, (:log_p_nat, :log_dNdp_cr_ISM) => flatten_log_dNdp => y_label, color = direct("ISM frame"))
 
-        log_p, log_dNdp = (dfe.log_p_nat, dfe.log_dNdp_cr_pf)
-        scatterlines!(ax, log_p, log_dNdp .+ σ*log_p,
-                      label = "electrons, plasma frame";
-                      color = color_pf_e, markersize)
-    end
-    if do_plot_sf
-        log_p, log_dNdp = (dfp.log_p_nat, dfp.log_dNdp_cr_sf)
-        scatterlines!(ax, log_p, log_dNdp .+ σ*log_p,
-                      label = "protons, shock frame";
-                      color = color_sf_p, markersize)
+    do_plot_pf*pf_map + do_plot_sf*sf_map + do_plot_ISM*ISM_map
+end
 
-        log_p, log_dNdp = (dfe.log_p_nat, dfe.log_dNdp_cr_sf)
-        scatterlines!(ax, log_p, log_dNdp .+ σ*log_p,
-                      label = "electrons, shock frame";
-                      color = color_sf_e, markersize)
-    end
-    if do_plot_ISM
-        log_p, log_dNdp = (dfp.log_p_nat, dfp.log_dNdp_cr_ISM)
-        scatterlines!(ax, log_p, log_dNdp .+ σ*log_p,
-                      label = "protons, ISM frame";
-                      color = color_ISM_p, markersize)
+# ╔═╡ b352849e-eca0-4ac5-acbe-9f48d0507f38
+md"""
+Select which iteration to plot:
+`plot_iter` = $(index_binder) (min: $(minimum(idx_CR_p_gdf)), max: $(maximum(idx_CR_p_gdf)))
+"""
 
-        log_p, log_dNdp = (dfe.log_p_nat, dfe.log_dNdp_cr_ISM)
-        scatterlines!(ax, log_p, log_dNdp .+ σ*log_p,
-                      label = "electrons, ISM frame";
-                      color = color_ISM_e, markersize)
-    end
+# ╔═╡ 822bf68e-5335-45b8-b313-1cc92b53ea01
+md"""
+Choose which frames to plot:
+- Plasma frame: $plot_pf_binder
+- Shock frame:  $plot_sf_binder
+- ISM frame:    $plot_ISM_binder
+"""
 
-    # Plot two horizontal lines to show that the line graph is basically flat.
-    # This also reinforces that dN/dp ∝ p^−σ.
-    hlines!(ax, 57.8, color = color_pf_p, linewidth = 0.5)
-    hlines!(ax, 56.5, color = color_pf_e, linewidth = 0.5)
+# ╔═╡ 64eb4739-9a79-4c8c-99a3-bd338b3af6a0
+let fig = Figure()
+    spec = data(CR_p_gdf_iter[plot_iter]) * σ_map_layer * visual_layer
+    title = "dN/dp of Cosmic rays (protons), iteration $plot_iter"
+    plt = draw!(fig[1,1], spec; axis = (; title, axis_properties...))
+    legend!(fig[1,1], plt; legend_properties..., halign = :center, valign = :bottom)
 
-    # Manually set limits of the axis.
-    #xlims!(ax, -1, 8)
-    #ylims!(ax, 56, 58.5)
+    ax = only(plt).axis # this is stupid
+    hlines!(ax, 57.8, linewidth = 0.5)
 
-    # Turn on the actual legend within the Axis. If all three frames' plotting
-    # options are unchecked, `axislegend()` will error.
-    # TODO: replace this with a more elegant solution.
-    try
-        axislegend(ax, position = :cb)
-    catch e
-        @error(e)
-    end
+    fig
+end
+
+# ╔═╡ 63db1015-02a2-4623-aa6a-b6bd772024fa
+let fig = Figure()
+    spec = data(CR_e_gdf_iter[plot_iter]) * σ_map_layer * visual_layer
+    title = "dN/dp of Cosmic rays (electrons), iteration $plot_iter"
+    plt = draw!(fig[1,1], spec; axis = (; title, axis_properties...))
+    legend!(fig[1,1], plt; legend_properties..., halign = :center, valign = :bottom)
+
+    ax = only(plt).axis # this is stupid
+    hlines!(ax, 56.5, linewidth = 0.5)
+
     fig
 end
 
@@ -457,12 +455,19 @@ end
 # ╟─d36bd46d-6bcd-4d97-9448-23393109e806
 # ╠═50b1a87f-49ff-4d93-aa6e-f042a87b875e
 # ╠═3cc54622-c4e4-4c59-8828-4aa899a51e51
+# ╟─113aaa26-2df1-412a-a0e1-0a5fd25e92dd
+# ╠═25204be4-5005-44a6-987d-f28789485a60
+# ╠═9ad1edfe-818d-4a26-8658-632369a90845
 # ╠═3fccf366-bf6d-4c7a-a3d1-916b8f13afd3
 # ╠═968fd2bf-172b-462e-8c45-4ab7cf21f41e
-# ╟─ecf80697-b786-4b02-9563-f3d082383b76
+# ╟─cc0e1155-60cd-4b82-910a-9a80b489f58c
+# ╠═1abc4941-d902-450d-9694-aee830e6301d
+# ╠═de79813e-1d8d-45c0-b291-203b7f19f23e
+# ╠═c02fd290-c706-45a4-b963-c184d3bd6b2f
 # ╠═d9b28dbe-b3d6-47d6-91c9-21b9350d5069
 # ╠═f4be57bc-395d-4237-950d-c6d0d2b3e12c
 # ╟─19a41e11-d031-498c-adbb-082e682fb67e
+# ╟─ecf80697-b786-4b02-9563-f3d082383b76
 # ╟─338974d9-8168-4d9e-9c1e-4492bff1cf30
 # ╠═c2b3d96a-216e-4abe-8b0f-625419ac072f
 # ╠═bc0dcf3d-94d4-4c75-8698-13c7fb708314
@@ -470,10 +475,15 @@ end
 # ╟─d7d554cf-2f16-49e1-849d-25b5088e85ff
 # ╟─220c3ca5-e0b5-4f5c-86b0-e5d7cdd67558
 # ╟─7879a41a-a284-452b-9505-a239209f1ed0
-# ╟─b352849e-eca0-4ac5-acbe-9f48d0507f38
 # ╟─1529a53f-a084-40fc-80b0-3f9f31a5868e
 # ╠═6537effb-12e6-4f4e-b34f-15dd33547921
-# ╟─f4930314-a64c-4b6a-bcef-c0d9dcf2ef81
+# ╠═79429dd7-acb7-4c5f-8843-e93e8c4ea68d
+# ╟─dc6d55ec-e30d-4979-9d2c-a3b6b529cdf8
+# ╠═c8f1dec5-0566-4ce2-8361-21b7d1fe7480
+# ╟─b352849e-eca0-4ac5-acbe-9f48d0507f38
+# ╟─822bf68e-5335-45b8-b313-1cc92b53ea01
+# ╟─64eb4739-9a79-4c8c-99a3-bd338b3af6a0
+# ╟─63db1015-02a2-4623-aa6a-b6bd772024fa
 # ╟─67f27108-eb9d-49b0-95ae-e016973e02b5
 # ╟─6c07e039-2575-49a6-a50d-531c40ee7965
 # ╟─1f35f220-7739-4097-b51d-0ab6000be247
