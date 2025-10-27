@@ -307,13 +307,13 @@ testset = CR_p_gdf_momentum[testset_index].log_dNdp_cr_pf |> skipmissing |> coll
 
 # ╔═╡ cf870504-0f29-4354-9a4a-76971459aeba
 let testset = filter(>(38.68), testset)
-    f = Figure()
-    ax = Axis(f[1,1]; axis_properties...)
+    fig = Figure()
+    ax = Axis(fig[1,1]; axis_properties...)
     hist!(ax, testset; bins, normalization = :pdf)
     #hist(; bins, normalization = :pdf)
     #xplt = range(extrema(testset)..., length = 1000)
     #lines!(ax, xplt, pdf.(mixture_model_test, xplt) * 60)
-    f
+    fig
 end
 
 # ╔═╡ 3596bac9-5797-40c6-a4da-cdcc1cc9a451
@@ -330,14 +330,14 @@ bn_tentative = BiNormal(
 
 # ╔═╡ 0b1c1d4f-6ffd-423b-bf9b-31b229488038
 with_theme() do
-    f = Figure()
-    ax = Axis(f[1,1], title = "Fit after filtering out main distrib and manually adjusting λ"; axis_properties...)
+    fig = Figure()
+    ax = Axis(fig[1,1], title = "Fit after filtering out main distrib and manually adjusting λ"; axis_properties...)
     stephist!(ax, testset, normalization = :pdf; bins, label = "Test set")
     xs = range(extrema(testset)..., length=1000)
     #plot!(ax, xs, bn_tentative, label = "semi-Manual BiNormal")
     plot!(ax, xs, manual_bn, label = "Manual BiNormal", linewidth=1, color = :orange)
     axislegend(ax, framevisible = false)
-    f
+    fig
 end
 
 # ╔═╡ 4eeb0f0b-311d-410b-b528-cbcb6f7490a7
@@ -353,15 +353,15 @@ end
 # ╔═╡ 4d245ac7-6329-457a-970e-8a8aa23775dc
 #let
 with_theme() do
-    f = Figure()
-    ax = Axis(f[1,1]; axis_properties...)
+    fig = Figure()
+    ax = Axis(fig[1,1]; axis_properties...)
     x = centers(only(q.edges))
     lines!(ax, x, q.weights, label = "Histogram*, with bin centers")
     modevalue, modeidx = findmax(q.weights)
     @info "Got values" modevalue modeidx x[modeidx]
     scatter!(ax, x[modeidx], modevalue, label = "Peak")
     axislegend(ax, framevisible = false)
-    f
+    fig
 end
 
 # ╔═╡ bc44add8-d20f-4e67-ae68-7af945020d55
@@ -391,8 +391,8 @@ brute_fit_dist = first(brute_fitted)
 # ╔═╡ c305f828-96c5-4839-9524-6a890a5d68fa
 #let
 with_theme(Makie.theme(nothing)) do
-    f = Figure()
-    ax = Axis(f[1,1]; axis_properties...)
+    fig = Figure()
+    ax = Axis(fig[1,1]; axis_properties...)
     stephist!(ax, testset; bins, normalization = :pdf)
     xplt = range(extrema(testset)..., length = 1000)
     λ = brute_fit_dist.λ
@@ -405,7 +405,7 @@ with_theme(Makie.theme(nothing)) do
     ax.yminorgridvisible = true
     ##lines!(ax, xplt, pdf.(mixture_model_test, xplt))
     axislegend(ax, framevisible = false)
-    f
+    fig
 end
 
 # ╔═╡ 8999b23b-4357-4655-baa6-273b218006b7
@@ -416,10 +416,10 @@ testset_kde, density_maxes = BiNormalDistributions.kdemaxes(testset, 2)
 
 # ╔═╡ dbcc47ad-952e-475b-9657-f7fd280de743
 let
-    f, ax, _ = plot(testset_kde, label = "KDE")
+    fig, ax, _ = plot(testset_kde, label = "KDE")
     plot!(ax, testset_kde.x[density_maxes.indices], density_maxes.heights, label = "modes")
     axislegend(ax)
-    f
+    fig
 end
 
 # ╔═╡ d6516ed8-0a21-4509-a1b4-34f6521ab222
@@ -435,15 +435,15 @@ testset_kde.density |> length
 testset_mle_fit_distrib = fit_mle(MixtureModel([Normal(), Normal()], ), testset; method = StochasticEM(MersenneTwister(2)))
 
 # ╔═╡ 788836a8-e168-4eed-b5cd-3522e43b80a6
-let f = Figure()
-    ax = Axis(f[1,1], xminorgridvisible = true, yminorgridvisible = true)
+let fig = Figure()
+    ax = Axis(fig[1,1], xminorgridvisible = true, yminorgridvisible = true)
     ##stephist!(ax, testset; bins, normalization = :pdf, label = "stephist")
     plot!(ax, testset_kde, label = "KDE")
     xplt = range(extrema(testset)..., length = 1000)
     lines!(ax, xplt, testset_mle_fit_distrib, label = "EM fit")
     ##lines!(ax, xplt, pdf.(mixture_model_test, xplt))
     axislegend(ax)
-    f
+    fig
 end
 
 # ╔═╡ d85e0253-c894-41c7-a255-ded58aca322e
@@ -451,13 +451,13 @@ testset_trunc = filter(>(38.7), testset)
 
 # ╔═╡ c31984a0-5612-403e-9278-bfd16759cacd
 let
-    f = Figure()
-    ax = Axis(f[1,1]; axis_properties...)
+    fig = Figure()
+    ax = Axis(fig[1,1]; axis_properties...)
     hist!(ax, testset_trunc; bins, normalization = :pdf)
     #hist(; bins, normalization = :pdf)
     #xplt = range(extrema(testset_trunc)..., length = 1000)
     #lines!(ax, xplt, pdf.(mixture_model_test, xplt) * 60)
-    f
+    fig
 end
 
 # ╔═╡ deb75b95-e3a2-4e94-bce0-8af69754475b
@@ -544,15 +544,15 @@ kde_curve_fit_distrib = let
 end
 
 # ╔═╡ 8572d3a4-405c-438c-9dfc-0d37222eee9b
-let f = Figure()
-    ax = Axis(f[1,1], xminorgridvisible = true, yminorgridvisible = true)
+let fig = Figure()
+    ax = Axis(fig[1,1], xminorgridvisible = true, yminorgridvisible = true)
     ##stephist!(ax, testset; bins, normalization = :pdf)
     plot!(ax, testset_kde, label = "kde")
     xplt = range(extrema(testset)..., length = 1000)
     lines!(ax, xplt, kde_curve_fit_distrib, label = "Curve fit on kde, LsqFit.jl")
     #lines!(ax, xplt, pdf.(mixture_model_test, xplt))
     axislegend(ax)
-    f
+    fig
 end
 
 # ╔═╡ 1c71c8ee-4ce0-4672-8afa-1d0fe46d1959
@@ -570,9 +570,9 @@ Value of proton momentum at slice: 10^$(log_p_nat_at_slice_p) _m_ₚ_c_
 
 # ╔═╡ 4051e244-4c84-4983-8cb9-bc7f53daa9f6
 let df = CR_p_gdf_momentum[proton_momentum_index]
-    f = Figure()
+    fig = Figure()
     ax = Axis(
-        f[1,1];
+        fig[1,1];
         xlabel = "log(dN/dp)", ylabel = "pdf",
         title = "Histogram of protons dN/dp at p = 10^$log_p_nat_at_slice_p mₚc",
         axis_properties...)
@@ -596,7 +596,7 @@ let df = CR_p_gdf_momentum[proton_momentum_index]
     catch e
         # axislegend has no plots to work with, because the current index doesn't have any samples. stop it complaining.
     end
-    f
+    fig
 end
 
 # ╔═╡ cef8f0a4-0967-4e86-bfde-7fa84c474e31
@@ -611,9 +611,9 @@ Value of electron momentum at slice: 10^$(log_p_nat_at_slice_e) *m*ₚ*c*
 
 # ╔═╡ 88822f52-aab8-4931-9091-1909da6c604b
 let df = CR_e_gdf_momentum[electron_momentum_index]
-    f = Figure()
+    fig = Figure()
     ax = Axis(
-        f[1,1];
+        fig[1,1];
         xlabel = "log(dN/dp)", ylabel = "pdf",
         title = "Histogram of electrons dN/dp at p = 10^$log_p_nat_at_slice_e mₚc",
         axis_properties...)
@@ -637,7 +637,7 @@ let df = CR_e_gdf_momentum[electron_momentum_index]
     catch e
         # axislegend has no plots to work with, because the current index doesn't have any samples. stop it complaining.
     end
-    f
+    fig
 end
 
 # ╔═╡ 27983a4f-1d58-41e1-8889-168365a96030
@@ -777,15 +777,15 @@ end
 mixture_model_test = fit_mom(BiNormal{eltype(testset)}, testset, solver = Optim.NelderMead())
 
 # ╔═╡ 25cdc9ef-8f50-4b1e-bd74-b1385d6fe8c1
-let f = Figure()
-    ax = Axis(f[1,1], xminorgridvisible = true, yminorgridvisible = true)
+let fig = Figure()
+    ax = Axis(fig[1,1], xminorgridvisible = true, yminorgridvisible = true)
     #stephist!(ax, testset; bins, normalization = :pdf, label = "stephist")
     #plot!(ax, testset_kde, label = "KDE")
     xplt = range(extrema(testset)..., length = 1000)
     lines!(ax, xplt, mixture_model_test, label = "MoM fit from nlsolve")
     #lines!(ax, xplt, pdf.(mixture_model_test, xplt))
     axislegend(ax)
-    f
+    fig
 end
 
 # ╔═╡ 501fa36b-1ab9-44cf-8bcc-5bcd2dfd0b43

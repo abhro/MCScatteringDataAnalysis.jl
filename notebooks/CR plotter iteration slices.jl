@@ -206,21 +206,21 @@ Select which iteration to plot:
 """
 
 # ╔═╡ 220c3ca5-e0b5-4f5c-86b0-e5d7cdd67558
-let f = Figure(), df = CR_p_gdf_iter[plot_iter]
+let fig = Figure(), df = CR_p_gdf_iter[plot_iter]
     spec = data(df) * map_layer * visual_layer
     title = "dN/dp of Cosmic rays (protons), iteration $plot_iter"
-    plt = draw!(f[1,1], spec, axis = (; title, axis_properties...))
-    legend!(f[1,1], plt; legend_properties...)
-    f
+    plt = draw!(fig[1,1], spec, axis = (; title, axis_properties...))
+    legend!(fig[1,1], plt; legend_properties...)
+    fig
 end
 
 # ╔═╡ 7879a41a-a284-452b-9505-a239209f1ed0
-let f = Figure(), df = CR_e_gdf_iter[plot_iter]
+let fig = Figure(), df = CR_e_gdf_iter[plot_iter]
     spec = data(df) * map_layer * visual_layer
     title = "dN/dp of Cosmic rays (electrons), iteration $plot_iter"
-    plt = draw!(f[1,1], spec, axis = (; title, axis_properties...))
-    legend!(f[1,1], plt; legend_properties...)
-    f
+    plt = draw!(fig[1,1], spec, axis = (; title, axis_properties...))
+    legend!(fig[1,1], plt; legend_properties...)
+    fig
 end
 
 # ╔═╡ b352849e-eca0-4ac5-acbe-9f48d0507f38
@@ -243,10 +243,10 @@ let
     dfp = CR_p_gdf_iter[plot_iter]
     dfe = CR_e_gdf_iter[plot_iter]
 
-    f = Figure()
+    fig = Figure()
 
     ax = Axis(
-        f[1,1]; title = "dN/dp of Cosmic rays, iteration $plot_iter",
+        fig[1,1]; title = "dN/dp of Cosmic rays, iteration $plot_iter",
         xlabel = "log(p) (nat)", ylabel = "log(dN/dp) + σ log(p)", axis_properties...)
 
     if do_plot_pf
@@ -281,7 +281,7 @@ let
     catch e
         @error(e)
     end
-    f
+    fig
 end
 
 # ╔═╡ 67f27108-eb9d-49b0-95ae-e016973e02b5
@@ -290,9 +290,9 @@ md"""
 """
 
 # ╔═╡ 6c07e039-2575-49a6-a50d-531c40ee7965
-let f = Figure()
+let fig = Figure()
     ax = Axis(
-        f[1,1];
+        fig[1,1];
         title = "dN/dp of Cosmic rays (protons)",
         xlabel = "log(p) (nat)", ylabel = "log(dN/dp) + σ log(p)",
         axis_properties...)
@@ -304,13 +304,13 @@ let f = Figure()
 
     xlims!(ax, 2, 5)
     ylims!(ax, 57.2, 58.3)
-    f
+    fig
 end
 
 # ╔═╡ 1f35f220-7739-4097-b51d-0ab6000be247
-let f = Figure()
+let fig = Figure()
     ax = Axis(
-        f[1,1];
+        fig[1,1];
         title = "dN/dp of Cosmic rays (electrons)",
         xlabel = "log(p) (nat)", ylabel = "log(dN/dp) + σ log(p)",
         axis_properties...)
@@ -322,7 +322,7 @@ let f = Figure()
 
     xlims!(ax, -0.3, 5)
     ylims!(ax, 56, 57.0)
-    f
+    fig
 end
 
 # ╔═╡ e5dbf380-3480-4d96-881a-8c562b5fc6ab
@@ -333,9 +333,9 @@ md"""
 # ╔═╡ 4e26e9ec-b4f2-46f8-bada-945c00cb4907
 # ╠═╡ disabled = true
 #=╠═╡
-let f = Figure()
+let fig = Figure()
     ax = Axis(
-        f[1,1];
+        fig[1,1];
         title = "dN/dp of Cosmic rays (protons)",
         xlabel = "log(p) (nat)", ylabel = "log(dN/dp) + σ log(p)",
         axis_properties...)
@@ -350,7 +350,7 @@ let f = Figure()
     #xlims!(ax, 2, 5)
     #ylims!(ax, 57.25, 58.7)
     #axislegend(ax, position = :lb)
-    f
+    fig
 end
   ╠═╡ =#
 
@@ -364,9 +364,9 @@ Found: iteration 5775 (iseed: 289, iter within seed: 15).
 # ╔═╡ 526cd197-9ec7-445a-9018-3163d3916e10
 # ╠═╡ disabled = true
 #=╠═╡
-let f = Figure()
+let fig = Figure()
     ax = Axis(
-        f[1,1];
+        fig[1,1];
         title = "dN/dp of Cosmic rays (electrons)",
         xlabel = "log(p) (nat)", ylabel = "log(dN/dp) + σ log(p)",
         axis_properties...)
@@ -379,7 +379,7 @@ let f = Figure()
     xlims!(ax, -0.3, 5)
     ylims!(ax, 56, 57.4)
     #axislegend(ax, position = :lb)
-    f
+    fig
 end
   ╠═╡ =#
 
