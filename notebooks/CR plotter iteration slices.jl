@@ -192,10 +192,10 @@ map_layer = let
 end;
 
 # ╔═╡ d9b28dbe-b3d6-47d6-91c9-21b9350d5069
-const idx_CR_p_gdf = axes(CR_p_gdf_iter, 1);
+idx_CR_p_gdf = axes(CR_p_gdf_iter, 1);
 
 # ╔═╡ f4be57bc-395d-4237-950d-c6d0d2b3e12c
-const index_binder = @bind plot_iter NumberField(idx_CR_p_gdf, default = 1);
+index_binder = @bind plot_iter NumberField(idx_CR_p_gdf, default = 1);
 
 # ╔═╡ 19a41e11-d031-498c-adbb-082e682fb67e
 md"""
