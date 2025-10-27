@@ -206,7 +206,11 @@ Select which iteration to plot:
 """
 
 # ╔═╡ 220c3ca5-e0b5-4f5c-86b0-e5d7cdd67558
+# The primary plot in this notebook, i.e., one spectra, is through
+# AlgebraOfGraphics, which is built on top of Makie.
 let fig = Figure(), df = CR_p_gdf_iter[plot_iter]
+    # Create a plotting specification, which specifies our data source, how to
+    # transform our data (`map_layer`), and how to present the data (`visual_layer`).
     spec = data(df) * map_layer * visual_layer
     title = "dN/dp of Cosmic rays (protons), iteration $plot_iter"
     plt = draw!(fig[1,1], spec, axis = (; title, axis_properties...))
@@ -240,42 +244,73 @@ const σ = 2.23;
 
 # ╔═╡ f4930314-a64c-4b6a-bcef-c0d9dcf2ef81
 let
+    # Pick out the two DataFrames we're going to get the data from out of the
+    # larger GroupedDataFrame
     dfp = CR_p_gdf_iter[plot_iter]
     dfe = CR_e_gdf_iter[plot_iter]
 
+    # Create a Makie Figure object to place everything into
     fig = Figure()
 
+    # The Axis is going to be the only thing in the Figure, set its properties
+    # here
     ax = Axis(
         fig[1,1]; title = "dN/dp of Cosmic rays, iteration $plot_iter",
         xlabel = "log(p) (nat)", ylabel = "log(dN/dp) + σ log(p)", axis_properties...)
 
+    # Plot each of plasma frame, shock frame, and ISM frame based on whether the
+    # corresponding toggle is set.
+    # TODO: Replace this with a better/more elegant solution.
     if do_plot_pf
+        # Extract the two columns for easier manipulation in the plotting
+        # function call
         log_p, log_dNdp = (dfp.log_p_nat, dfp.log_dNdp_cr_pf)
-        scatterlines!(ax, log_p, log_dNdp .+ σ*log_p, label = "protons, plasma frame"; color = color_pf_p, markersize)
+        # Call `scatterlines!()`, which will actually plot the thing onto the
+        # axis.
+        scatterlines!(ax, log_p, log_dNdp .+ σ*log_p,
+                      label = "protons, plasma frame";
+                      color = color_pf_p, markersize)
 
         log_p, log_dNdp = (dfe.log_p_nat, dfe.log_dNdp_cr_pf)
-        scatterlines!(ax, log_p, log_dNdp .+ σ*log_p, label = "electrons, plasma frame"; color = color_pf_e, markersize)
+        scatterlines!(ax, log_p, log_dNdp .+ σ*log_p,
+                      label = "electrons, plasma frame";
+                      color = color_pf_e, markersize)
     end
     if do_plot_sf
         log_p, log_dNdp = (dfp.log_p_nat, dfp.log_dNdp_cr_sf)
-        scatterlines!(ax, log_p, log_dNdp .+ σ*log_p, label = "protons, shock frame"; color = color_sf_p, markersize)
+        scatterlines!(ax, log_p, log_dNdp .+ σ*log_p,
+                      label = "protons, shock frame";
+                      color = color_sf_p, markersize)
 
         log_p, log_dNdp = (dfe.log_p_nat, dfe.log_dNdp_cr_sf)
-        scatterlines!(ax, log_p, log_dNdp .+ σ*log_p, label = "electrons, shock frame"; color = color_sf_e, markersize)
+        scatterlines!(ax, log_p, log_dNdp .+ σ*log_p,
+                      label = "electrons, shock frame";
+                      color = color_sf_e, markersize)
     end
     if do_plot_ISM
         log_p, log_dNdp = (dfp.log_p_nat, dfp.log_dNdp_cr_ISM)
-        scatterlines!(ax, log_p, log_dNdp .+ σ*log_p, label = "protons, ISM frame"; color = color_ISM_p, markersize)
+        scatterlines!(ax, log_p, log_dNdp .+ σ*log_p,
+                      label = "protons, ISM frame";
+                      color = color_ISM_p, markersize)
 
         log_p, log_dNdp = (dfe.log_p_nat, dfe.log_dNdp_cr_ISM)
-        scatterlines!(ax, log_p, log_dNdp .+ σ*log_p, label = "electrons, ISM frame"; color = color_ISM_e, markersize)
+        scatterlines!(ax, log_p, log_dNdp .+ σ*log_p,
+                      label = "electrons, ISM frame";
+                      color = color_ISM_e, markersize)
     end
 
+    # Plot two horizontal lines to show that the line graph is basically flat.
+    # This also reinforces that dN/dp ∝ p^−σ.
     hlines!(ax, 57.8, color = color_pf_p, linewidth = 0.5)
     hlines!(ax, 56.5, color = color_pf_e, linewidth = 0.5)
 
+    # Manually set limits of the axis.
     #xlims!(ax, -1, 8)
     #ylims!(ax, 56, 58.5)
+
+    # Turn on the actual legend within the Axis. If all three frames' plotting
+    # options are unchecked, `axislegend()` will error.
+    # TODO: replace this with a more elegant solution.
     try
         axislegend(ax, position = :cb)
     catch e
