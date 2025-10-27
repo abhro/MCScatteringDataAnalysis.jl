@@ -95,6 +95,11 @@ CR_p_gdf_iter = load_object(datadir("Lorentz-5-processed", "dNdp-CR-protons-iter
 # ╔═╡ 80b16c96-b0f3-42a8-8544-7fbd9c06a1d9
 CR_e_gdf_iter = load_object(datadir("Lorentz-5-processed", "dNdp-CR-electrons-iteration-split.jld2"));
 
+# ╔═╡ 694a00a3-d2f5-49a3-b5d5-47fe5305329d
+md"""
+Enable the following cells to inspect the `GroupedDataFrame`s:
+"""
+
 # ╔═╡ 3a2e4aee-bc90-493e-84b1-79897934f16a
 # ╠═╡ disabled = true
 #=╠═╡
@@ -124,6 +129,11 @@ const axis_properties = (
     xminorticksvisible = true,
     yminorticksvisible = true,
 )
+
+# ╔═╡ 9aa9dffc-cb2f-4f4a-8eca-0e6046e63c11
+md"""
+Set a bunch of legend properties to get AlgebraOfGraphics to behave.
+"""
 
 # ╔═╡ d36bd46d-6bcd-4d97-9448-23393109e806
 # options for getting legend by AlgebraOfGraphics to cooperate
@@ -228,7 +238,6 @@ end
 # ╔═╡ b352849e-eca0-4ac5-acbe-9f48d0507f38
 md"""
 Select which iteration to plot:
-
 `plot_iter` = $(index_binder) (min: $(minimum(idx_CR_p_gdf)), max: $(maximum(idx_CR_p_gdf)))
 """
 
@@ -438,11 +447,13 @@ end
 # ╟─8dfe6f3c-f693-4c73-8152-8c43c1c1ff42
 # ╠═3bc899e5-ce26-4384-bf7b-f0bb3820f08d
 # ╠═80b16c96-b0f3-42a8-8544-7fbd9c06a1d9
+# ╟─694a00a3-d2f5-49a3-b5d5-47fe5305329d
 # ╠═3a2e4aee-bc90-493e-84b1-79897934f16a
 # ╠═fae99b13-0b14-45c0-989f-8d0f22f0e96c
 # ╟─628130bf-da25-4799-8e5e-3d2db15b1e49
 # ╟─3e59e047-6f47-40de-9881-f748d7f356e9
 # ╟─f91132bd-28af-4a6c-9a77-5c5b0ed4a08a
+# ╟─9aa9dffc-cb2f-4f4a-8eca-0e6046e63c11
 # ╟─d36bd46d-6bcd-4d97-9448-23393109e806
 # ╠═50b1a87f-49ff-4d93-aa6e-f042a87b875e
 # ╠═3cc54622-c4e4-4c59-8828-4aa899a51e51
