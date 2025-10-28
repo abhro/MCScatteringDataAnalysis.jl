@@ -56,19 +56,14 @@ md"""
 # Plot spectra for each iteration
 """
 
-# ╔═╡ a5526239-2f05-4618-8868-0f552855d574
-md"""
-## Preamble
-"""
-
 # ╔═╡ cd809ca8-2cc4-435d-ab8b-b7b24fa40ed1
 md"""
-### Import packages
+## Import packages
 """
 
 # ╔═╡ c3cedbde-37a4-473b-87e4-d60295362dba
 md"""
-### Configure notebook appearance
+## Configure notebook appearance
 """
 
 # ╔═╡ b544df91-fe2d-4396-892c-7faea2edd141
@@ -86,7 +81,7 @@ main {
 
 # ╔═╡ 8dfe6f3c-f693-4c73-8152-8c43c1c1ff42
 md"""
-## Read data file
+# Read data file
 """
 
 # ╔═╡ 3bc899e5-ce26-4384-bf7b-f0bb3820f08d
@@ -114,12 +109,12 @@ CR_e_gdf_iter
 
 # ╔═╡ 628130bf-da25-4799-8e5e-3d2db15b1e49
 md"""
-## Plot Cosmic Ray data
+# Plot Cosmic Ray data
 """
 
 # ╔═╡ 3e59e047-6f47-40de-9881-f748d7f356e9
 md"""
-### Plotting configuration
+## Plotting configuration
 """
 
 # ╔═╡ f91132bd-28af-4a6c-9a77-5c5b0ed4a08a
@@ -199,7 +194,7 @@ index_binder = @bind plot_iter NumberField(idx_CR_p_gdf, default = 1);
 
 # ╔═╡ 19a41e11-d031-498c-adbb-082e682fb67e
 md"""
-### Individual iterations
+## Individual iterations
 """
 
 # ╔═╡ ecf80697-b786-4b02-9563-f3d082383b76
@@ -326,7 +321,7 @@ end
 
 # ╔═╡ 67f27108-eb9d-49b0-95ae-e016973e02b5
 md"""
-### Multiple iterations
+## Multiple iterations
 """
 
 # ╔═╡ 6b5ff185-8eea-4e62-9cfd-3395de039b35
@@ -373,7 +368,7 @@ end
 
 # ╔═╡ e5dbf380-3480-4d96-881a-8c562b5fc6ab
 md"""
-### All at once
+## All at once
 """
 
 # ╔═╡ 4e26e9ec-b4f2-46f8-bada-945c00cb4907
@@ -431,10 +426,9 @@ end
 
 # ╔═╡ Cell order:
 # ╟─f08edae2-4f29-4274-b010-07cfb3826f1e
-# ╟─a5526239-2f05-4618-8868-0f552855d574
+# ╟─cd809ca8-2cc4-435d-ab8b-b7b24fa40ed1
 # ╠═f1ee2cb0-8274-11ef-0826-f55183647219
 # ╠═e5e0e4e2-2df1-4536-9cc5-bdcec6fc13de
-# ╟─cd809ca8-2cc4-435d-ab8b-b7b24fa40ed1
 # ╠═7899ae97-fbc2-43e5-ac77-c6d725f0371e
 # ╠═b137e7fa-f2ce-4cb1-85d7-87078a9aa9cc
 # ╠═7a050dc5-7772-4933-959f-bf4fb478fc7d
