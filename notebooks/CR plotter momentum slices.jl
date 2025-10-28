@@ -984,7 +984,16 @@ let df = CR_e_gdf_momentum[electron_momentum_index], distribs = normal_distrib_e
 end
 
 # ╔═╡ 7534104f-885d-48c5-8ae0-ddae56fcd86d
-scatterlines(electron_log_p_nat, distances, axis = (; yscale = log10, xminorgridvisible = true, title = "Distribution agreement curve", xlabel = "log p (nat)", ylabel = "Bhattacharya distance"))
+let
+    fig = Figure()
+    ax = Axis(fig[1,1];
+              yscale = log10,
+              axis_properties...,
+              title = "Distribution agreement curve",
+              xlabel = "log p (nat)", ylabel = "Bhattacharya distance")
+    scatterlines!(ax, electron_log_p_nat, distances)
+    fig
+end
 
 # ╔═╡ e7a26d10-0e00-444d-a8f9-27874a8f821e
 let
