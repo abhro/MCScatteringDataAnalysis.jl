@@ -63,6 +63,29 @@ grid_df
 # ╔═╡ 6e28bd19-e152-420b-905b-58ffcfc84f8f
 describe(grid_df)
 
+# ╔═╡ 2c672cea-a59a-4bab-a4fc-42276cad6127
+grid_df_grouped = groupby(grid_df, [:initial_seed, :itr]);
+
+# ╔═╡ 18160515-3f5d-43c5-a4e4-4738e3500ac6
+df_to_plot_index = 5
+
+# ╔═╡ 0bb14d0b-0cb6-457a-b8d6-19d07fa74e36
+df_to_plot = grid_df_grouped[df_to_plot_index]
+
+# ╔═╡ 79401d93-a2b7-4dac-beed-0e52d33d7f23
+let
+    fig = Figure()
+    ax = Axis(fig[1,1])
+    lines!(ax, df_to_plot.x_grid_log, df_to_plot.pressure_tot_MC_log, label = "pressure_tot_MC_log")
+    lines!(ax, df_to_plot.x_grid_log, df_to_plot.pxx_norm_log, label = "pxx_norm_log")
+    lines!(ax, df_to_plot.x_grid_log, df_to_plot.en_norm_log, label = "en_norm_log")
+    lines!(ax, df_to_plot.x_grid_log, df_to_plot.bmag_log, label = "bmag_log")
+
+    axislegend(ax, framevisible = false, position = :rb)
+
+    fig
+end
+
 # ╔═╡ Cell order:
 # ╟─8cecd3b0-d2b1-11ef-2fa6-932b3621a372
 # ╟─50eff28b-b1ba-4f29-94d3-0d8862952cd1
@@ -78,3 +101,7 @@ describe(grid_df)
 # ╠═6eefa524-9d4a-418e-b0fd-9a770986723c
 # ╠═4c194f9d-bf3b-4547-bc29-bf73a4570551
 # ╠═6e28bd19-e152-420b-905b-58ffcfc84f8f
+# ╠═2c672cea-a59a-4bab-a4fc-42276cad6127
+# ╠═18160515-3f5d-43c5-a4e4-4738e3500ac6
+# ╠═0bb14d0b-0cb6-457a-b8d6-19d07fa74e36
+# ╠═79401d93-a2b7-4dac-beed-0e52d33d7f23
