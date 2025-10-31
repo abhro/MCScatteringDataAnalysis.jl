@@ -1,4 +1,5 @@
 using Test, MCScatteringDataAnalysis
+using Aqua
 using Random: randn, rand
 using BiNormalDistributions: BiNormal
 using Distributions: Normal
@@ -26,6 +27,10 @@ ti = time()
         x, y = get_hist_curve(randn(3000); nbins=150)
         @test x isa AbstractVector{Float64}
         @test y isa Vector{Float64}
+    end
+
+    @testset "Aqua.jl (Code quality)" begin
+        Aqua.test_all(MCScatteringDataAnalysis)
     end
 end
 
