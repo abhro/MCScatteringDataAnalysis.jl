@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.20.19
+# v0.20.20
 
 using Markdown
 using InteractiveUtils
@@ -124,10 +124,10 @@ For electrons:
 CR_gdfstats(CR_e_gdf_momentum)
 
 # ╔═╡ 1572a05b-77db-43a4-81cd-d9eb3c9bf2e0
-const idx_CR_p_gdf = axes(CR_p_gdf_momentum, 1);
+idx_CR_p_gdf = axes(CR_p_gdf_momentum, 1);
 
 # ╔═╡ f8d26a2c-2789-4b04-8bb7-71bf19686bbd
-const idx_CR_e_gdf = axes(CR_e_gdf_momentum, 1);
+idx_CR_e_gdf = axes(CR_e_gdf_momentum, 1);
 
 # ╔═╡ 5c65e63d-e6bd-41fa-adbf-0e1717075956
 md"""
@@ -135,10 +135,10 @@ UI element variables for selecting which momentum slice we want to inspect
 """
 
 # ╔═╡ b679ff7a-89f4-4f92-9dec-2ba3c538d715
-const proton_index_binder = @bind proton_momentum_index NumberField(idx_CR_p_gdf, default = 13);
+proton_index_binder = @bind proton_momentum_index NumberField(idx_CR_p_gdf, default = 13);
 
 # ╔═╡ 59f400ef-3b5b-424c-ae08-41b94d220ce9
-const electron_index_binder = @bind electron_momentum_index NumberField(idx_CR_e_gdf, default = 13);
+electron_index_binder = @bind electron_momentum_index NumberField(idx_CR_e_gdf, default = 13);
 
 # ╔═╡ 628130bf-da25-4799-8e5e-3d2db15b1e49
 md"""
@@ -151,10 +151,10 @@ md"""
 """
 
 # ╔═╡ 59a22149-3397-4e97-9f7b-5d502aacf293
-const markersize = 5
+markersize = 5
 
 # ╔═╡ f91132bd-28af-4a6c-9a77-5c5b0ed4a08a
-const axis_properties = (
+axis_properties = (
     xminorgridvisible = true,
     yminorgridvisible = true,
     xminorticksvisible = true,
@@ -163,10 +163,10 @@ const axis_properties = (
 )
 
 # ╔═╡ f86707a1-9d79-4df8-8798-3f7ea1d1797c
-const bins = 90;
+bins = 90;
 
 # ╔═╡ 50b1a87f-49ff-4d93-aa6e-f042a87b875e
-const color_pf_p, color_sf_p, color_ISM_p, color_pf_e, color_sf_e, color_ISM_e = Makie.wong_colors();
+color_pf_p, color_sf_p, color_ISM_p, color_pf_e, color_sf_e, color_ISM_e = Makie.wong_colors();
 
 # ╔═╡ 1b9f507c-1585-4ad1-8090-bdde6de972d6
 md"""
@@ -635,7 +635,7 @@ md"""
 """
 
 # ╔═╡ 377aaf8f-b909-4c42-bc77-912fd300c300
-const normalization = :pdf;
+normalization = :pdf;
 
 # ╔═╡ 32edc221-e586-4510-9427-977b22f62f6c
 md"""
@@ -643,7 +643,7 @@ Vector of momentum slices
 """
 
 # ╔═╡ e8406a6a-ecc2-49d2-b67a-503b4ef5764b
-const proton_log_p_nat = keys(CR_p_gdf_momentum) .|> values .|> first;
+proton_log_p_nat = keys(CR_p_gdf_momentum) .|> values .|> first;
 
 # ╔═╡ 71404de8-f8b2-4d26-b7d7-41064cae1447
 log_p_nat_at_slice = proton_log_p_nat[proton_momentum_index];
@@ -797,7 +797,7 @@ let
 end
 
 # ╔═╡ 589661b1-6a64-4db5-ac40-c1565c29c3cc
-const electron_log_p_nat = keys(CR_e_gdf_momentum) .|> values .|> first;
+electron_log_p_nat = keys(CR_e_gdf_momentum) .|> values .|> first;
 
 # ╔═╡ 91bba2da-c925-4123-bb8a-c1f9be8619e9
 let

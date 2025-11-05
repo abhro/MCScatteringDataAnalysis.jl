@@ -118,7 +118,7 @@ md"""
 """
 
 # ╔═╡ f91132bd-28af-4a6c-9a77-5c5b0ed4a08a
-const axis_properties = (
+axis_properties = (
     xminorgridvisible = true,
     yminorgridvisible = true,
     xminorticksvisible = true,
@@ -132,7 +132,7 @@ Set a bunch of legend properties to get AlgebraOfGraphics to behave.
 
 # ╔═╡ d36bd46d-6bcd-4d97-9448-23393109e806
 # options for getting legend by AlgebraOfGraphics to cooperate
-const legend_properties = (
+legend_properties = (
     valign = :top,
     halign = :right,
     tellwidth = false,
@@ -141,10 +141,10 @@ const legend_properties = (
 )
 
 # ╔═╡ 50b1a87f-49ff-4d93-aa6e-f042a87b875e
-const color_pf_p, color_sf_p, color_ISM_p, color_pf_e, color_sf_e, color_ISM_e = Makie.wong_colors();
+color_pf_p, color_sf_p, color_ISM_p, color_pf_e, color_sf_e, color_ISM_e = Makie.wong_colors();
 
 # ╔═╡ 3cc54622-c4e4-4c59-8828-4aa899a51e51
-const markersize = 5;
+markersize = 5;
 
 # ╔═╡ 113aaa26-2df1-412a-a0e1-0a5fd25e92dd
 md"""
@@ -258,7 +258,7 @@ Plot of ``\log(p^σ dN/dp)`` vs. ``\log(p)``
 """
 
 # ╔═╡ 6537effb-12e6-4f4e-b34f-15dd33547921
-const σ = 2.23;
+σ = 2.23;
 
 # ╔═╡ 79429dd7-acb7-4c5f-8843-e93e8c4ea68d
 flatten_log_dNdp = (log_p, log_dNdp) -> log_p * σ + log_dNdp;

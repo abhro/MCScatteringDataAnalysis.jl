@@ -157,31 +157,31 @@ md"""
 """
 
 # ╔═╡ 2f36a2d9-d9f5-4bf6-8fa4-c1a07532e8bb
-const proton_indices = axes(CR_p_gdf_momentum, 1);
+proton_indices = axes(CR_p_gdf_momentum, 1);
 
 # ╔═╡ baf25a3a-0d13-409e-b5d9-5a1171da28b2
-const electron_indices = axes(CR_e_gdf_momentum, 1);
+electron_indices = axes(CR_e_gdf_momentum, 1);
 
 # ╔═╡ 4e465b9b-b2a1-42c0-ab78-ea4f620dbe30
-const proton_index_binder = @bind proton_momentum_index NumberField(proton_indices, default = 13);
+proton_index_binder = @bind proton_momentum_index NumberField(proton_indices, default = 13);
 
 # ╔═╡ c21810ac-c7d7-4faf-8b2d-8985adb268da
-const electron_index_binder = @bind electron_momentum_index NumberField(electron_indices, default = 13);
+electron_index_binder = @bind electron_momentum_index NumberField(electron_indices, default = 13);
 
 # ╔═╡ 59a22149-3397-4e97-9f7b-5d502aacf293
-const markersize = 6;
+markersize = 6;
 
 # ╔═╡ f91132bd-28af-4a6c-9a77-5c5b0ed4a08a
-const axis_properties = (xminorgridvisible = true, yminorgridvisible = true, xlabel = "log(dN/dp)")
+axis_properties = (xminorgridvisible = true, yminorgridvisible = true, xlabel = "log(dN/dp)")
 
 # ╔═╡ f86707a1-9d79-4df8-8798-3f7ea1d1797c
-const bins = 90;
+bins = 90;
 
 # ╔═╡ 377aaf8f-b909-4c42-bc77-912fd300c300
-const normalization = :pdf;
+normalization = :pdf;
 
 # ╔═╡ 50b1a87f-49ff-4d93-aa6e-f042a87b875e
-const color_pf_p, color_sf_p, color_ISM_p, color_pf_e, color_sf_e, color_ISM_e = Makie.wong_colors();
+color_pf_p, color_sf_p, color_ISM_p, color_pf_e, color_sf_e, color_ISM_e = Makie.wong_colors();
 
 # ╔═╡ ecf80697-b786-4b02-9563-f3d082383b76
 md"""
