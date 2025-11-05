@@ -11,7 +11,7 @@ using DrWatson
 @quickactivate "MCScatteringDataAnalysis"
 
 # ╔═╡ a0c6b97e-f294-4c6e-ac80-7bfc902d58e7
-using JLD2, DataFrames
+using CSV, DataFrames
 
 # ╔═╡ 87c538d7-28ab-40ef-84d7-1b34feceec44
 using PlutoUI
@@ -53,9 +53,6 @@ main {
 md"""
 # Read data files
 """
-
-# ╔═╡ f52451f7-56fd-4c4e-96be-a4e223411a86
-import CSV
 
 # ╔═╡ 6eefa524-9d4a-418e-b0fd-9a770986723c
 grid_df = CSV.read(datadir("Lorentz-5-processed", "grid.csv.gz"), DataFrame);
@@ -101,7 +98,6 @@ end
 # ╠═cd50f95b-8e0b-44a1-982b-52f08192d7b4
 # ╟─846ce513-17b4-49aa-8823-15e3f90c7dcb
 # ╟─9bd001d5-d346-4f92-890c-358fce5e64ea
-# ╠═f52451f7-56fd-4c4e-96be-a4e223411a86
 # ╠═6eefa524-9d4a-418e-b0fd-9a770986723c
 # ╠═4c194f9d-bf3b-4547-bc29-bf73a4570551
 # ╠═6e28bd19-e152-420b-905b-58ffcfc84f8f
