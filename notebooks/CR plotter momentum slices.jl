@@ -226,6 +226,11 @@ md"""
 Should we plot electrons? $plot_electrons_binder
 """
 
+# ╔═╡ cd684b62-1aad-404a-87b4-e7b406c0c989
+md"""
+All of the plotting code below can be simplified much, much more with AlgebraOfGraphics. The current code is a travesty. :(
+"""
+
 # ╔═╡ 932c2a77-0198-4df4-a4bd-30d0bda93946
 md"""
 ### Means
@@ -1117,6 +1122,7 @@ end
 # ╠═70717f68-e97b-401e-bcf7-0684ade30b07
 # ╟─e85bc3ef-97a4-4d0e-937e-3ca290a28086
 # ╟─88527827-9710-4c63-964f-691aa8909d1f
+# ╟─cd684b62-1aad-404a-87b4-e7b406c0c989
 # ╟─932c2a77-0198-4df4-a4bd-30d0bda93946
 # ╟─91bba2da-c925-4123-bb8a-c1f9be8619e9
 # ╟─5767b9ac-64c2-4d2f-ad42-961184c7edc7
