@@ -31,9 +31,6 @@ using Distributions
 # ╔═╡ 7a050dc5-7772-4933-959f-bf4fb478fc7d
 using PlutoUI
 
-# ╔═╡ 40efcd80-db38-4db3-a193-6e65ee5c4367
-using PlutoUI: Slider
-
 # ╔═╡ acbe8855-c586-46e3-a72b-a556df77b547
 using CairoMakie
 # using WGLMakie
@@ -432,7 +429,6 @@ end
 # ╠═7899ae97-fbc2-43e5-ac77-c6d725f0371e
 # ╠═b137e7fa-f2ce-4cb1-85d7-87078a9aa9cc
 # ╠═7a050dc5-7772-4933-959f-bf4fb478fc7d
-# ╠═40efcd80-db38-4db3-a193-6e65ee5c4367
 # ╠═acbe8855-c586-46e3-a72b-a556df77b547
 # ╠═5eaf1fbb-9dc7-40e4-87b8-8a0af299f815
 # ╠═3791e767-dcf1-4f9d-909d-a7d08e4c5f9c
