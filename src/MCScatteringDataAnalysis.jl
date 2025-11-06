@@ -149,10 +149,10 @@ function get_sw_scores(gdf; col)
     for (i, df) in enumerate(gdf)
         vec = df[!, col] |> skipmissing |> collect
         if length(vec) < 3
-            arr[i] = missing
-            continue
+            score = missing
+        else
+            score = ShapiroWilkTest(vec)
         end
-        score = ShapiroWilkTest(vec)
         arr[i] = score
     end
     return arr
