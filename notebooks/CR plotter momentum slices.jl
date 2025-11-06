@@ -98,11 +98,17 @@ md"""
 # Read data file
 """
 
+# ╔═╡ 802ee39c-3d64-40eb-b7e7-0c032ff52c84
+CR_p_gdf_momentum_filename = datadir("Lorentz-5-processed", "dNdp-CR-protons-momentum-split.jld2");
+
+# ╔═╡ 754ec337-6b5e-4606-ac1f-4ba8ad251631
+CR_e_gdf_momentum_filename = datadir("Lorentz-5-processed", "dNdp-CR-electrons-momentum-split.jld2");
+
 # ╔═╡ bdb9591b-b7ac-47e6-98bc-f18921bb64f9
-CR_p_gdf_momentum = load_object(datadir("Lorentz-5-processed", "dNdp-CR-protons-momentum-split.jld2"));
+CR_p_gdf_momentum = load_object(CR_p_gdf_momentum_filename);
 
 # ╔═╡ 3777306e-eb41-413b-80a9-72cdc0228a94
-CR_e_gdf_momentum = load_object(datadir("Lorentz-5-processed", "dNdp-CR-electrons-momentum-split.jld2"));
+CR_e_gdf_momentum = load_object(CR_e_gdf_momentum_filename);
 
 # ╔═╡ 68c8329f-501e-47df-8047-d3cbc319e705
 md"""
@@ -1213,6 +1219,8 @@ end
 # ╠═b544df91-fe2d-4396-892c-7faea2edd141
 # ╟─4415022a-54dc-4f3d-a651-f66ae63dd051
 # ╟─8dfe6f3c-f693-4c73-8152-8c43c1c1ff42
+# ╠═802ee39c-3d64-40eb-b7e7-0c032ff52c84
+# ╠═754ec337-6b5e-4606-ac1f-4ba8ad251631
 # ╠═bdb9591b-b7ac-47e6-98bc-f18921bb64f9
 # ╠═3777306e-eb41-413b-80a9-72cdc0228a94
 # ╟─68c8329f-501e-47df-8047-d3cbc319e705
