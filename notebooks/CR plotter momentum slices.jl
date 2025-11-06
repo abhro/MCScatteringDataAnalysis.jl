@@ -32,8 +32,8 @@ using Distributions
 using MCScatteringDataAnalysis
 
 # ╔═╡ d8a66ccd-efdc-4b85-9af3-cfa5624c88e8
-using CairoMakie
-# using WGLMakie
+# using CairoMakie
+using WGLMakie
 # using GLMakie
 
 # ╔═╡ 547aad6f-32db-405d-9886-a727f1591101
@@ -239,6 +239,11 @@ md"""
 # ╔═╡ 932c2a77-0198-4df4-a4bd-30d0bda93946
 md"""
 ### Means
+"""
+
+# ╔═╡ 7da22399-718c-4f16-ba02-7ae27773942b
+md"""
+#### Mean with uncertainty envelope
 """
 
 # ╔═╡ 5767b9ac-64c2-4d2f-ad42-961184c7edc7
@@ -893,6 +898,52 @@ let
     fig
 end
 
+# ╔═╡ 3f36fc06-3799-41f3-971b-d13d43e5fc20
+let
+    fig = Figure()
+    ax = Axis(
+        fig[1,1];
+        title = "Sample mean vs momentum slice",
+        axis_properties...,
+        xlabel = "log p (nat)", ylabel = "⟨log dN/dp⟩",
+    )
+
+    if do_plot_pf
+        means = gdf_sample_stats(mean, CR_p_gdf_momentum; column = :log_dNdp_cr_pf)
+        std_devs = gdf_sample_stats(std, CR_p_gdf_momentum; column = :log_dNdp_cr_pf)
+        lines!(ax, proton_log_p_nat, means, color = color_pf_p, label = "protons, plasma frame")
+        band!(ax, proton_log_p_nat, means+std_devs, means-std_devs, alpha = 0.4)
+
+        if do_plot_electrons
+            means = gdf_sample_stats(mean, CR_e_gdf_momentum; column = :log_dNdp_cr_pf)
+            std_devs = gdf_sample_stats(std, CR_e_gdf_momentum; column = :log_dNdp_cr_pf)
+            lines!(ax, electron_log_p_nat, means, color = color_pf_e, label = "electrons, plasma frame")
+            band!(ax, electron_log_p_nat, means+std_devs, means-std_devs, alpha = 0.4)
+        end
+    end
+    if do_plot_sf
+        means = gdf_sample_stats(mean, CR_p_gdf_momentum; column = :log_dNdp_cr_sf)
+        lines!(ax, proton_log_p_nat, means, color = color_sf_p, label = "protons, shock frame")
+
+        if do_plot_electrons
+            means = gdf_sample_stats(mean, CR_e_gdf_momentum; column = :log_dNdp_cr_sf)
+            lines!(ax, electron_log_p_nat, means, color = color_sf_e, label = "electrons, shock frame")
+        end
+    end
+    if do_plot_ISM
+        means = gdf_sample_stats(mean, CR_p_gdf_momentum; column = :log_dNdp_cr_ISM)
+        lines!(ax, proton_log_p_nat, means, color = color_ISM_p, label = "protons, ISM frame")
+
+        if do_plot_electrons
+            means = gdf_sample_stats(mean, CR_e_gdf_momentum; column = :log_dNdp_cr_ISM)
+            lines!(ax, electron_log_p_nat, means, color = color_ISM_e, label = "electrons, ISM frame")
+        end
+    end
+    axislegend(ax, framevisible = false)
+
+    fig
+end
+
 # ╔═╡ 930a7033-e01a-434a-a88a-1bd901dc6bdc
 let
     fig = Figure()
@@ -1178,6 +1229,8 @@ end
 # ╟─b4df1258-7625-4a7d-b66f-07f4c5e9ba41
 # ╟─932c2a77-0198-4df4-a4bd-30d0bda93946
 # ╟─91bba2da-c925-4123-bb8a-c1f9be8619e9
+# ╟─7da22399-718c-4f16-ba02-7ae27773942b
+# ╟─3f36fc06-3799-41f3-971b-d13d43e5fc20
 # ╟─5767b9ac-64c2-4d2f-ad42-961184c7edc7
 # ╟─930a7033-e01a-434a-a88a-1bd901dc6bdc
 # ╟─b6ce51e5-b4ff-49eb-83db-ecf3e8a081ac
