@@ -208,11 +208,11 @@ Select which iteration to plot:
 `plot_iter` = $(index_binder) (min: $(minimum(idx_CR_p_gdf)), max: $(maximum(idx_CR_p_gdf)))
 """
 
-# ╔═╡ c2b3d96a-216e-4abe-8b0f-625419ac072f
-CR_e_gdf_iter[plot_iter]
-
 # ╔═╡ bc0dcf3d-94d4-4c75-8698-13c7fb708314
 CR_p_gdf_iter[plot_iter]
+
+# ╔═╡ c2b3d96a-216e-4abe-8b0f-625419ac072f
+CR_e_gdf_iter[plot_iter]
 
 # ╔═╡ 47a47a1d-4247-4a1a-a629-0a580253b41d
 md"""
