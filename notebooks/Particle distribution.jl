@@ -113,7 +113,7 @@ let fig = Figure()
         ylabel = "f(p)",
         xscale = log10,
         yscale = log10,
-		xminorgridvisible = true,
+        xminorgridvisible = true,
         # dim1_conversion = Makie.UnitfulConversion(units_in_label=false),
         # dim2_conversion = Makie.UnitfulConversion(units_in_label=false),
     )
