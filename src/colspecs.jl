@@ -28,50 +28,52 @@ const grid_cols = SVector(
     ColumnSpecification(:grid_index, Int), # index of grid zone, called `i` in Fortran code
 
     ColumnSpecification(:x_grid_rg, Float64),
-    ColumnSpecification(:x_grid_log, Float64),
+    ColumnSpecification(:log_x_grid, Float64),
     ColumnSpecification(:x_grid_cm, Float64),
-    ColumnSpecification(:x_grid_log_cm, Float64),
+    ColumnSpecification(:log_x_grid_cm, Float64),
 
     # momentum flux
     ColumnSpecification(:pxx_norm, Float64),
-    ColumnSpecification(:pxx_norm_log, Float64),
+    ColumnSpecification(:log_pxx_norm, Float64),
     ColumnSpecification(:pxz_norm, Float64),
-    ColumnSpecification(:pxz_norm_log, Float64),
+    ColumnSpecification(:log_pxz_norm, Float64),
 
     # energy flux
     ColumnSpecification(:en_norm, Float64),
-    ColumnSpecification(:en_norm_log, Float64),
+    ColumnSpecification(:log_en_norm, Float64),
 
     # velocity normalized to first grid zone
     ColumnSpecification(:ux_norm, Float64),
-    ColumnSpecification(:ux_norm_log, Float64),
+    ColumnSpecification(:log_ux_norm, Float64),
     ColumnSpecification(:uz_norm, Float64),
-    ColumnSpecification(:uz_norm_log, Float64),
+    ColumnSpecification(:log_uz_norm, Float64),
 
     ColumnSpecification(:bmag, Float64),
-    ColumnSpecification(:bmag_log, Float64),
+    ColumnSpecification(:log_bmag, Float64),
 
-    ColumnSpecification(:θ_deg, Float64), # angle between magnetic field and shock normal
+    # angle between magnetic field and shock normal
+    ColumnSpecification(:θ_deg, Float64),
 
-    ColumnSpecification(:γᵤ_sf, Float64), # lorentz factor at shock frame
+    # Lorentz factor at shock frame
+    ColumnSpecification(:γᵤ_sf, Float64),
 
     # density ratio = (γ_Z β_Z) / (γ β)
     ColumnSpecification(:inv_density_ratio, Float64),
     ColumnSpecification(:density_ratio, Float64),
 
-    ColumnSpecification(:pressure_px_log, Float64),
-    ColumnSpecification(:pressure_en_log, Float64),
-    ColumnSpecification(:pressure_psd_par_log, Float64),
-    ColumnSpecification(:pressure_psd_perp_log, Float64),
-    ColumnSpecification(:pressure_tot_MC_log, Float64),
+    ColumnSpecification(:log_pressure_px, Float64),
+    ColumnSpecification(:log_pressure_en, Float64),
+    ColumnSpecification(:log_pressure_psd_par, Float64),
+    ColumnSpecification(:log_pressure_psd_perp, Float64),
+    ColumnSpecification(:log_pressure_tot_MC, Float64),
     ColumnSpecification(:pressure_aniso, Float64),
     # tp -> test particle limit, absence of DSA
     ColumnSpecification(:pressure_px_tp, Float64),
     ColumnSpecification(:pressure_en_tp, Float64),
     ColumnSpecification(:pressure_Z, Float64),
 
-    ColumnSpecification(:log_q_remaining_cal_px, Float64),
-    ColumnSpecification(:log_q_remaining_cal_en, Float64),
+    ColumnSpecification(:log_Q_remaining_cal_px, Float64),
+    ColumnSpecification(:log_Q_remaining_cal_en, Float64),
     ColumnSpecification(:εB_grid, Float64),
     ColumnSpecification(:log_εB_grid, Float64),
 )
@@ -82,14 +84,14 @@ const therm_cols = SVector(
     ColumnSpecification(:i, Int),
     ColumnSpecification(:plot, Int),
     ColumnSpecification(:ion, Int),
-    ColumnSpecification(:log_dNdp_therm_pvals_cgs_sf, Float64, true),
-    ColumnSpecification(:log_dNdp_therm_pvals_nat_sf, Float64, true),
+    ColumnSpecification(:log_p_cgs_sf, Float64, true),
+    ColumnSpecification(:log_p_nat_sf, Float64, true),
     ColumnSpecification(:log_dNdp_therm_sf, Float64, true),
-    ColumnSpecification(:log_dNdp_therm_pvals_cgs_pf, Float64, true),
-    ColumnSpecification(:log_dNdp_therm_pvals_nat_pf, Float64, true),
+    ColumnSpecification(:log_p_cgs_pf, Float64, true),
+    ColumnSpecification(:log_p_nat_pf, Float64, true),
     ColumnSpecification(:log_dNdp_therm_pf, Float64, true),
-    ColumnSpecification(:log_dNdp_therm_pvals_cgs_ISM, Float64, true),
-    ColumnSpecification(:log_dNdp_therm_pvals_nat_ISM, Float64, true),
+    ColumnSpecification(:log_p_cgs_ISM, Float64, true),
+    ColumnSpecification(:log_p_nat_ISM, Float64, true),
     ColumnSpecification(:log_dNdp_therm_ISM, Float64, true),
 )
 
@@ -101,9 +103,9 @@ const CR_cols = SVector(
     ColumnSpecification(:ion, Int),
     ColumnSpecification(:log_p_cgs, Float64),
     ColumnSpecification(:log_p_nat, Float64),
-    ColumnSpecification(:log_dNdp_cr_sf, Float64, true),
-    ColumnSpecification(:log_dNdp_cr_pf, Float64, true),
-    ColumnSpecification(:log_dNdp_cr_ISM, Float64, true),
+    ColumnSpecification(:log_dNdp_CR_sf, Float64, true),
+    ColumnSpecification(:log_dNdp_CR_pf, Float64, true),
+    ColumnSpecification(:log_dNdp_CR_ISM, Float64, true),
     ColumnSpecification(:log_dNdp_all_sf, Float64, true),
     ColumnSpecification(:log_dNdp_all_pf, Float64, true),
     ColumnSpecification(:log_dNdp_all_ISM, Float64, true),
