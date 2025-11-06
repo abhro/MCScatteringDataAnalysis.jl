@@ -148,6 +148,10 @@ function @main(args)
     # Separate each of the proton and electron DataFrames based on iteration.
     therm_p_gdf_iteration = groupby(therm_p_df, [:initial_seed, :iteration])
     therm_e_gdf_iteration = groupby(therm_e_df, [:initial_seed, :iteration])
-    save_object("dNdp-therm-protons-iteration-split.jld2", therm_p_gdf_iteration)
-    save_object("dNdp-therm-electrons-iteration-split.jld2", therm_e_gdf_iteration)
+    outfilepath = joinpath(outdir, "dNdp-therm-protons-iteration-split.jld2")
+    save_object(outfilepath, therm_p_gdf_iteration)
+    @info("Saved $outfilepath")
+    outfilepath = joinpath(outdir, "dNdp-therm-electrons-iteration-split.jld2")
+    save_object(outfilepath, therm_e_gdf_iteration)
+    @info("Saved $outfilepath")
 end
