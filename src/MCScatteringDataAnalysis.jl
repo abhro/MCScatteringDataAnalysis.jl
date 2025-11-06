@@ -20,11 +20,12 @@ Helper datatype for parsing text data created by the mc\\_cr program.
     ColumnSpecification(colname, eltype, uses_sentinels = false) =
         new(colname, eltype, uses_sentinels)
 end
-const CS = ColumnSpecification
-colname(cs::CS) = cs.colname
-name(cs::CS) = cs.colname
-Base.eltype(cs::CS) = cs.eltype
-uses_sentinels(cs::CS) = cs.uses_sentinels
+ColumnSpecification(colname, eltype; uses_sentinels = false) =
+        ColumnSpecification(colname, eltype, uses_sentinels)
+colname(cs::ColumnSpecification) = cs.colname
+name(cs::ColumnSpecification) = cs.colname
+Base.eltype(cs::ColumnSpecification) = cs.eltype
+uses_sentinels(cs::ColumnSpecification) = cs.uses_sentinels
 
 include("colspecs.jl")
 
