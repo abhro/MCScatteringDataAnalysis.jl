@@ -30,26 +30,28 @@ function dehistogram(gdf::GroupedDataFrame)
     return df_dehistogrammed
 end
 
+# predicate to check if any of the frames report a flux value
+no_flux_missing(cols...) = !all(ismissing, cols)
 
 function @main(args)
     if length(args) != 2
-        println("Usage: $PROGRAM_FILE <dNdp file path> <processed data directory>")
+        println("Usage: $PROGRAM_FILE <dNdp directory> <processed data directory>")
         exit(1)
     end
+    indir = args[1]
     CR_df = let
-        filename = args[1]
+        filename = joinpath(indir, "dNdp-CR.csv.gz")
         @info("Reading $filename")
         df = CSV.read(filename, DataFrame; buffer_in_memory = true)
         # drop two columns: column i is pointless, only has 66s
         # plot is useful for PGF plot, not here
         select!(df, Not(:i, :plot))
-
         disallowmissing!(df, error = false)
-
         df
     end
 
     outdir = args[2]
+
 
     @info("Splitting DataFrame into protons and electrons and de-histogramming")
     CR_p_df, CR_e_df = let
@@ -61,9 +63,7 @@ function @main(args)
         # if all three dN/dp_cr is missing, drop that row
         subset!(
             CR_df_dehistogrammed,
-            [:log_dNdp_cr_sf, :log_dNdp_cr_pf, :log_dNdp_cr_ISM] =>
-                ByRow((cols...) -> !all(ismissing, cols)),
-        )
+            [:log_dNdp_cr_sf, :log_dNdp_cr_pf, :log_dNdp_cr_ISM] => ByRow(no_flux_missing))
 
         # group that bigger temp df by ions and return it
         groupby(CR_df_dehistogrammed, :ion)
@@ -104,7 +104,9 @@ function @main(args)
 
     # repeat for thermal dN/dp
     therm_df = let
-        df = CSV.read("dNdp-therm.csv.gz", DataFrame)
+        filename = joinpath(indir, "dNdp-therm.csv.gz")
+        df = CSV.read(filename, DataFrame)
+        @info("Reading $filename")
         # drop two columns: column i is pointless, only has 66s
         # plot is useful for pgf plot, not here
         select!(df, Not(:i, :plot))
@@ -122,7 +124,7 @@ function @main(args)
         subset!(
             therm_df_dehistogrammed,
             [:log_dNdp_therm_sf, :log_dNdp_therm_pf, :log_dNdp_therm_ISM] =>
-                ByRow((cols...) -> !all(ismissing, cols)),
+                ByRow(no_flux_missing),
         )
         # group that bigger temp df by ions and return it
         groupby(therm_df_dehistogrammed, :ion)
@@ -136,8 +138,8 @@ function @main(args)
     CSV.write(outfilepath, therm_e_df; compress=true)
     @info("Saved $outfilepath")
 
-    ## Separate each of the proton and electron DataFrames by momentum.
-    ## XXX there's not a single specific column of momentum to split it on
+    # Separate each of the proton and electron DataFrames by momentum.
+    # XXX there's not a single specific column of momentum to split it on
     #therm_p_gdf_momentum = groupby(therm_p_df, :log_p_nat)
     #therm_e_gdf_momentum = groupby(therm_e_df, :log_p_nat)
     #save_object("dNdp-therm-protons-momentum-split.jld2", therm_p_gdf_momentum)
