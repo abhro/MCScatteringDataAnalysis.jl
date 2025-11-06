@@ -31,20 +31,16 @@ function dehistogram(gdf::GroupedDataFrame)
 end
 
 
-function (@main)(args)
+function @main(args)
     if length(args) != 2
         println("Usage: $PROGRAM_FILE <dNdp file path> <processed data directory>")
         exit(1)
     end
     CR_df = let
         filename = args[1]
-        @info "Reading $filename"
+        @info("Reading $filename")
         df = CSV.read(filename, DataFrame; buffer_in_memory = true)
-        gdf = groupby(df, [:initial_seed, :iteration])
-        insertcols!(df, 1, :run_id => groupindices(gdf))
-        # drop the two columns which are now redundant (or not I guess)
-        #select!(df, Not(:initial_seed, :iteration))
-        # column i is pointless, only has 66s
+        # drop two columns: column i is pointless, only has 66s
         # plot is useful for PGF plot, not here
         select!(df, Not(:i, :plot))
 
@@ -55,11 +51,11 @@ function (@main)(args)
 
     outdir = args[2]
 
-    @info "Splitting DataFrame into protons and electrons and de-histogramming"
+    @info("Splitting DataFrame into protons and electrons and de-histogramming")
     CR_p_df, CR_e_df = let
         # split CR_df based on ion and run_id because each of them is
         # a complete run which needs to be de-histogrammed
-        gdf = groupby(CR_df, [:run_id, :ion])
+        gdf = groupby(CR_df, [:initial_seed, :iteration, :ion])
         CR_df_dehistogrammed = dehistogram(gdf)
 
         # if all three dN/dp_cr is missing, drop that row
@@ -72,81 +68,84 @@ function (@main)(args)
         # group that bigger temp df by ions and return it
         groupby(CR_df_dehistogrammed, :ion)
     end
-    @debug "Got dehistogrammed data" CR_p_df CR_e_df CR_p_df[1,:] CR_e_df[1,:]
+    @debug("Got dehistogrammed data", CR_p_df, CR_e_df, CR_p_df[1,:], CR_e_df[1,:])
 
     outfilepath = joinpath(outdir, "dNdp-CR-protons.csv.gz")
     CSV.write(outfilepath, CR_p_df; compress=true)
-    @info "Saved $outfilepath"
+    @info("Saved $outfilepath")
     outfilepath = joinpath(outdir, "dNdp-CR-electrons.csv.gz")
     CSV.write(outfilepath, CR_e_df; compress=true)
-    @info "Saved $outfilepath"
+    @info("Saved $outfilepath")
 
     # Separate each of the proton and electron DataFrames by momentum.
-    @info "Grouping dataframes by momenta"
+    @info("Grouping dataframes by momenta")
     CR_p_gdf_momentum = groupby(CR_p_df, :log_p_nat)
     CR_e_gdf_momentum = groupby(CR_e_df, :log_p_nat)
-    @info "Saving dataframes grouped by momenta"
+    @info("Saving dataframes grouped by momenta")
     outfilepath = joinpath(outdir, "dNdp-CR-protons-momentum-split.jld2")
     save_object(outfilepath, CR_p_gdf_momentum, compress=true)
-    @info "Saved $outfilepath"
+    @info("Saved $outfilepath")
     outfilepath = joinpath(outdir, "dNdp-CR-electrons-momentum-split.jld2")
     save_object(outfilepath, CR_e_gdf_momentum, compress=true)
-    @info "Saved $outfilepath"
+    @info("Saved $outfilepath")
 
     # Separate each of the proton and electron DataFrames based on iteration.
-    @info "Grouping dataframes by iterations"
-    CR_p_gdf_iteration = groupby(CR_p_df, :run_id)
-    CR_e_gdf_iteration = groupby(CR_e_df, :run_id)
-    @info "Saving dataframes grouped by iterations"
+    @info("Grouping dataframes by iterations")
+    CR_p_gdf_iteration = groupby(CR_p_df, [:initial_seed, :iteration])
+    CR_e_gdf_iteration = groupby(CR_e_df, [:initial_seed, :iteration])
+    @info("Saving dataframes grouped by iterations")
     outfilepath = joinpath(outdir, "dNdp-CR-protons-iteration-split.jld2")
     save_object(outfilepath, CR_p_gdf_iteration, compress=true)
-    @info "Saved $outfilepath"
+    @info("Saved $outfilepath")
     outfilepath = joinpath(outdir, "dNdp-CR-electrons-iteration-split.jld2")
     save_object(outfilepath, CR_e_gdf_iteration, compress=true)
-    @info "Saved $outfilepath"
+    @info("Saved $outfilepath")
 
 
     # repeat for thermal dN/dp
-    #therm_df = let
-    #    df = load_object("dNdp_therm.jld2")
-    #    gdf = groupby(df, [:initial_seed, :iteration])
-    #    insertcols!(df, 1, :iter => groupindices(gdf))
-    #    # drop the two columns which are now redundant (or not ig)
-    #    #select!(df, Not(:initial_seed, :iteration))
-    #    # column i is pointless, only has 66s
-    #    # plot is useful for pgf plot, not here
-    #    select!(df, Not(:i, :plot))
-    #    disallowmissing!(df, error = false)
-    #    df
-    #end
+    therm_df = let
+        df = CSV.read("dNdp-therm.csv.gz", DataFrame)
+        # drop two columns: column i is pointless, only has 66s
+        # plot is useful for pgf plot, not here
+        select!(df, Not(:i, :plot))
+        disallowmissing!(df, error = false)
+        df
+    end
 
-    #therm_p_df, therm_e_df = let
-    #    # split therm_df based on ion and iteration number because each of them is
-    #    # a complete run which needs to be de-histogrammed
-    #    gdf = groupby(therm_df, [:iter, :ion])
-    #    therm_df_dehistogrammed = dehistogram(gdf)
-    #
-    #    # if all three dNdp_therm is missing, drop that row
-    #    subset!(
-    #        therm_df_dehistogrammed,
-    #        [:log_dNdp_therm_sf, :log_dNdp_therm_pf, :log_dNdp_therm_ISM] =>
-    #            ByRow((cols...) -> !all(ismissing, cols)),
-    #    )
+    therm_p_df, therm_e_df = let
+        # split therm_df based on ion and iteration number because each of them is
+        # a complete run which needs to be de-histogrammed
+        gdf = groupby(therm_df, [:initial_seed, :iteration, :ion])
+        therm_df_dehistogrammed = dehistogram(gdf)
 
-    #    # group that bigger temp df by ions and return it
-    #    groupby(therm_df_dehistogrammed, :ion)
-    #end
+        # if all three dNdp_therm is missing, drop that row
+        subset!(
+            therm_df_dehistogrammed,
+            [:log_dNdp_therm_sf, :log_dNdp_therm_pf, :log_dNdp_therm_ISM] =>
+                ByRow((cols...) -> !all(ismissing, cols)),
+        )
+        # group that bigger temp df by ions and return it
+        groupby(therm_df_dehistogrammed, :ion)
+    end
+    @debug("Got dehistogrammed data", therm_p_df, therm_e_df, therm_p_df[1,:], therm_e_df[1,:])
+
+    outfilepath = joinpath(outdir, "dNdp-therm-protons.csv.gz")
+    CSV.write(outfilepath, therm_p_df; compress=true)
+    @info("Saved $outfilepath")
+    outfilepath = joinpath(outdir, "dNdp-therm-electrons.csv.gz")
+    CSV.write(outfilepath, therm_e_df; compress=true)
+    @info("Saved $outfilepath")
 
     ## Separate each of the proton and electron DataFrames by momentum.
     ## XXX there's not a single specific column of momentum to split it on
-    ##therm_p_gdf_momentum = groupby(therm_p_df, :log_p_nat)
-    ##therm_e_gdf_momentum = groupby(therm_e_df, :log_p_nat)
-    ##save_object("dNdp-therm-protons-momentum-split.jld2", therm_p_gdf_momentum)
-    ##save_object("dNdp-therm-electrons-momentum-split.jld2", therm_e_gdf_momentum)
+    #therm_p_gdf_momentum = groupby(therm_p_df, :log_p_nat)
+    #therm_e_gdf_momentum = groupby(therm_e_df, :log_p_nat)
+    #save_object("dNdp-therm-protons-momentum-split.jld2", therm_p_gdf_momentum)
+    #save_object("dNdp-therm-electrons-momentum-split.jld2", therm_e_gdf_momentum)
 
-    ## Separate each of the proton and electron DataFrames based on iteration.
-    #therm_p_gdf_iteration = groupby(therm_p_df, :iter)
-    #therm_e_gdf_iteration = groupby(therm_e_df, :iter)
-    #save_object("dNdp-therm-protons-iteration-split.jld2", therm_p_gdf_iteration)
-    #save_object("dNdp-therm-electrons-iteration-split.jld2", therm_e_gdf_iteration)
+    # Separate each of the proton and electron DataFrames based on iteration.
+    therm_p_gdf_iteration = groupby(therm_p_df, [:initial_seed, :iteration])
+    therm_e_gdf_iteration = groupby(therm_e_df, [:initial_seed, :iteration])
+    save_object("dNdp-therm-protons-iteration-split.jld2", therm_p_gdf_iteration)
+    save_object("dNdp-therm-electrons-iteration-split.jld2", therm_e_gdf_iteration)
 end
