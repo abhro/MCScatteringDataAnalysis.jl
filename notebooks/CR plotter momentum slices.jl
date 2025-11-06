@@ -231,6 +231,11 @@ md"""
 All of the plotting code below can be simplified much, much more with AlgebraOfGraphics. The current code is a travesty. :(
 """
 
+# ╔═╡ 54ec7213-3e48-423b-9208-befc6583b908
+md"""
+### Sample size
+"""
+
 # ╔═╡ 932c2a77-0198-4df4-a4bd-30d0bda93946
 md"""
 ### Means
@@ -801,6 +806,51 @@ end
 # ╔═╡ 589661b1-6a64-4db5-ac40-c1565c29c3cc
 electron_log_p_nat = keys(CR_e_gdf_momentum) .|> values .|> first;
 
+# ╔═╡ f186773a-cbd7-47a7-81e4-e0b3e71ebcc5
+elec_p_idx = sortperm(electron_log_p_nat)
+
+# ╔═╡ b4df1258-7625-4a7d-b66f-07f4c5e9ba41
+let
+    fig = Figure()
+    ax = Axis(
+        fig[1,1];
+        title = "Sample size vs momentum slice",
+        axis_properties...,
+        xlabel = "log p (nat)", ylabel = "# of samples",
+    )
+
+    if do_plot_pf
+        lengths = gdf_sample_stats(length, CR_p_gdf_momentum; column = :log_dNdp_cr_pf)
+        lines!(ax, proton_log_p_nat, lengths, color = color_pf_p, label = "protons, plasma frame")
+
+        if do_plot_electrons
+            lengths = gdf_sample_stats(length, CR_e_gdf_momentum; column = :log_dNdp_cr_pf)
+            lines!(ax, electron_log_p_nat[elec_p_idx], lengths[elec_p_idx], color = color_pf_e, label = "electrons, plasma frame")
+        end
+    end
+    if do_plot_sf
+        lengths = gdf_sample_stats(length, CR_p_gdf_momentum; column = :log_dNdp_cr_sf)
+        lines!(ax, proton_log_p_nat, lengths, color = color_sf_p, label = "protons, shock frame")
+
+        if do_plot_electrons
+            lengths = gdf_sample_stats(length, CR_e_gdf_momentum; column = :log_dNdp_cr_sf)
+            lines!(ax, electron_log_p_nat[elec_p_idx], lengths[elec_p_idx], color = color_sf_e, label = "electrons, shock frame")
+        end
+    end
+    if do_plot_ISM
+        lengths = gdf_sample_stats(length, CR_p_gdf_momentum; column = :log_dNdp_cr_ISM)
+        lines!(ax, proton_log_p_nat, lengths, color = color_ISM_p, label = "protons, ISM frame")
+
+        if do_plot_electrons
+            lengths = gdf_sample_stats(length, CR_e_gdf_momentum; column = :log_dNdp_cr_ISM)
+            lines!(ax, electron_log_p_nat[elec_p_idx], lengths[elec_p_idx], color = color_ISM_e, label = "electrons, ISM frame")
+        end
+    end
+    axislegend(ax, framevisible = false, position = :cc)
+
+    fig
+end
+
 # ╔═╡ 91bba2da-c925-4123-bb8a-c1f9be8619e9
 let
     fig = Figure()
@@ -1123,6 +1173,9 @@ end
 # ╟─e85bc3ef-97a4-4d0e-937e-3ca290a28086
 # ╟─88527827-9710-4c63-964f-691aa8909d1f
 # ╟─cd684b62-1aad-404a-87b4-e7b406c0c989
+# ╟─54ec7213-3e48-423b-9208-befc6583b908
+# ╠═f186773a-cbd7-47a7-81e4-e0b3e71ebcc5
+# ╟─b4df1258-7625-4a7d-b66f-07f4c5e9ba41
 # ╟─932c2a77-0198-4df4-a4bd-30d0bda93946
 # ╟─91bba2da-c925-4123-bb8a-c1f9be8619e9
 # ╟─5767b9ac-64c2-4d2f-ad42-961184c7edc7
