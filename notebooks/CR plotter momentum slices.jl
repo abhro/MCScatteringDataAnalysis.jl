@@ -447,6 +447,24 @@ Approach it like curve-fitting
 # ╔═╡ f2fe3844-2be8-4da6-9656-40312304556b
 normal_distrib_protons_from_curves = fitdistributions(v -> fit_dist_to_histogram(Normal, v; nbins=bins), CR_p_gdf_momentum)
 
+# ╔═╡ 751d60d8-c8ea-404a-8854-ae3127e04a5d
+begin
+    proton_distances = zeros(Union{Missing,Float64}, length(CR_p_gdf_momentum))
+    for (idx, df) in enumerate(CR_p_gdf_momentum)
+        distrib = normal_distrib_protons.pf[idx]
+        distrib2 = normal_distrib_protons_from_curves.pf[idx]
+        if !ismissing(distrib) && !ismissing(distrib2)
+            distance = bcdistance(distrib, distrib2)
+            proton_distances[idx] = distance
+        else
+            proton_distances[idx] = missing
+        end
+    end
+end
+
+# ╔═╡ 78a22648-c76a-4b5c-b552-9be000a60109
+proton_distances
+
 # ╔═╡ b0d555b3-5087-4405-8343-ce304d482ca9
 fitted_dist_curve = normal_distrib_protons_from_curves.pf[proton_momentum_index]
 
@@ -461,21 +479,18 @@ normal_distrib_electrons_from_curves = fitdistributions(v -> fit_dist_to_histogr
 
 # ╔═╡ b99c020d-3165-40e9-8284-0a037b3f9900
 begin
-    distances = []
+    electron_distances = zeros(Union{Missing,Float64}, length(CR_e_gdf_momentum))
     for (idx,df) in enumerate(CR_e_gdf_momentum)
         distrib = normal_distrib_electrons.pf[idx]
         distrib2 = normal_distrib_electrons_from_curves.pf[idx]
         if !ismissing(distrib) && !ismissing(distrib2)
             distance = bcdistance(distrib, distrib2)
-            push!(distances, distance)
+            electron_distances[idx] = distance
         else
-            push!(distances, missing)
+            electron_distances[idx] = missing
         end
     end
 end
-
-# ╔═╡ 78a22648-c76a-4b5c-b552-9be000a60109
-distances
 
 # ╔═╡ da107273-c428-4c68-80a9-8f82cb211497
 md"""
@@ -1094,7 +1109,9 @@ let
               axis_properties...,
               title = "Distribution agreement curve",
               xlabel = "log p (nat)", ylabel = "Bhattacharya distance")
-    scatterlines!(ax, electron_log_p_nat, distances)
+    scatterlines!(ax, proton_log_p_nat, proton_distances; label = "protons, plasma frame", markersize)
+    scatterlines!(ax, electron_log_p_nat, electron_distances; label = "electrons, plasma frame", markersize)
+    axislegend(ax, position = :ct)
     fig
 end
 
@@ -1246,6 +1263,7 @@ end
 # ╟─ecf80697-b786-4b02-9563-f3d082383b76
 # ╠═febdc8a1-00bb-47a7-83d2-6cccef5190f5
 # ╟─35710ad9-f2e4-487b-be19-c29500633726
+# ╠═751d60d8-c8ea-404a-8854-ae3127e04a5d
 # ╠═b99c020d-3165-40e9-8284-0a037b3f9900
 # ╟─452c9b2f-7138-4310-b0c6-df2be7ab8c76
 # ╠═7534104f-885d-48c5-8ae0-ddae56fcd86d
