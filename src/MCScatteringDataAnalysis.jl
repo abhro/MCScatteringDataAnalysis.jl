@@ -17,10 +17,8 @@ Helper datatype for parsing text data created by the mc\\_cr program.
     colname::Symbol
     eltype::Type
     uses_sentinels::Bool
-    ColumnSpecification(colname, eltype, uses_sentinels = false) =
-        new(colname, eltype, uses_sentinels)
 end
-ColumnSpecification(colname, eltype; uses_sentinels) =
+ColumnSpecification(colname, eltype; uses_sentinels = false) =
         ColumnSpecification(colname, eltype, uses_sentinels)
 colname(cs::ColumnSpecification) = cs.colname
 name(cs::ColumnSpecification) = cs.colname
