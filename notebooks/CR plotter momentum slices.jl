@@ -291,15 +291,7 @@ md"""
 Proton momentum slice to plot (index): $proton_index_binder (min: $(minimum(idx_CR_p_gdf)), max: $(maximum(idx_CR_p_gdf)))
 """
 
-# ╔═╡ 452c9b2f-7138-4310-b0c6-df2be7ab8c76
-md"""
-Distribution agreement curve
-"""
 
-# ╔═╡ 2a184ee7-7e6f-4ce6-938b-9d4d10c0c83d
-md"""
-Proton momentum slice to plot (index): $proton_index_binder (min: $(minimum(idx_CR_p_gdf)), max: $(maximum(idx_CR_p_gdf)))
-"""
 
 # ╔═╡ 7be1e6da-0eb9-45e5-a4f9-bb6deedc3def
 md"""
@@ -429,6 +421,11 @@ md"""
 # Normal distribution inference
 """
 
+# ╔═╡ 8bc20375-2562-4611-a67b-5884aa99b5f0
+md"""
+## Statistical estimates (MLE/MoM/...)
+"""
+
 # ╔═╡ e6b9701d-3d27-4c0c-b0b9-9879527f369c
 normal_distrib_protons = fitdistributions(v -> fitdistribution(Normal, v), CR_p_gdf_momentum)
 # normal_distrib_protons = fitdistributions(fitnormal, CR_p_gdf_momentum)
@@ -445,6 +442,11 @@ sum(logpdf.(fitted_dist_MLE, log_dNdp))
 # ╔═╡ e75ea9c0-59ca-4097-b4f6-6a3af04dc308
 normal_distrib_electrons = fitdistributions(v -> fitdistribution(Normal, v), CR_e_gdf_momentum)
 
+# ╔═╡ 639ab710-c411-4831-9e1d-d7fba723b7bc
+md"""
+## Curve-fitting to histogram
+"""
+
 # ╔═╡ 3860d0cf-20f4-4256-9286-8757afc38ef9
 md"""
 Approach it like curve-fitting
@@ -452,6 +454,23 @@ Approach it like curve-fitting
 
 # ╔═╡ f2fe3844-2be8-4da6-9656-40312304556b
 normal_distrib_protons_from_curves = fitdistributions(v -> fit_dist_to_histogram(Normal, v; nbins=bins), CR_p_gdf_momentum)
+
+# ╔═╡ b0d555b3-5087-4405-8343-ce304d482ca9
+fitted_dist_curve = normal_distrib_protons_from_curves.pf[proton_momentum_index]
+
+# ╔═╡ 5ab05dc9-3a98-4297-a47b-c4e0111b8c51
+SSE_hist(log_dNdp, fitted_dist_curve)
+
+# ╔═╡ 89f8d7a8-ea2e-4906-9460-da16154b0404
+sum(logpdf.(fitted_dist_curve, log_dNdp))
+
+# ╔═╡ 97291776-74f0-428a-ab4f-3c498b630000
+normal_distrib_electrons_from_curves = fitdistributions(v -> fit_dist_to_histogram(Normal, v; nbins=bins), CR_e_gdf_momentum)
+
+# ╔═╡ 452c9b2f-7138-4310-b0c6-df2be7ab8c76
+md"""
+## Distribution agreement curve
+"""
 
 # ╔═╡ 751d60d8-c8ea-404a-8854-ae3127e04a5d
 begin
@@ -470,18 +489,6 @@ end
 
 # ╔═╡ 78a22648-c76a-4b5c-b552-9be000a60109
 proton_distances
-
-# ╔═╡ b0d555b3-5087-4405-8343-ce304d482ca9
-fitted_dist_curve = normal_distrib_protons_from_curves.pf[proton_momentum_index]
-
-# ╔═╡ 5ab05dc9-3a98-4297-a47b-c4e0111b8c51
-SSE_hist(log_dNdp, fitted_dist_curve)
-
-# ╔═╡ 89f8d7a8-ea2e-4906-9460-da16154b0404
-sum(logpdf.(fitted_dist_curve, log_dNdp))
-
-# ╔═╡ 97291776-74f0-428a-ab4f-3c498b630000
-normal_distrib_electrons_from_curves = fitdistributions(v -> fit_dist_to_histogram(Normal, v; nbins=bins), CR_e_gdf_momentum)
 
 # ╔═╡ b99c020d-3165-40e9-8284-0a037b3f9900
 begin
@@ -1271,12 +1278,6 @@ end
 # ╟─ecf80697-b786-4b02-9563-f3d082383b76
 # ╠═febdc8a1-00bb-47a7-83d2-6cccef5190f5
 # ╟─35710ad9-f2e4-487b-be19-c29500633726
-# ╠═751d60d8-c8ea-404a-8854-ae3127e04a5d
-# ╠═b99c020d-3165-40e9-8284-0a037b3f9900
-# ╟─452c9b2f-7138-4310-b0c6-df2be7ab8c76
-# ╠═7534104f-885d-48c5-8ae0-ddae56fcd86d
-# ╠═78a22648-c76a-4b5c-b552-9be000a60109
-# ╟─2a184ee7-7e6f-4ce6-938b-9d4d10c0c83d
 # ╟─4051e244-4c84-4983-8cb9-bc7f53daa9f6
 # ╟─7be1e6da-0eb9-45e5-a4f9-bb6deedc3def
 # ╟─88822f52-aab8-4931-9091-1909da6c604b
@@ -1311,11 +1312,18 @@ end
 # ╟─4786bdb6-a387-4333-b9d1-c672dc041910
 # ╟─f7484fdb-37a6-4300-a08d-0e552bc4ef49
 # ╟─f3132403-113d-4b30-9fd0-379d28ade3c7
+# ╟─8bc20375-2562-4611-a67b-5884aa99b5f0
 # ╠═e6b9701d-3d27-4c0c-b0b9-9879527f369c
 # ╠═e75ea9c0-59ca-4097-b4f6-6a3af04dc308
+# ╟─639ab710-c411-4831-9e1d-d7fba723b7bc
 # ╟─3860d0cf-20f4-4256-9286-8757afc38ef9
 # ╠═f2fe3844-2be8-4da6-9656-40312304556b
 # ╠═97291776-74f0-428a-ab4f-3c498b630000
+# ╟─452c9b2f-7138-4310-b0c6-df2be7ab8c76
+# ╠═751d60d8-c8ea-404a-8854-ae3127e04a5d
+# ╠═78a22648-c76a-4b5c-b552-9be000a60109
+# ╠═b99c020d-3165-40e9-8284-0a037b3f9900
+# ╠═7534104f-885d-48c5-8ae0-ddae56fcd86d
 # ╟─da107273-c428-4c68-80a9-8f82cb211497
 # ╠═49902e99-870d-4d19-afb0-1de612c185df
 # ╠═4ac32bef-af81-4f7e-8e97-7eac4dd2bf69
