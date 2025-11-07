@@ -22,13 +22,13 @@ else
     hostname = "localhost"
 end
 # port to listen to, taken from thesis course number
-port = 5999
+#port = 5999
 launch_browser = "--browser" in ARGS
 
 Pluto.run(;
     host,
-    port,
-    root_url = "http://$hostname:$port/",
+    #port_hint = port,
+    #root_url = "http://$hostname:$port/",
     launch_browser,
     auto_reload_from_file = true,
     enable_ai_editor_features = false,
