@@ -1098,7 +1098,7 @@ let df = CR_e_gdf_momentum[electron_momentum_index], distribs = normal_distrib_e
         distrib = distribs.sf[electron_momentum_index]
         if !ismissing(distrib)
             μ, σ = params(distrib)
-            plot!(ax, distrib, label = @sprintf("𝒩 (%.2f, %.2f)", params(distrib)...), color = color_sf_e)
+            plot!(ax, distrib, label = @sprintf("𝒩 (%.2f, %.2f)", μ, σ), color = color_sf_e)
         end
     end
     if do_plot_ISM
