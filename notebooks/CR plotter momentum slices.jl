@@ -629,38 +629,6 @@ md"""
 ## Specified bin-width histograms
 """
 
-# ╔═╡ 718cc153-ebdd-4b1c-84cb-c2c20017e557
-"""
-    edges(v, width)
-
-Given a sample vector `v` and a bin width `width`, return a range spanning all the values of `v` where adjacent elements are `width` apart.
-
-TODO: write better docstring
-"""
-function edges(v, width)
-    xmin, xmax = extrema(skipmissing(v))
-    return range(xmin, xmax, step=width)
-end
-
-# ╔═╡ 1ebdb43d-d9ec-49a0-bed6-983197bee517
-"""
-Like `fit(Histogram, v, ...)`, but specify bin `width` instead of `nbins`.
-"""
-function specific_width_histogram_fits(gdf, width, col = :log_dNdp_cr_pf, normalization = :pdf)
-    hists = Vector{Any}(undef, length(gdf))
-    for (i, df) in enumerate(gdf)
-        v = df[!,col] |> skipmissing |> collect
-        if length(v) < 3
-            hists[i] = missing
-            continue
-        end
-        hist = fit(Histogram, v, edges(v, width))
-        hist = normalize(hist; mode = normalization)
-        hists[i] = hist
-    end
-    return hists
-end
-
 # ╔═╡ 762fe736-070e-4624-b683-e1fcbeb0f1e0
 specific_hist_fits = specific_width_histogram_fits(CR_p_gdf_momentum, 0.01)
 
@@ -1360,8 +1328,6 @@ end
 # ╟─08542eea-964a-4f1d-aae5-2b50a628588a
 # ╟─dec211fb-33a0-4b16-ad5f-74dc010cfd6f
 # ╟─4a32f313-8ba7-4354-9843-efd86607efb8
-# ╠═718cc153-ebdd-4b1c-84cb-c2c20017e557
-# ╠═1ebdb43d-d9ec-49a0-bed6-983197bee517
 # ╠═762fe736-070e-4624-b683-e1fcbeb0f1e0
 # ╟─80df5127-2df2-4b8d-a2f9-b1d234a96e01
 # ╠═5e67c332-b2cb-45d6-8dff-eeea5acfb779

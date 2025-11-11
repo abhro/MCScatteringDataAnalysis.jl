@@ -35,6 +35,8 @@ export fit_dist_to_histogram
 export fitdistribution
 export fitdistributions
 export fitnormal
+export specific_width_histogram_fits
+export edges
 
 include("bhattacharya_distance.jl")
 export bcdistance

@@ -150,3 +150,36 @@ function fitnormal(x::AbstractVector)
     end
     return Normal(μ, σ)
 end
+
+"""
+    specific_width_histogram_fits(gdf, width, col = :log_dNdp_cr_pf, normalization = :pdf)
+
+Like `fit(Histogram, v, ...)`, but specify bin `width` instead of `nbins`.
+"""
+function specific_width_histogram_fits(gdf, width, col = :log_dNdp_cr_pf, normalization = :pdf)
+    hists = Vector{Any}(undef, length(gdf))
+    for (i, df) in enumerate(gdf)
+        v = df[!,col] |> skipmissing |> collect
+        if length(v) < 3
+            hists[i] = missing
+            continue
+        end
+        hist = fit(Histogram, v, edges(v, width))
+        hist = normalize(hist; mode = normalization)
+        hists[i] = hist
+    end
+    return hists
+end
+
+"""
+    edges(v, width)
+
+Given a sample vector `v` and a bin width `width`, return a range spanning all
+the values of `v` where adjacent elements are `width` apart.
+
+TODO: write better docstring
+"""
+function edges(v, width)
+    xmin, xmax = extrema(skipmissing(v))
+    return range(xmin, xmax, step=width)
+end
