@@ -175,6 +175,11 @@ list of distributions `dists`.
 get_ks_scores(gdf, dists; col) = get_onesample_scores(ExactOneSampleKSTest, gdf, dists; col)
 export get_ks_scores
 
+"""
+    get_onesample_scores(test::Function, gdf, dists; col)
+
+Perform one-sample tests on column `col` of `gdf` against distributions `dists`.
+"""
 function get_onesample_scores(test, gdf, dists; col)
     n = length(gdf)
     arr = Vector{Any}(undef, n)
