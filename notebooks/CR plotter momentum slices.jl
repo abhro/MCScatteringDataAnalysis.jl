@@ -987,10 +987,11 @@ let
         # yscale = log10,
     )
     markersize = 4
-    sigmas = [ismissing(dist) ? missing : dist.σ for dist in normal_distrib_protons_from_curves.pf]
+    σ_getter = passmissing(d -> d.σ)
+    sigmas = σ_getter.(normal_distrib_protons_from_curves.pf)
     scatterlines!(ax, proton_log_p_nat, sigmas, color = color_pf_p, label = "protons, plasma frame"; markersize)
     if do_plot_electrons
-        sigmas = [ismissing(dist) ? missing : dist.σ for dist in normal_distrib_electrons_from_curves.pf]
+        sigmas = σ_getter.(normal_distrib_electrons_from_curves.pf)
         scatterlines!(ax, electron_log_p_nat, sigmas, color = color_pf_e, label = "electrons, plasma frame"; markersize)
     end
 
@@ -1011,12 +1012,13 @@ let
     )
     markersize = 4
 
-    std_devs = gdf_sample_stats(std, CR_p_gdf_momentum; column = :log_dNdp_cr_pf)
-    scatterlines!(ax, proton_log_p_nat, std_devs, color = color_pf_p, label = "protons, plasma frame"; markersize)
+    std_devs = CR_p_std_log_dNdp.pf
+    scatterlines!(ax, proton_log_p_nat, std_devs;
+                  color = color_pf_p, label = "protons, plasma frame"; markersize)
 
     if do_plot_electrons
-        std_devs = gdf_sample_stats(std, CR_e_gdf_momentum; column = :log_dNdp_cr_pf)
-        scatterlines!(ax, electron_log_p_nat, std_devs, color = color_pf_e, label = "electrons, plasma frame"; markersize)
+        scatterlines!(ax, electron_log_p_nat, CR_e_std_log_dNdp.pf;
+                      color = color_pf_e, label = "electrons, plasma frame"; markersize)
     end
 
     axislegend(ax, position = :lt, framevisible = false)
@@ -1035,8 +1037,12 @@ let
         #yscale = log10,
     )
 
-    scatterlines!(ax, proton_log_p_nat, gdf_sample_stats(skewness, CR_p_gdf_momentum; column = :log_dNdp_cr_pf), color = color_pf_p, label = "protons, plasma frame"; markersize)
-    do_plot_electrons && scatterlines!(ax, electron_log_p_nat, gdf_sample_stats(skewness, CR_e_gdf_momentum; column = :log_dNdp_cr_pf), color = color_pf_e, label = "electrons, plasma frame"; markersize)
+    scatterlines!(ax, proton_log_p_nat, gdf_sample_stats(skewness, CR_p_gdf_momentum; column = :log_dNdp_cr_pf);
+                  color = color_pf_p, label = "protons, plasma frame", markersize)
+    if do_plot_electrons
+        scatterlines!(ax, electron_log_p_nat, gdf_sample_stats(skewness, CR_e_gdf_momentum; column = :log_dNdp_cr_pf);
+                      color = color_pf_e, label = "electrons, plasma frame", markersize)
+    end
 
     axislegend(ax, position = :lb, framevisible = false)
 
@@ -1054,8 +1060,12 @@ let
         #yscale = log10,
     )
 
-    scatterlines!(ax, proton_log_p_nat, gdf_sample_stats(kurtosis, CR_p_gdf_momentum; column = :log_dNdp_cr_pf), color = color_pf_p, label = "protons, plasma frame"; markersize)
-    do_plot_electrons && scatterlines!(ax, electron_log_p_nat, gdf_sample_stats(kurtosis, CR_e_gdf_momentum; column = :log_dNdp_cr_pf), color = color_pf_e, label = "electrons, plasma frame"; markersize)
+    scatterlines!(ax, proton_log_p_nat, gdf_sample_stats(kurtosis, CR_p_gdf_momentum; column = :log_dNdp_cr_pf);
+                  color = color_pf_p, label = "protons, plasma frame", markersize)
+    if do_plot_electrons
+        scatterlines!(ax, electron_log_p_nat, gdf_sample_stats(kurtosis, CR_e_gdf_momentum; column = :log_dNdp_cr_pf);
+                      color = color_pf_e, label = "electrons, plasma frame", markersize)
+    end
 
     axislegend(ax, position = :lt, framevisible = false)
 
