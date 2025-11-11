@@ -219,6 +219,34 @@ md"""
 gdf_sample_stats(statistic, gdf; column) = [
     statistic(collect(skipmissing(df[!,column]))) for df in gdf];
 
+# ╔═╡ c09cf00d-0a07-4159-9009-45afdb8343fb
+CR_p_mean_log_dNdp = (;
+    pf = gdf_sample_stats(mean, CR_p_gdf_momentum; column = :log_dNdp_cr_pf),
+    sf = gdf_sample_stats(mean, CR_p_gdf_momentum; column = :log_dNdp_cr_sf),
+    ISM = gdf_sample_stats(mean, CR_p_gdf_momentum; column = :log_dNdp_cr_ISM),
+);
+
+# ╔═╡ a8fdec46-2d8d-4a06-800a-7e03c64468dd
+CR_e_mean_log_dNdp = (;
+    pf = gdf_sample_stats(mean, CR_e_gdf_momentum; column = :log_dNdp_cr_pf),
+    sf = gdf_sample_stats(mean, CR_e_gdf_momentum; column = :log_dNdp_cr_sf),
+    ISM = gdf_sample_stats(mean, CR_e_gdf_momentum; column = :log_dNdp_cr_ISM),
+);
+
+# ╔═╡ a9b9b9aa-b850-49de-8412-2930e7004a36
+CR_p_std_log_dNdp = (;
+    pf = gdf_sample_stats(std, CR_p_gdf_momentum; column = :log_dNdp_cr_pf),
+    sf = gdf_sample_stats(std, CR_p_gdf_momentum; column = :log_dNdp_cr_sf),
+    ISM = gdf_sample_stats(std, CR_p_gdf_momentum; column = :log_dNdp_cr_ISM),
+);
+
+# ╔═╡ 734626db-7646-4a0c-9303-2aec6e371159
+CR_e_std_log_dNdp = (;
+    pf = gdf_sample_stats(std, CR_e_gdf_momentum; column = :log_dNdp_cr_pf),
+    sf = gdf_sample_stats(std, CR_e_gdf_momentum; column = :log_dNdp_cr_sf),
+    ISM = gdf_sample_stats(std, CR_e_gdf_momentum; column = :log_dNdp_cr_ISM),
+);
+
 # ╔═╡ e85bc3ef-97a4-4d0e-937e-3ca290a28086
 md"""
 Choose which frames to plot:
@@ -905,34 +933,42 @@ let
     )
 
     if do_plot_pf
-        means = gdf_sample_stats(mean, CR_p_gdf_momentum; column = :log_dNdp_cr_pf)
-        std_devs = gdf_sample_stats(std, CR_p_gdf_momentum; column = :log_dNdp_cr_pf)
+        means = CR_p_mean_log_dNdp.pf
+        std_devs = CR_p_std_log_dNdp.pf
         lines!(ax, proton_log_p_nat, means, color = color_pf_p, label = "protons, plasma frame")
         band!(ax, proton_log_p_nat, means+std_devs, means-std_devs, alpha = 0.4)
 
         if do_plot_electrons
-            means = gdf_sample_stats(mean, CR_e_gdf_momentum; column = :log_dNdp_cr_pf)
-            std_devs = gdf_sample_stats(std, CR_e_gdf_momentum; column = :log_dNdp_cr_pf)
+            means = CR_e_mean_log_dNdp.pf
+            std_devs = CR_e_std_log_dNdp.pf
             lines!(ax, electron_log_p_nat, means, color = color_pf_e, label = "electrons, plasma frame")
-            band!(ax, electron_log_p_nat, means+std_devs, means-std_devs, alpha = 0.4)
+            band!(ax, electron_log_p_nat, means+std_devs, means-std_devs, alpha = 0.4, color = color_pf_e)
         end
     end
     if do_plot_sf
-        means = gdf_sample_stats(mean, CR_p_gdf_momentum; column = :log_dNdp_cr_sf)
+        means = CR_p_mean_log_dNdp.sf
+        std_devs = CR_p_std_log_dNdp.sf
         lines!(ax, proton_log_p_nat, means, color = color_sf_p, label = "protons, shock frame")
+        band!(ax, proton_log_p_nat, means+std_devs, means-std_devs, alpha = 0.4, color = color_sf_p)
 
         if do_plot_electrons
-            means = gdf_sample_stats(mean, CR_e_gdf_momentum; column = :log_dNdp_cr_sf)
+            means = CR_e_mean_log_dNdp.sf
+            std_devs = CR_e_std_log_dNdp.sf
             lines!(ax, electron_log_p_nat, means, color = color_sf_e, label = "electrons, shock frame")
+            band!(ax, electron_log_p_nat, means+std_devs, means-std_devs, alpha = 0.4, color = color_sf_e)
         end
     end
     if do_plot_ISM
-        means = gdf_sample_stats(mean, CR_p_gdf_momentum; column = :log_dNdp_cr_ISM)
+        means = CR_p_mean_log_dNdp.ISM
+        std_devs = CR_p_std_log_dNdp.ISM
         lines!(ax, proton_log_p_nat, means, color = color_ISM_p, label = "protons, ISM frame")
+        band!(ax, proton_log_p_nat, means+std_devs, means-std_devs, alpha = 0.4, color = color_ISM_p)
 
         if do_plot_electrons
-            means = gdf_sample_stats(mean, CR_e_gdf_momentum; column = :log_dNdp_cr_ISM)
+            means = CR_e_mean_log_dNdp.ISM
+            std_devs = CR_e_std_log_dNdp.ISM
             lines!(ax, electron_log_p_nat, means, color = color_ISM_e, label = "electrons, ISM frame")
+            band!(ax, electron_log_p_nat, means+std_devs, means-std_devs, alpha = 0.4, color = color_ISM_e)
         end
     end
     axislegend(ax, framevisible = false)
@@ -1221,6 +1257,10 @@ end
 # ╠═4553a97d-6b78-4268-90de-d8bee348d3d4
 # ╟─3bf64608-0fa2-4fcb-9782-fd7a8de47bda
 # ╠═70717f68-e97b-401e-bcf7-0684ade30b07
+# ╠═c09cf00d-0a07-4159-9009-45afdb8343fb
+# ╠═a8fdec46-2d8d-4a06-800a-7e03c64468dd
+# ╠═a9b9b9aa-b850-49de-8412-2930e7004a36
+# ╠═734626db-7646-4a0c-9303-2aec6e371159
 # ╟─e85bc3ef-97a4-4d0e-937e-3ca290a28086
 # ╟─88527827-9710-4c63-964f-691aa8909d1f
 # ╟─cd684b62-1aad-404a-87b4-e7b406c0c989
