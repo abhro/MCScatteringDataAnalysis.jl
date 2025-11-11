@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.20.20
+# v0.20.21
 
 using Markdown
 using InteractiveUtils
@@ -1012,13 +1012,12 @@ let
     )
     markersize = 4
 
-    std_devs = CR_p_std_log_dNdp.pf
-    scatterlines!(ax, proton_log_p_nat, std_devs;
-                  color = color_pf_p, label = "protons, plasma frame"; markersize)
+    scatterlines!(ax, proton_log_p_nat, CR_p_std_log_dNdp.pf;
+                  color = color_pf_p, label = "protons, plasma frame", markersize)
 
     if do_plot_electrons
         scatterlines!(ax, electron_log_p_nat, CR_e_std_log_dNdp.pf;
-                      color = color_pf_e, label = "electrons, plasma frame"; markersize)
+                      color = color_pf_e, label = "electrons, plasma frame", markersize)
     end
 
     axislegend(ax, position = :lt, framevisible = false)
