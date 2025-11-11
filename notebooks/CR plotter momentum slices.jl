@@ -936,42 +936,42 @@ let
         means = CR_p_mean_log_dNdp.pf
         std_devs = CR_p_std_log_dNdp.pf
         lines!(ax, proton_log_p_nat, means, color = color_pf_p, label = "protons, plasma frame")
-        band!(ax, proton_log_p_nat, means+std_devs, means-std_devs, alpha = 0.4)
+        band!(ax, proton_log_p_nat, means+std_devs, means-std_devs, alpha = 0.4, color = color_pf_p, label = "protons, plasma frame")
 
         if do_plot_electrons
             means = CR_e_mean_log_dNdp.pf
             std_devs = CR_e_std_log_dNdp.pf
             lines!(ax, electron_log_p_nat, means, color = color_pf_e, label = "electrons, plasma frame")
-            band!(ax, electron_log_p_nat, means+std_devs, means-std_devs, alpha = 0.4, color = color_pf_e)
+            band!(ax, electron_log_p_nat, means+std_devs, means-std_devs, alpha = 0.4, color = color_pf_e, label = "electrons, plasma frame")
         end
     end
     if do_plot_sf
         means = CR_p_mean_log_dNdp.sf
         std_devs = CR_p_std_log_dNdp.sf
         lines!(ax, proton_log_p_nat, means, color = color_sf_p, label = "protons, shock frame")
-        band!(ax, proton_log_p_nat, means+std_devs, means-std_devs, alpha = 0.4, color = color_sf_p)
+        band!(ax, proton_log_p_nat, means+std_devs, means-std_devs, alpha = 0.4, color = color_sf_p, label = "protons, shock frame")
 
         if do_plot_electrons
             means = CR_e_mean_log_dNdp.sf
             std_devs = CR_e_std_log_dNdp.sf
             lines!(ax, electron_log_p_nat, means, color = color_sf_e, label = "electrons, shock frame")
-            band!(ax, electron_log_p_nat, means+std_devs, means-std_devs, alpha = 0.4, color = color_sf_e)
+            band!(ax, electron_log_p_nat, means+std_devs, means-std_devs, alpha = 0.4, color = color_sf_e, label = "electrons, shock frame")
         end
     end
     if do_plot_ISM
         means = CR_p_mean_log_dNdp.ISM
         std_devs = CR_p_std_log_dNdp.ISM
         lines!(ax, proton_log_p_nat, means, color = color_ISM_p, label = "protons, ISM frame")
-        band!(ax, proton_log_p_nat, means+std_devs, means-std_devs, alpha = 0.4, color = color_ISM_p)
+        band!(ax, proton_log_p_nat, means+std_devs, means-std_devs, alpha = 0.4, color = color_ISM_p, label = "protons, ISM frame")
 
         if do_plot_electrons
             means = CR_e_mean_log_dNdp.ISM
             std_devs = CR_e_std_log_dNdp.ISM
             lines!(ax, electron_log_p_nat, means, color = color_ISM_e, label = "electrons, ISM frame")
-            band!(ax, electron_log_p_nat, means+std_devs, means-std_devs, alpha = 0.4, color = color_ISM_e)
+            band!(ax, electron_log_p_nat, means+std_devs, means-std_devs, alpha = 0.4, color = color_ISM_e, label = "electrons, ISM frame")
         end
     end
-    axislegend(ax, framevisible = false)
+    axislegend(ax, framevisible = false, merge = true)
 
     fig
 end
