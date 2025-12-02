@@ -4,31 +4,7 @@ using DrWatson
 using CSV
 using JLD2
 using DataFrames
-
-"""
-De-histogram each `DataFrame` of a `GroupedDataFrame`, then return one big DataFrame
-containing all the rows.
-"""
-function dehistogram(gdf::GroupedDataFrame)
-    df_dehistogrammed = DataFrame()
-    for df in gdf
-        # de-histogram each of the sub-dataframes (make a copy first)
-        df_dehist = df[begin+1:2:end,:]
-
-        # XXX XXX XXX XXX
-        # **Need to explore `psd_mom_bounds`**, and how data repeats in adjacent cells (high/low bounds)
-        # -> Choose the upper bounds for de-histogramming the data, because the lowest
-        #    bin covers -99.0 to -19.3 g⋅cm/s, which is too wide. The highest bin covers
-        #    -2.3997 to -2.2997 g⋅cm/s
-        # -> runs into a fencepost problem. complete last cell (343 for each grouped df)
-        #    has a unrepeated value?
-
-        # push that copy into a bigger temp df
-        # the cols attribute is an additional sanity check
-        append!(df_dehistogrammed, df_dehist, cols = :orderequal)
-    end
-    return df_dehistogrammed
-end
+using MCScatteringDataAnalysis: dehistogram
 
 # predicate to check if any of the frames report a flux value
 no_flux_missing(cols...) = !all(ismissing, cols)

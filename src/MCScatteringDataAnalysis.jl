@@ -27,6 +27,16 @@ uses_sentinels(cs::ColumnSpecification) = cs.uses_sentinels
 
 include("colspecs.jl")
 
+include("data-processing.jl")
+export filteredstream
+export read_multiple_file_over_all_dirs
+export read_one_file_over_all_dirs
+export data_row_predicate
+export dehistogram
+
+include("mc-batch-params.jl")
+export BatchProcessingUtilities
+
 sse(ŷ, y) = sum((y - ŷ).^2)
 export sse
 
