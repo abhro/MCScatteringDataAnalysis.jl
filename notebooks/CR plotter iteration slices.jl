@@ -363,6 +363,33 @@ let fig = Figure()
     fig
 end
 
+# ╔═╡ 5d03370e-5507-41c1-94a6-24c3b5c5e9c0
+let fig = Figure()
+    ax = Axis(
+        fig[1,1];
+        title = "Flux of Cosmic rays",
+        xlabel = "log(p) (mₚc)", ylabel = "log(dN/dp)",
+        axis_properties...)
+
+    for (i, dfp) in enumerate(CR_p_gdf_iter[proton_iterations])
+        log_p, log_dNdp = dfp.log_p_nat, dfp.log_dNdp_cr_pf
+        label_tup = i == 1 ? (; label = "protons") : NamedTuple()
+        # lines!(ax, log_p, log_dNdp + σ*log_p; label_tup..., color = color_pf_p)
+        lines!(ax, log_p, log_dNdp; label_tup..., color = color_pf_p)
+    end
+    for (i, dfe) in enumerate(CR_e_gdf_iter[electron_iterations])
+        log_p, log_dNdp = dfe.log_p_nat, dfe.log_dNdp_cr_pf
+        label_tup = i == 1 ? (; label = "electrons") : NamedTuple()
+        # lines!(ax, log_p, log_dNdp + σ*log_p; label_tup..., color = color_pf_e)
+        lines!(ax, log_p, log_dNdp; label_tup..., color = color_pf_e)
+    end
+
+    # xlims!(ax, 2, 5)
+    # ylims!(ax, 57.2, 58.3)
+    axislegend(ax, framevisible = false)
+    fig
+end
+
 # ╔═╡ e5dbf380-3480-4d96-881a-8c562b5fc6ab
 md"""
 ## All at once
@@ -483,6 +510,7 @@ end
 # ╟─6c07e039-2575-49a6-a50d-531c40ee7965
 # ╠═d76b122b-9881-4b83-ab07-34ffe17d72c3
 # ╟─1f35f220-7739-4097-b51d-0ab6000be247
+# ╟─5d03370e-5507-41c1-94a6-24c3b5c5e9c0
 # ╟─e5dbf380-3480-4d96-881a-8c562b5fc6ab
 # ╠═4e26e9ec-b4f2-46f8-bada-945c00cb4907
 # ╟─a0be5567-9256-4c03-9a96-11d4d1973347
