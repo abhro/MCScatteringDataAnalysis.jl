@@ -3,10 +3,11 @@ module MCScatteringDataAnalysis
 using LinearAlgebra
 using StatsBase
 using Distributions
-using DataFrames: DataFrame, GroupedDataFrame, nrow
+using DataFrames: AbstractDataFrame, DataFrame, GroupedDataFrame, nrow
 using BiNormalDistributions: BiNormal
 using HypothesisTests: OneSampleADTest, ExactOneSampleKSTest, ShapiroWilkTest
 using LsqFit: curve_fit
+import DelimitedFiles
 
 """
     ColumnSpecification(colname, eltype, uses_sentinels = false)
@@ -34,7 +35,7 @@ export read_one_file_over_all_dirs
 export data_row_predicate
 export dehistogram
 
-include("mc-batch-params.jl")
+include("batch-utils.jl")
 export BatchProcessingUtilities
 
 sse(ŷ, y) = sum((y - ŷ).^2)
