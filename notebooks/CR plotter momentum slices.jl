@@ -34,7 +34,6 @@ using MCScatteringDataAnalysis
 # ╔═╡ d8a66ccd-efdc-4b85-9af3-cfa5624c88e8
 # using CairoMakie
 using WGLMakie
-# using GLMakie
 
 # ╔═╡ 547aad6f-32db-405d-9886-a727f1591101
 begin
@@ -112,19 +111,25 @@ CR_e_gdf_momentum = load_object(CR_e_gdf_momentum_filename);
 
 # ╔═╡ 68c8329f-501e-47df-8047-d3cbc319e705
 md"""
-For protons:
+For protons: (enable the next cell to view Grouped-DataFrame statistics)
 """
 
 # ╔═╡ a36ea9cf-176f-40bd-8577-cc2ea8db64af
+# ╠═╡ disabled = true
+#=╠═╡
 CR_gdfstats(CR_p_gdf_momentum)
+  ╠═╡ =#
 
 # ╔═╡ 985a2460-3fbc-4935-af59-2e734786c973
 md"""
-For electrons:
+For electrons: (enable the next cell to view Grouped-DataFrame statistics)
 """
 
 # ╔═╡ d85427f4-86ed-4c04-980a-a4152b5875e8
+# ╠═╡ disabled = true
+#=╠═╡
 CR_gdfstats(CR_e_gdf_momentum)
+  ╠═╡ =#
 
 # ╔═╡ 1572a05b-77db-43a4-81cd-d9eb3c9bf2e0
 idx_CR_p_gdf = axes(CR_p_gdf_momentum, 1);
@@ -210,91 +215,6 @@ end
 # ╔═╡ 4553a97d-6b78-4268-90de-d8bee348d3d4
 plot_electrons_binder = @bind do_plot_electrons CheckBox(default=true);
 
-# ╔═╡ 3bf64608-0fa2-4fcb-9782-fd7a8de47bda
-md"""
-## Sample statistics
-"""
-
-# ╔═╡ 70717f68-e97b-401e-bcf7-0684ade30b07
-gdf_sample_stats(statistic, gdf; column) = [
-    statistic(collect(skipmissing(df[!,column]))) for df in gdf];
-
-# ╔═╡ c09cf00d-0a07-4159-9009-45afdb8343fb
-CR_p_mean_log_dNdp = (;
-    pf = gdf_sample_stats(mean, CR_p_gdf_momentum; column = :log_dNdp_cr_pf),
-    sf = gdf_sample_stats(mean, CR_p_gdf_momentum; column = :log_dNdp_cr_sf),
-    ISM = gdf_sample_stats(mean, CR_p_gdf_momentum; column = :log_dNdp_cr_ISM),
-);
-
-# ╔═╡ a8fdec46-2d8d-4a06-800a-7e03c64468dd
-CR_e_mean_log_dNdp = (;
-    pf = gdf_sample_stats(mean, CR_e_gdf_momentum; column = :log_dNdp_cr_pf),
-    sf = gdf_sample_stats(mean, CR_e_gdf_momentum; column = :log_dNdp_cr_sf),
-    ISM = gdf_sample_stats(mean, CR_e_gdf_momentum; column = :log_dNdp_cr_ISM),
-);
-
-# ╔═╡ a9b9b9aa-b850-49de-8412-2930e7004a36
-CR_p_std_log_dNdp = (;
-    pf = gdf_sample_stats(std, CR_p_gdf_momentum; column = :log_dNdp_cr_pf),
-    sf = gdf_sample_stats(std, CR_p_gdf_momentum; column = :log_dNdp_cr_sf),
-    ISM = gdf_sample_stats(std, CR_p_gdf_momentum; column = :log_dNdp_cr_ISM),
-);
-
-# ╔═╡ 734626db-7646-4a0c-9303-2aec6e371159
-CR_e_std_log_dNdp = (;
-    pf = gdf_sample_stats(std, CR_e_gdf_momentum; column = :log_dNdp_cr_pf),
-    sf = gdf_sample_stats(std, CR_e_gdf_momentum; column = :log_dNdp_cr_sf),
-    ISM = gdf_sample_stats(std, CR_e_gdf_momentum; column = :log_dNdp_cr_ISM),
-);
-
-# ╔═╡ e85bc3ef-97a4-4d0e-937e-3ca290a28086
-md"""
-Choose which frames to plot:
-- Plasma frame: $plot_pf_binder
-- Shock frame: $plot_sf_binder
-- ISM frame: $plot_ISM_binder
-"""
-
-# ╔═╡ 88527827-9710-4c63-964f-691aa8909d1f
-md"""
-Should we plot electrons? $plot_electrons_binder
-"""
-
-# ╔═╡ cd684b62-1aad-404a-87b4-e7b406c0c989
-md"""
-All of the plotting code below can be simplified much, much more with AlgebraOfGraphics. The current code is a travesty. :(
-"""
-
-# ╔═╡ 54ec7213-3e48-423b-9208-befc6583b908
-md"""
-### Sample size
-"""
-
-# ╔═╡ 932c2a77-0198-4df4-a4bd-30d0bda93946
-md"""
-### Means
-"""
-
-# ╔═╡ 7da22399-718c-4f16-ba02-7ae27773942b
-md"""
-#### Mean with uncertainty envelope
-"""
-
-# ╔═╡ 5767b9ac-64c2-4d2f-ad42-961184c7edc7
-md"""
-### Standard deviations
-"""
-
-# ╔═╡ 7495e7e9-3d50-4401-baef-d2e3c11e6b46
-md"""
-### Skewness
-"""
-
-# ╔═╡ bb3a74ce-78ee-487e-a413-4c0e035e8818
-md"""
-### Kurtosis
-"""
-
 # ╔═╡ ce8b1307-dc78-463b-9f41-04fe5dded525
 md"""
 ## Histograms
@@ -325,59 +245,6 @@ Proton momentum slice to plot (index): $proton_index_binder (min: $(minimum(idx_
 md"""
 Electron momentum slice to plot (index): $electron_index_binder (min: $(minimum(idx_CR_e_gdf)), max: $(maximum(idx_CR_e_gdf)))
 """
-
-# ╔═╡ 9ea7a3a4-987d-416d-88d1-672e3cce23c5
-md"""
-## dN/dp vs. iteration
-"""
-
-# ╔═╡ b7a96870-784e-4ce0-830d-d245fc16e5f4
-# ╠═╡ disabled = true
-#=╠═╡
-let df = CR_p_gdf_momentum[proton_momentum_index]
-
-    fig = Figure()
-    ax = Axis(
-        fig[1,1];
-        title = "dN/dp of Cosmic rays (protons) against iteration, momentum slice",
-        xlabel = "Iteration", ylabel = "log(dN/dp)")
-
-    do_plot_pf && scatter!(ax, df.iter, df.log_dNdp_cr_pf, label = "plasma frame"; markersize, color = color_pf_p)
-    do_plot_sf && scatter!(ax, df.iter, df.log_dNdp_cr_sf, label = "shock frame"; markersize, color = color_sf_p)
-    do_plot_ISM && scatter!(ax, df.iter, df.log_dNdp_cr_ISM, label = "ISM frame"; markersize, color = color_ISM_p)
-
-    #xlims!(ax, -16, -3)
-    #ylims!(ax, -100, -98)
-    leg = axislegend(ax, position = :rb, framevisible = false)
-    #Legend(fig[1,2], ax)
-    fig
-end
-  ╠═╡ =#
-
-# ╔═╡ 4ac1798d-ec27-4571-9b2a-44cb432ef0d6
-# ╠═╡ disabled = true
-#=╠═╡
-let df = CR_p_gdf_momentum[electron_momentum_index]
-
-    fig = Figure()
-    ax = Axis(
-        fig[1,1];
-        #aspect = AxisAspect(1.2),
-        title = "dN/dp of Cosmic rays (electrons) against iteration, momentum slice",
-        #axis_properties...,
-        xlabel = "Iteration", ylabel = "log(dN/dp)")
-
-    do_plot_pf && scatter!(ax, df.iter, df.log_dNdp_cr_pf, label = "plasma frame"; markersize, color = color_pf_e)
-    do_plot_sf && scatter!(ax, df.iter, df.log_dNdp_cr_sf, label = "shock frame"; markersize, color = color_sf_e)
-    do_plot_ISM && scatter!(ax, df.iter, df.log_dNdp_cr_ISM, label = "ISM frame"; markersize, color = color_ISM_e)
-
-    #xlims!(ax, -16, -3)
-    #ylims!(ax, -100, -98)
-    axislegend(ax, position = :rb, framevisible = false)
-    #Legend(fig[1,2], ax)
-    fig
-end
-  ╠═╡ =#
 
 # ╔═╡ a6a63cb1-1a13-4cc2-9730-b78dd3d3aee4
 md"""
@@ -808,242 +675,6 @@ end
 # ╔═╡ 589661b1-6a64-4db5-ac40-c1565c29c3cc
 electron_log_p_nat = keys(CR_e_gdf_momentum) .|> values .|> first;
 
-# ╔═╡ f186773a-cbd7-47a7-81e4-e0b3e71ebcc5
-elec_p_idx = sortperm(electron_log_p_nat)
-
-# ╔═╡ b4df1258-7625-4a7d-b66f-07f4c5e9ba41
-let
-    fig = Figure()
-    ax = Axis(
-        fig[1,1];
-        title = "Sample size vs momentum slice",
-        axis_properties...,
-        xlabel = "log p (nat)", ylabel = "# of samples",
-    )
-
-    if do_plot_pf
-        lengths = gdf_sample_stats(length, CR_p_gdf_momentum; column = :log_dNdp_cr_pf)
-        lines!(ax, proton_log_p_nat, lengths, color = color_pf_p, label = "protons, plasma frame")
-
-        if do_plot_electrons
-            lengths = gdf_sample_stats(length, CR_e_gdf_momentum; column = :log_dNdp_cr_pf)
-            lines!(ax, electron_log_p_nat[elec_p_idx], lengths[elec_p_idx], color = color_pf_e, label = "electrons, plasma frame")
-        end
-    end
-    if do_plot_sf
-        lengths = gdf_sample_stats(length, CR_p_gdf_momentum; column = :log_dNdp_cr_sf)
-        lines!(ax, proton_log_p_nat, lengths, color = color_sf_p, label = "protons, shock frame")
-
-        if do_plot_electrons
-            lengths = gdf_sample_stats(length, CR_e_gdf_momentum; column = :log_dNdp_cr_sf)
-            lines!(ax, electron_log_p_nat[elec_p_idx], lengths[elec_p_idx], color = color_sf_e, label = "electrons, shock frame")
-        end
-    end
-    if do_plot_ISM
-        lengths = gdf_sample_stats(length, CR_p_gdf_momentum; column = :log_dNdp_cr_ISM)
-        lines!(ax, proton_log_p_nat, lengths, color = color_ISM_p, label = "protons, ISM frame")
-
-        if do_plot_electrons
-            lengths = gdf_sample_stats(length, CR_e_gdf_momentum; column = :log_dNdp_cr_ISM)
-            lines!(ax, electron_log_p_nat[elec_p_idx], lengths[elec_p_idx], color = color_ISM_e, label = "electrons, ISM frame")
-        end
-    end
-    axislegend(ax, framevisible = false, position = :cc)
-
-    fig
-end
-
-# ╔═╡ 91bba2da-c925-4123-bb8a-c1f9be8619e9
-let
-    fig = Figure()
-    ax = Axis(
-        fig[1,1];
-        title = "Sample mean vs momentum slice",
-        axis_properties...,
-        xlabel = "log p (nat)", ylabel = "⟨log dN/dp⟩",
-    )
-
-    if do_plot_pf
-        means = gdf_sample_stats(mean, CR_p_gdf_momentum; column = :log_dNdp_cr_pf)
-        lines!(ax, proton_log_p_nat, means, color = color_pf_p, label = "protons, plasma frame")
-
-        if do_plot_electrons
-            means = gdf_sample_stats(mean, CR_e_gdf_momentum; column = :log_dNdp_cr_pf)
-            lines!(ax, electron_log_p_nat, means, color = color_pf_e, label = "electrons, plasma frame")
-        end
-    end
-    if do_plot_sf
-        means = gdf_sample_stats(mean, CR_p_gdf_momentum; column = :log_dNdp_cr_sf)
-        lines!(ax, proton_log_p_nat, means, color = color_sf_p, label = "protons, shock frame")
-
-        if do_plot_electrons
-            means = gdf_sample_stats(mean, CR_e_gdf_momentum; column = :log_dNdp_cr_sf)
-            lines!(ax, electron_log_p_nat, means, color = color_sf_e, label = "electrons, shock frame")
-        end
-    end
-    if do_plot_ISM
-        means = gdf_sample_stats(mean, CR_p_gdf_momentum; column = :log_dNdp_cr_ISM)
-        lines!(ax, proton_log_p_nat, means, color = color_ISM_p, label = "protons, ISM frame")
-
-        if do_plot_electrons
-            means = gdf_sample_stats(mean, CR_e_gdf_momentum; column = :log_dNdp_cr_ISM)
-            lines!(ax, electron_log_p_nat, means, color = color_ISM_e, label = "electrons, ISM frame")
-        end
-    end
-    axislegend(ax, framevisible = false)
-
-    fig
-end
-
-# ╔═╡ 3f36fc06-3799-41f3-971b-d13d43e5fc20
-let
-    fig = Figure()
-    ax = Axis(
-        fig[1,1];
-        title = "Sample mean vs momentum slice",
-        axis_properties...,
-        xlabel = "log p (nat)", ylabel = "⟨log dN/dp⟩",
-    )
-
-    if do_plot_pf
-        means = CR_p_mean_log_dNdp.pf
-        std_devs = CR_p_std_log_dNdp.pf
-        lines!(ax, proton_log_p_nat, means, color = color_pf_p, label = "protons, plasma frame")
-        band!(ax, proton_log_p_nat, means+std_devs, means-std_devs, alpha = 0.4, color = color_pf_p, label = "protons, plasma frame")
-
-        if do_plot_electrons
-            means = CR_e_mean_log_dNdp.pf
-            std_devs = CR_e_std_log_dNdp.pf
-            lines!(ax, electron_log_p_nat, means, color = color_pf_e, label = "electrons, plasma frame")
-            band!(ax, electron_log_p_nat, means+std_devs, means-std_devs, alpha = 0.4, color = color_pf_e, label = "electrons, plasma frame")
-        end
-    end
-    if do_plot_sf
-        means = CR_p_mean_log_dNdp.sf
-        std_devs = CR_p_std_log_dNdp.sf
-        lines!(ax, proton_log_p_nat, means, color = color_sf_p, label = "protons, shock frame")
-        band!(ax, proton_log_p_nat, means+std_devs, means-std_devs, alpha = 0.4, color = color_sf_p, label = "protons, shock frame")
-
-        if do_plot_electrons
-            means = CR_e_mean_log_dNdp.sf
-            std_devs = CR_e_std_log_dNdp.sf
-            lines!(ax, electron_log_p_nat, means, color = color_sf_e, label = "electrons, shock frame")
-            band!(ax, electron_log_p_nat, means+std_devs, means-std_devs, alpha = 0.4, color = color_sf_e, label = "electrons, shock frame")
-        end
-    end
-    if do_plot_ISM
-        means = CR_p_mean_log_dNdp.ISM
-        std_devs = CR_p_std_log_dNdp.ISM
-        lines!(ax, proton_log_p_nat, means, color = color_ISM_p, label = "protons, ISM frame")
-        band!(ax, proton_log_p_nat, means+std_devs, means-std_devs, alpha = 0.4, color = color_ISM_p, label = "protons, ISM frame")
-
-        if do_plot_electrons
-            means = CR_e_mean_log_dNdp.ISM
-            std_devs = CR_e_std_log_dNdp.ISM
-            lines!(ax, electron_log_p_nat, means, color = color_ISM_e, label = "electrons, ISM frame")
-            band!(ax, electron_log_p_nat, means+std_devs, means-std_devs, alpha = 0.4, color = color_ISM_e, label = "electrons, ISM frame")
-        end
-    end
-    axislegend(ax, framevisible = false, merge = true)
-
-    fig
-end
-
-# ╔═╡ 930a7033-e01a-434a-a88a-1bd901dc6bdc
-let
-    fig = Figure()
-    ax = Axis(
-        fig[1,1];
-        title = "Curve-fit σ vs momentum slice",
-        axis_properties...,
-        xlabel = "log p (nat)", ylabel = "σ",
-        # yscale = log10,
-    )
-    markersize = 4
-    σ_getter = passmissing(d -> d.σ)
-    sigmas = σ_getter.(normal_distrib_protons_from_curves.pf)
-    scatterlines!(ax, proton_log_p_nat, sigmas, color = color_pf_p, label = "protons, plasma frame"; markersize)
-    if do_plot_electrons
-        sigmas = σ_getter.(normal_distrib_electrons_from_curves.pf)
-        scatterlines!(ax, electron_log_p_nat, sigmas, color = color_pf_e, label = "electrons, plasma frame"; markersize)
-    end
-
-    axislegend(ax, position = :lt, framevisible = false)
-
-    fig
-end
-
-# ╔═╡ b6ce51e5-b4ff-49eb-83db-ecf3e8a081ac
-let
-    fig = Figure()
-    ax = Axis(
-        fig[1,1];
-        title = "Sample standard deviation vs momentum slice",
-        axis_properties...,
-        xlabel = "log p (nat)", ylabel = "σ",
-        # yscale = log10,
-    )
-    markersize = 4
-
-    scatterlines!(ax, proton_log_p_nat, CR_p_std_log_dNdp.pf;
-                  color = color_pf_p, label = "protons, plasma frame", markersize)
-
-    if do_plot_electrons
-        scatterlines!(ax, electron_log_p_nat, CR_e_std_log_dNdp.pf;
-                      color = color_pf_e, label = "electrons, plasma frame", markersize)
-    end
-
-    axislegend(ax, position = :lt, framevisible = false)
-
-    fig
-end
-
-# ╔═╡ adf24143-4be1-46c7-a63a-fe4dd490791d
-let
-    fig = Figure()
-    ax = Axis(
-        fig[1,1];
-        title = "Sample skewness vs momentum slice",
-        axis_properties...,
-        xlabel = "log p (nat)", ylabel = "γ",
-        #yscale = log10,
-    )
-
-    scatterlines!(ax, proton_log_p_nat, gdf_sample_stats(skewness, CR_p_gdf_momentum; column = :log_dNdp_cr_pf);
-                  color = color_pf_p, label = "protons, plasma frame", markersize)
-    if do_plot_electrons
-        scatterlines!(ax, electron_log_p_nat, gdf_sample_stats(skewness, CR_e_gdf_momentum; column = :log_dNdp_cr_pf);
-                      color = color_pf_e, label = "electrons, plasma frame", markersize)
-    end
-
-    axislegend(ax, position = :lb, framevisible = false)
-
-    fig
-end
-
-# ╔═╡ 67533f87-b016-45fe-b582-53c3c225c056
-let
-    fig = Figure()
-    ax = Axis(
-        fig[1,1];
-        title = "Sample kurtosis vs momentum slice",
-        axis_properties...,
-        xlabel = "log p (nat)", ylabel = "Kurtosis",
-        #yscale = log10,
-    )
-
-    scatterlines!(ax, proton_log_p_nat, gdf_sample_stats(kurtosis, CR_p_gdf_momentum; column = :log_dNdp_cr_pf);
-                  color = color_pf_p, label = "protons, plasma frame", markersize)
-    if do_plot_electrons
-        scatterlines!(ax, electron_log_p_nat, gdf_sample_stats(kurtosis, CR_e_gdf_momentum; column = :log_dNdp_cr_pf);
-                      color = color_pf_e, label = "electrons, plasma frame", markersize)
-    end
-
-    axislegend(ax, position = :lt, framevisible = false)
-
-    fig
-end
-
 # ╔═╡ 6c16fc5a-7113-4b6e-abf2-de1275cceda5
 log_p_nat_at_slice_e = electron_log_p_nat[electron_momentum_index];
 
@@ -1217,9 +848,9 @@ end
 # ╠═bdb9591b-b7ac-47e6-98bc-f18921bb64f9
 # ╠═3777306e-eb41-413b-80a9-72cdc0228a94
 # ╟─68c8329f-501e-47df-8047-d3cbc319e705
-# ╟─a36ea9cf-176f-40bd-8577-cc2ea8db64af
+# ╠═a36ea9cf-176f-40bd-8577-cc2ea8db64af
 # ╟─985a2460-3fbc-4935-af59-2e734786c973
-# ╟─d85427f4-86ed-4c04-980a-a4152b5875e8
+# ╠═d85427f4-86ed-4c04-980a-a4152b5875e8
 # ╠═1572a05b-77db-43a4-81cd-d9eb3c9bf2e0
 # ╠═f8d26a2c-2789-4b04-8bb7-71bf19686bbd
 # ╟─5c65e63d-e6bd-41fa-adbf-0e1717075956
@@ -1237,29 +868,6 @@ end
 # ╠═59be6983-6e37-4a70-8929-69176a5f807e
 # ╠═60deb76f-3efe-4e0d-b176-9f0169259dca
 # ╠═4553a97d-6b78-4268-90de-d8bee348d3d4
-# ╟─3bf64608-0fa2-4fcb-9782-fd7a8de47bda
-# ╠═70717f68-e97b-401e-bcf7-0684ade30b07
-# ╠═c09cf00d-0a07-4159-9009-45afdb8343fb
-# ╠═a8fdec46-2d8d-4a06-800a-7e03c64468dd
-# ╠═a9b9b9aa-b850-49de-8412-2930e7004a36
-# ╠═734626db-7646-4a0c-9303-2aec6e371159
-# ╟─e85bc3ef-97a4-4d0e-937e-3ca290a28086
-# ╟─88527827-9710-4c63-964f-691aa8909d1f
-# ╟─cd684b62-1aad-404a-87b4-e7b406c0c989
-# ╟─54ec7213-3e48-423b-9208-befc6583b908
-# ╠═f186773a-cbd7-47a7-81e4-e0b3e71ebcc5
-# ╟─b4df1258-7625-4a7d-b66f-07f4c5e9ba41
-# ╟─932c2a77-0198-4df4-a4bd-30d0bda93946
-# ╟─91bba2da-c925-4123-bb8a-c1f9be8619e9
-# ╟─7da22399-718c-4f16-ba02-7ae27773942b
-# ╟─3f36fc06-3799-41f3-971b-d13d43e5fc20
-# ╟─5767b9ac-64c2-4d2f-ad42-961184c7edc7
-# ╟─930a7033-e01a-434a-a88a-1bd901dc6bdc
-# ╟─b6ce51e5-b4ff-49eb-83db-ecf3e8a081ac
-# ╟─7495e7e9-3d50-4401-baef-d2e3c11e6b46
-# ╟─adf24143-4be1-46c7-a63a-fe4dd490791d
-# ╟─bb3a74ce-78ee-487e-a413-4c0e035e8818
-# ╟─67533f87-b016-45fe-b582-53c3c225c056
 # ╟─ce8b1307-dc78-463b-9f41-04fe5dded525
 # ╠═71404de8-f8b2-4d26-b7d7-41064cae1447
 # ╠═6c16fc5a-7113-4b6e-abf2-de1275cceda5
@@ -1271,9 +879,6 @@ end
 # ╟─4051e244-4c84-4983-8cb9-bc7f53daa9f6
 # ╟─7be1e6da-0eb9-45e5-a4f9-bb6deedc3def
 # ╟─88822f52-aab8-4931-9091-1909da6c604b
-# ╟─9ea7a3a4-987d-416d-88d1-672e3cce23c5
-# ╟─b7a96870-784e-4ce0-830d-d245fc16e5f4
-# ╟─4ac1798d-ec27-4571-9b2a-44cb432ef0d6
 # ╟─a6a63cb1-1a13-4cc2-9730-b78dd3d3aee4
 # ╠═54452e38-227e-4d06-ae74-7347aae2c021
 # ╠═b0d555b3-5087-4405-8343-ce304d482ca9
