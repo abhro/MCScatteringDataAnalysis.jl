@@ -500,38 +500,11 @@ md"""
 ## Distribution agreement curve
 """
 
-# ╔═╡ 751d60d8-c8ea-404a-8854-ae3127e04a5d
-begin
-    proton_distances = zeros(Union{Missing,Float64}, length(CR_p_gdf_momentum))
-    for (idx, df) in enumerate(CR_p_gdf_momentum)
-        distrib = normal_distrib_protons.pf[idx]
-        distrib2 = normal_distrib_protons_from_curves.pf[idx]
-        if !ismissing(distrib) && !ismissing(distrib2)
-            distance = bcdistance(distrib, distrib2)
-            proton_distances[idx] = distance
-        else
-            proton_distances[idx] = missing
-        end
-    end
-end
+# ╔═╡ b238afe1-3d1f-4e15-bc49-1b015a39c02c
+proton_distances = bcdistances(normal_distrib_protons.pf, normal_distrib_protons_from_curves.pf)
 
 # ╔═╡ 78a22648-c76a-4b5c-b552-9be000a60109
-proton_distances
-
-# ╔═╡ b99c020d-3165-40e9-8284-0a037b3f9900
-begin
-    electron_distances = zeros(Union{Missing,Float64}, length(CR_e_gdf_momentum))
-    for (idx,df) in enumerate(CR_e_gdf_momentum)
-        distrib = normal_distrib_electrons.pf[idx]
-        distrib2 = normal_distrib_electrons_from_curves.pf[idx]
-        if !ismissing(distrib) && !ismissing(distrib2)
-            distance = bcdistance(distrib, distrib2)
-            electron_distances[idx] = distance
-        else
-            electron_distances[idx] = missing
-        end
-    end
-end
+electron_distances = bcdistances(normal_distrib_electrons.pf, normal_distrib_electrons_from_curves.pf)
 
 # ╔═╡ da107273-c428-4c68-80a9-8f82cb211497
 md"""
@@ -1337,9 +1310,8 @@ end
 # ╠═f2fe3844-2be8-4da6-9656-40312304556b
 # ╠═97291776-74f0-428a-ab4f-3c498b630000
 # ╟─452c9b2f-7138-4310-b0c6-df2be7ab8c76
-# ╠═751d60d8-c8ea-404a-8854-ae3127e04a5d
+# ╠═b238afe1-3d1f-4e15-bc49-1b015a39c02c
 # ╠═78a22648-c76a-4b5c-b552-9be000a60109
-# ╠═b99c020d-3165-40e9-8284-0a037b3f9900
 # ╠═7534104f-885d-48c5-8ae0-ddae56fcd86d
 # ╟─da107273-c428-4c68-80a9-8f82cb211497
 # ╠═49902e99-870d-4d19-afb0-1de612c185df

@@ -51,6 +51,7 @@ export edges
 
 include("bhattacharya_distance.jl")
 export bcdistance
+export bcdistances
 
 """
     CR_gdfstats(gdf)
