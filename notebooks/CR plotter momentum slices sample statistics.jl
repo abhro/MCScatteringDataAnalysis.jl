@@ -52,7 +52,7 @@ using Printf
 
 # ╔═╡ f0e77bbd-e420-49f1-9b40-f9d994888b93
 md"""
-# Plot fluxes for each momentum slice
+# Plot flux statistics for each momentum slice
 """
 
 # ╔═╡ cd809ca8-2cc4-435d-ab8b-b7b24fa40ed1
