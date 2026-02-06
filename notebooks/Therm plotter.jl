@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.20.20
+# v0.20.21
 
 using Markdown
 using InteractiveUtils
@@ -21,6 +21,9 @@ using DrWatson
 
 # ╔═╡ 63875dd0-d278-44c4-a85a-78ca6d7e9e10
 @quickactivate "MCScatteringDataAnalysis"
+
+# ╔═╡ a08cb144-1980-46e6-b835-65c93fd5a265
+using Revise
 
 # ╔═╡ d3e5bcd8-31e0-424f-8626-5eb4b679b818
 using PlutoUI
@@ -244,6 +247,7 @@ end
 # ╟─a1e20290-55e9-4355-bc45-74c5f825565f
 # ╠═b0d4ca90-bb62-11f0-80dd-b560b36acdf6
 # ╠═63875dd0-d278-44c4-a85a-78ca6d7e9e10
+# ╠═a08cb144-1980-46e6-b835-65c93fd5a265
 # ╠═d3e5bcd8-31e0-424f-8626-5eb4b679b818
 # ╠═b1833ac8-965e-45d5-bffd-8e31fac39939
 # ╠═24564257-76f5-4200-b9a8-30180e853233

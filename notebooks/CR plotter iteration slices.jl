@@ -22,6 +22,9 @@ using DrWatson
 # ╔═╡ e5e0e4e2-2df1-4536-9cc5-bdcec6fc13de
 @quickactivate "MCScatteringDataAnalysis"
 
+# ╔═╡ d609268f-3c94-4244-9b45-8f57a21ea97d
+using Revise
+
 # ╔═╡ 7899ae97-fbc2-43e5-ac77-c6d725f0371e
 using JLD2, DataFrames
 
@@ -453,6 +456,7 @@ end
 # ╟─cd809ca8-2cc4-435d-ab8b-b7b24fa40ed1
 # ╠═f1ee2cb0-8274-11ef-0826-f55183647219
 # ╠═e5e0e4e2-2df1-4536-9cc5-bdcec6fc13de
+# ╠═d609268f-3c94-4244-9b45-8f57a21ea97d
 # ╠═7899ae97-fbc2-43e5-ac77-c6d725f0371e
 # ╠═b137e7fa-f2ce-4cb1-85d7-87078a9aa9cc
 # ╠═7a050dc5-7772-4933-959f-bf4fb478fc7d
