@@ -308,7 +308,7 @@ testset = CR_p_gdf_momentum[testset_index].log_dNdp_cr_pf |> skipmissing |> coll
 # ╔═╡ cf870504-0f29-4354-9a4a-76971459aeba
 let testset = filter(>(38.68), testset)
     fig = Figure()
-    ax = Axis(fig[1,1]; axis_properties...)
+    ax = Axis(fig[1, 1]; axis_properties...)
     hist!(ax, testset; bins, normalization = :pdf)
     #hist(; bins, normalization = :pdf)
     #xplt = range(extrema(testset)..., length = 1000)
@@ -326,16 +326,17 @@ n2_tentative = Distributions.fit(Normal, filter(>(38.7), testset))
 bn_tentative = BiNormal(
     0.99,
     Distributions.fit(Normal, testset),
-    n2_tentative)
+    n2_tentative
+)
 
 # ╔═╡ 0b1c1d4f-6ffd-423b-bf9b-31b229488038
 with_theme() do
     fig = Figure()
-    ax = Axis(fig[1,1], title = "Fit after filtering out main distrib and manually adjusting λ"; axis_properties...)
+    ax = Axis(fig[1, 1], title = "Fit after filtering out main distrib and manually adjusting λ"; axis_properties...)
     stephist!(ax, testset, normalization = :pdf; bins, label = "Test set")
-    xs = range(extrema(testset)..., length=1000)
+    xs = range(extrema(testset)..., length = 1000)
     #plot!(ax, xs, bn_tentative, label = "semi-Manual BiNormal")
-    plot!(ax, xs, manual_bn, label = "Manual BiNormal", linewidth=1, color = :orange)
+    plot!(ax, xs, manual_bn, label = "Manual BiNormal", linewidth = 1, color = :orange)
     axislegend(ax, framevisible = false)
     fig
 end
@@ -354,7 +355,7 @@ end
 #let
 with_theme() do
     fig = Figure()
-    ax = Axis(fig[1,1]; axis_properties...)
+    ax = Axis(fig[1, 1]; axis_properties...)
     x = centers(only(q.edges))
     lines!(ax, x, q.weights, label = "Histogram*, with bin centers")
     modevalue, modeidx = findmax(q.weights)
@@ -392,7 +393,7 @@ brute_fit_dist = first(brute_fitted)
 #let
 with_theme(Makie.theme(nothing)) do
     fig = Figure()
-    ax = Axis(fig[1,1]; axis_properties...)
+    ax = Axis(fig[1, 1]; axis_properties...)
     stephist!(ax, testset; bins, normalization = :pdf)
     xplt = range(extrema(testset)..., length = 1000)
     λ = brute_fit_dist.λ
@@ -432,11 +433,11 @@ testset_kde.x |> length
 testset_kde.density |> length
 
 # ╔═╡ 1360285b-8b6a-4d1c-bbb5-c6acfeddb8b6
-testset_mle_fit_distrib = fit_mle(MixtureModel([Normal(), Normal()], ), testset; method = StochasticEM(MersenneTwister(2)))
+testset_mle_fit_distrib = fit_mle(MixtureModel([Normal(), Normal()]), testset; method = StochasticEM(MersenneTwister(2)))
 
 # ╔═╡ 788836a8-e168-4eed-b5cd-3522e43b80a6
 let fig = Figure()
-    ax = Axis(fig[1,1], xminorgridvisible = true, yminorgridvisible = true)
+    ax = Axis(fig[1, 1], xminorgridvisible = true, yminorgridvisible = true)
     ##stephist!(ax, testset; bins, normalization = :pdf, label = "stephist")
     plot!(ax, testset_kde, label = "KDE")
     xplt = range(extrema(testset)..., length = 1000)
@@ -452,7 +453,7 @@ testset_trunc = filter(>(38.7), testset)
 # ╔═╡ c31984a0-5612-403e-9278-bfd16759cacd
 let
     fig = Figure()
-    ax = Axis(fig[1,1]; axis_properties...)
+    ax = Axis(fig[1, 1]; axis_properties...)
     hist!(ax, testset_trunc; bins, normalization = :pdf)
     #hist(; bins, normalization = :pdf)
     #xplt = range(extrema(testset_trunc)..., length = 1000)
@@ -518,7 +519,8 @@ hist_curve_fit = let
     x_data = centers(q.edges |> only)
     LsqFit.curve_fit(
         modelfunc, x_data, q.weights,
-        [1.0, mean(x_data), 1.0, mean(x_data), 1.0])
+        [1.0, mean(x_data), 1.0, mean(x_data), 1.0]
+    )
 end
 
 # ╔═╡ 7140dc51-55ca-437a-a6da-8812ffc35332
@@ -526,7 +528,8 @@ kde_curve_fit = let
     x_data = testset_kde.x
     LsqFit.curve_fit(
         modelfunc, testset_kde.x, testset_kde.density,
-        [1.0, mean(x_data), 1.0, mean(x_data), 1.0])
+        [1.0, mean(x_data), 1.0, mean(x_data), 1.0]
+    )
 end
 
 # ╔═╡ c8a9815e-ed1b-44de-8d8b-9aee518cfe4e
@@ -545,7 +548,7 @@ end
 
 # ╔═╡ 8572d3a4-405c-438c-9dfc-0d37222eee9b
 let fig = Figure()
-    ax = Axis(fig[1,1], xminorgridvisible = true, yminorgridvisible = true)
+    ax = Axis(fig[1, 1], xminorgridvisible = true, yminorgridvisible = true)
     ##stephist!(ax, testset; bins, normalization = :pdf)
     plot!(ax, testset_kde, label = "kde")
     xplt = range(extrema(testset)..., length = 1000)
@@ -572,10 +575,11 @@ Value of proton momentum at slice: 10^$(log_p_nat_at_slice_p) _m_ₚ_c_
 let df = CR_p_gdf_momentum[proton_momentum_index]
     fig = Figure()
     ax = Axis(
-        fig[1,1];
+        fig[1, 1];
         xlabel = "log(dN/dp)", ylabel = "pdf",
         title = "Histogram of protons dN/dp at p = 10^$log_p_nat_at_slice_p mₚc",
-        axis_properties...)
+        axis_properties...
+    )
 
     if do_plot_pf
         N = df.log_dNdp_cr_pf |> skipmissing |> collect
@@ -613,10 +617,11 @@ Value of electron momentum at slice: 10^$(log_p_nat_at_slice_e) *m*ₚ*c*
 let df = CR_e_gdf_momentum[electron_momentum_index]
     fig = Figure()
     ax = Axis(
-        fig[1,1];
+        fig[1, 1];
         xlabel = "log(dN/dp)", ylabel = "pdf",
         title = "Histogram of electrons dN/dp at p = 10^$log_p_nat_at_slice_e mₚc",
-        axis_properties...)
+        axis_properties...
+    )
 
     if do_plot_pf
         log_dNdp = df.log_dNdp_cr_pf |> skipmissing |> collect
@@ -697,7 +702,7 @@ end
 
 # ╔═╡ c2dc6683-0540-4802-b7f6-061d5eca7511
 """See the docstring for the `BiNormal` type (defines `λ(β)`)"""
-constrained(β::Real) = (2 + exp(-β))/(2 + 2exp(-β))
+constrained(β::Real) = (2 + exp(-β)) / (2 + 2exp(-β))
 
 # ╔═╡ 1d4910f2-c3b8-477a-a94d-1958d7cb7918
 constrained((β, μ₁, logσ₁, μ₂, logσ₂)) = (constrained(β), μ₁, exp(logσ₁), μ₂, exp(logσ₂))
@@ -778,7 +783,7 @@ mixture_model_test = fit_mom(BiNormal{eltype(testset)}, testset, solver = Optim.
 
 # ╔═╡ 25cdc9ef-8f50-4b1e-bd74-b1385d6fe8c1
 let fig = Figure()
-    ax = Axis(fig[1,1], xminorgridvisible = true, yminorgridvisible = true)
+    ax = Axis(fig[1, 1], xminorgridvisible = true, yminorgridvisible = true)
     #stephist!(ax, testset; bins, normalization = :pdf, label = "stephist")
     #plot!(ax, testset_kde, label = "KDE")
     xplt = range(extrema(testset)..., length = 1000)

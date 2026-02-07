@@ -139,6 +139,7 @@ function writeparams(filename, seed)
         println(f, seedline)
         println(f, params)
     end
+    return
 end
 
 function initdirs(seeds)
@@ -155,6 +156,7 @@ function initdirs(seeds)
             @info("Created parameter file for seed = $seed at $(pwd())")
         end
     end
+    return
 end
 
 const timefmt = "e HH:MM:SS"
@@ -169,11 +171,13 @@ function runmcprogram(dirnames)
             # run mc.exe with mc_in piped
             pipeline(
                 progpath, stdin = param_filename,
-                stdout = "logs-stdout.txt", stderr = "logs-stderr.txt") |> run
+                stdout = "logs-stdout.txt", stderr = "logs-stderr.txt"
+            ) |> run
         end
         time = Dates.format(now(), timefmt)
         @info("Ended run in $dirname ($time)")
     end
+    return
 end
 
 end

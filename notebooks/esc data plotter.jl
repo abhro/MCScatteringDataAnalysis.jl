@@ -68,8 +68,8 @@ md"""
 
 # ╔═╡ da1ab6df-120a-4afd-a532-70faaa10dcc4
 let fig = Figure()
-    ax1 = Axis(fig[1,1], title = "dN/dp, escaping, upstream")
-    ax2 = Axis(fig[2,1], title = "dN/dp, escaping, downstream", xlabel = "log(p)")
+    ax1 = Axis(fig[1, 1], title = "dN/dp, escaping, upstream")
+    ax2 = Axis(fig[2, 1], title = "dN/dp, escaping, downstream", xlabel = "log(p)")
 
     for df in groupby(escdf, [:initial_seed, :itr])
         scatter!(ax1, df.log_p_cgs, df.log_dNdp_esc_UpS_IF, label = "Upstream")

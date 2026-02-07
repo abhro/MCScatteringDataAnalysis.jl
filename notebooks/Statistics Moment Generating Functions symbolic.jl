@@ -157,7 +157,7 @@ Second moment of normal distribution around 0:
 """
 
 # ╔═╡ 78b839d0-275b-4c29-9054-e4e68df8958a
-substitute(Dt²mgf_N, t=>0)
+substitute(Dt²mgf_N, t => 0)
 
 # ╔═╡ 30ba0c5a-c448-44bd-8b4a-d442e3cc8fd6
 md"""
@@ -165,7 +165,7 @@ Second moment of normal distribution around mean:
 """
 
 # ╔═╡ 1d6f854e-4a02-4ba0-b73c-ef87a3e9382b
-substitute(Dt²cmgf_N, t=>0)
+substitute(Dt²cmgf_N, t => 0)
 
 # ╔═╡ bdcab3cd-27b3-4742-96a8-da539339c41c
 md"""
@@ -187,7 +187,7 @@ Third normal moment around 0:
 """
 
 # ╔═╡ 2a4d89fc-0e70-4113-8a22-ff2da608f32b
-substitute(Dt³mgf_N, t=>0)
+substitute(Dt³mgf_N, t => 0)
 
 # ╔═╡ 950b5f65-e3b6-47f3-9740-aedf2a02ee9f
 md"""
@@ -195,7 +195,7 @@ Third normal moment around mean:
 """
 
 # ╔═╡ 33b9f1ed-6c14-405d-b737-df2b3c7f13eb
-substitute(Dt³cmgf_N, t=>0)
+substitute(Dt³cmgf_N, t => 0)
 
 # ╔═╡ 7bb99412-4ec4-4945-9ca8-b7e3027f3068
 md"""
@@ -214,7 +214,7 @@ Fourth normal moment around 0:
 """
 
 # ╔═╡ 00f1ba0d-a0d7-47c9-b063-ecec526383d5
-substitute(Dt⁴mgf_N, t=>0)
+substitute(Dt⁴mgf_N, t => 0)
 
 # ╔═╡ 1163ee1e-1603-472d-9dea-dd0c6fb7d13a
 md"""
@@ -242,10 +242,10 @@ auxiliary variables
 """
 
 # ╔═╡ 0296cbe4-9df5-4d23-8666-f00663be923d
-N₁_subst = Dict(μ=>μ₁, σ=>σ₁);
+N₁_subst = Dict(μ => μ₁, σ => σ₁);
 
 # ╔═╡ 071b8892-b132-40b6-a238-b1a796802c13
-N₂_subst = Dict(μ=>μ₂, σ=>σ₂);
+N₂_subst = Dict(μ => μ₂, σ => σ₂);
 
 # ╔═╡ b7c6e76d-55c1-4e33-a540-dcb57c6f4436
 function cm(::Type{BiNormal}, j::Integer)
@@ -278,7 +278,7 @@ md"""
 DtM_BN = Dt(mgf_BN) |> expand_derivatives;
 
 # ╔═╡ 19a1c7da-b60e-4d16-9c59-10e98540fbd6
-const mean_binormal = substitute(DtM_BN, t=>0)
+const mean_binormal = substitute(DtM_BN, t => 0)
 
 # ╔═╡ 5b20f228-e334-44f3-8ac2-c5c6d8c6dc20
 md"""
@@ -390,7 +390,7 @@ md"""
 """
 
 # ╔═╡ f239f933-d8bc-44de-912a-fedf12101625
-((Dt^4)(mgf_BN) |> expand_derivatives |> simplify |> terms);#[[1,2,4,6,5,3]]
+((Dt^4)(mgf_BN) |> expand_derivatives |> simplify |> terms); #[[1,2,4,6,5,3]]
 
 # ╔═╡ a4625d7e-6051-4fd8-9f85-866816760d04
 Dt⁴mgf_BN = (
@@ -410,7 +410,7 @@ Fourth binormal moment around 0:
 """
 
 # ╔═╡ 91a9a42d-b323-4916-a025-87aba0988d4e
-substitute(Dt⁴mgf_BN, t=>0)
+substitute(Dt⁴mgf_BN, t => 0)
 
 # ╔═╡ 09e9c2e5-c2d1-43cd-b9f0-8474dd4d3ca7
 md"""
@@ -418,7 +418,7 @@ Fourth binormal moment around mean:
 """
 
 # ╔═╡ d6364bcd-dee0-481c-a61a-48c65654b0c1
-cm4_BN = substitute(Dt⁴cmgf_BN, t=>0) |> simplify
+cm4_BN = substitute(Dt⁴cmgf_BN, t => 0) |> simplify
 
 # ╔═╡ cce3d179-b5c9-4124-ac83-66348568cd60
 cm4_BN_terms = terms(cm4_BN)
@@ -427,7 +427,7 @@ cm4_BN_terms = terms(cm4_BN)
 cm4_BN_terms[[7,1,5,10,3,2,9,4,8,6]]
 
 # ╔═╡ a5d62918-69a2-48ee-ad5d-760d9546f475
-substitute(cm(BiNormal, 4), μ=>mean_binormal) |> simplify |> terms
+substitute(cm(BiNormal, 4), μ => mean_binormal) |> simplify |> terms
 
 # ╔═╡ c210894e-e087-4f89-ac84-516f89e919c6
 md"""
@@ -451,16 +451,16 @@ Dt⁵mgf_BN = (Dt^5)(mgf_BN) |> expand_derivatives |> simplify
 Dt⁵cmgf_BN = (Dt^5)(cmgf_BN) |> expand_derivatives |> simplify
 
 # ╔═╡ 7b774191-d658-4b64-8a7a-ea9b940feb17
-substitute(Dt⁵mgf_BN, t=>0)
+substitute(Dt⁵mgf_BN, t => 0)
 
 # ╔═╡ 32170b91-c863-4817-8c55-5fbe37024872
-cm5_BN = substitute(Dt⁵cmgf_BN, t=>0) |> simplify
+cm5_BN = substitute(Dt⁵cmgf_BN, t => 0) |> simplify
 
 # ╔═╡ 5f833a90-3b4b-43e3-9c43-1dfae492f3db
 cm5_BN |> terms
 
 # ╔═╡ 171bc4f4-0760-44ac-bf99-066e0a26eef9
-substitute(cm(BiNormal, 5), μ=>mean_binormal) |> simplify |> terms
+substitute(cm(BiNormal, 5), μ => mean_binormal) |> simplify |> terms
 
 # ╔═╡ 5e92bf1d-5481-495b-96e0-2a3096f05468
 md"""
@@ -476,7 +476,7 @@ Sixth moment around mean
 cm(BiNormal, 6)
 
 # ╔═╡ 9cadf5aa-bb63-4179-8a99-04714eb74617
-substitute(cm(BiNormal, 6), μ=>mean_binormal) |> simplify |> terms
+substitute(cm(BiNormal, 6), μ => mean_binormal) |> simplify |> terms
 
 # ╔═╡ Cell order:
 # ╟─589dae68-0c2d-4c5a-a58d-2d09f0f51c74

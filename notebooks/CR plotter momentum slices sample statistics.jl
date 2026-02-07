@@ -150,13 +150,13 @@ Define the PlutoUI binders for selecting which frames to plot
 """
 
 # ╔═╡ d6513272-7232-43e6-ac88-a58462181041
-plot_pf_binder = @bind do_plot_pf CheckBox(default=true);
+plot_pf_binder = @bind do_plot_pf CheckBox(default = true);
 
 # ╔═╡ 59be6983-6e37-4a70-8929-69176a5f807e
-plot_sf_binder = @bind do_plot_sf CheckBox(default=false);
+plot_sf_binder = @bind do_plot_sf CheckBox(default = false);
 
 # ╔═╡ 60deb76f-3efe-4e0d-b176-9f0169259dca
-plot_ISM_binder = @bind do_plot_ISM CheckBox(default=false);
+plot_ISM_binder = @bind do_plot_ISM CheckBox(default = false);
 
 # ╔═╡ 105361e9-cafd-4755-bcbd-fdcbcb07b291
 map_layer = let
@@ -181,7 +181,7 @@ map_layer = let
 end
 
 # ╔═╡ 4553a97d-6b78-4268-90de-d8bee348d3d4
-plot_electrons_binder = @bind do_plot_electrons CheckBox(default=true);
+plot_electrons_binder = @bind do_plot_electrons CheckBox(default = true);
 
 # ╔═╡ 3bf64608-0fa2-4fcb-9782-fd7a8de47bda
 md"""
@@ -190,7 +190,8 @@ md"""
 
 # ╔═╡ 70717f68-e97b-401e-bcf7-0684ade30b07
 gdf_sample_stats(statistic, gdf; column) = [
-    statistic(collect(skipmissing(df[!,column]))) for df in gdf];
+    statistic(collect(skipmissing(df[!, column]))) for df in gdf
+];
 
 # ╔═╡ c09cf00d-0a07-4159-9009-45afdb8343fb
 CR_p_mean_log_dNdp = (;
@@ -347,7 +348,7 @@ elec_p_idx = sortperm(electron_log_p_nat)
 let
     fig = Figure()
     ax = Axis(
-        fig[1,1];
+        fig[1, 1];
         title = "Sample size vs momentum slice",
         axis_properties...,
         xlabel = "log p (nat)", ylabel = "# of samples",
@@ -389,7 +390,7 @@ end
 let
     fig = Figure()
     ax = Axis(
-        fig[1,1];
+        fig[1, 1];
         title = "Sample mean vs momentum slice",
         axis_properties...,
         xlabel = "log p (nat)", ylabel = "⟨log dN/dp⟩",
@@ -431,7 +432,7 @@ end
 let
     fig = Figure()
     ax = Axis(
-        fig[1,1];
+        fig[1, 1];
         title = "Sample mean vs momentum slice",
         axis_properties...,
         xlabel = "log p (nat)", ylabel = "⟨log dN/dp⟩",
@@ -441,39 +442,39 @@ let
         means = CR_p_mean_log_dNdp.pf
         std_devs = CR_p_std_log_dNdp.pf
         lines!(ax, proton_log_p_nat, means, color = color_pf_p, label = "protons, plasma frame")
-        band!(ax, proton_log_p_nat, means+std_devs, means-std_devs, alpha = 0.4, color = color_pf_p, label = "protons, plasma frame")
+        band!(ax, proton_log_p_nat, means + std_devs, means - std_devs, alpha = 0.4, color = color_pf_p, label = "protons, plasma frame")
 
         if do_plot_electrons
             means = CR_e_mean_log_dNdp.pf
             std_devs = CR_e_std_log_dNdp.pf
             lines!(ax, electron_log_p_nat, means, color = color_pf_e, label = "electrons, plasma frame")
-            band!(ax, electron_log_p_nat, means+std_devs, means-std_devs, alpha = 0.4, color = color_pf_e, label = "electrons, plasma frame")
+            band!(ax, electron_log_p_nat, means + std_devs, means - std_devs, alpha = 0.4, color = color_pf_e, label = "electrons, plasma frame")
         end
     end
     if do_plot_sf
         means = CR_p_mean_log_dNdp.sf
         std_devs = CR_p_std_log_dNdp.sf
         lines!(ax, proton_log_p_nat, means, color = color_sf_p, label = "protons, shock frame")
-        band!(ax, proton_log_p_nat, means+std_devs, means-std_devs, alpha = 0.4, color = color_sf_p, label = "protons, shock frame")
+        band!(ax, proton_log_p_nat, means + std_devs, means - std_devs, alpha = 0.4, color = color_sf_p, label = "protons, shock frame")
 
         if do_plot_electrons
             means = CR_e_mean_log_dNdp.sf
             std_devs = CR_e_std_log_dNdp.sf
             lines!(ax, electron_log_p_nat, means, color = color_sf_e, label = "electrons, shock frame")
-            band!(ax, electron_log_p_nat, means+std_devs, means-std_devs, alpha = 0.4, color = color_sf_e, label = "electrons, shock frame")
+            band!(ax, electron_log_p_nat, means + std_devs, means - std_devs, alpha = 0.4, color = color_sf_e, label = "electrons, shock frame")
         end
     end
     if do_plot_ISM
         means = CR_p_mean_log_dNdp.ISM
         std_devs = CR_p_std_log_dNdp.ISM
         lines!(ax, proton_log_p_nat, means, color = color_ISM_p, label = "protons, ISM frame")
-        band!(ax, proton_log_p_nat, means+std_devs, means-std_devs, alpha = 0.4, color = color_ISM_p, label = "protons, ISM frame")
+        band!(ax, proton_log_p_nat, means + std_devs, means - std_devs, alpha = 0.4, color = color_ISM_p, label = "protons, ISM frame")
 
         if do_plot_electrons
             means = CR_e_mean_log_dNdp.ISM
             std_devs = CR_e_std_log_dNdp.ISM
             lines!(ax, electron_log_p_nat, means, color = color_ISM_e, label = "electrons, ISM frame")
-            band!(ax, electron_log_p_nat, means+std_devs, means-std_devs, alpha = 0.4, color = color_ISM_e, label = "electrons, ISM frame")
+            band!(ax, electron_log_p_nat, means + std_devs, means - std_devs, alpha = 0.4, color = color_ISM_e, label = "electrons, ISM frame")
         end
     end
     axislegend(ax, framevisible = false, merge = true)
@@ -485,7 +486,7 @@ end
 let
     fig = Figure()
     ax = Axis(
-        fig[1,1];
+        fig[1, 1];
         title = "Sample standard deviation vs momentum slice",
         axis_properties...,
         xlabel = "log p (nat)", ylabel = "σ",
@@ -493,12 +494,16 @@ let
     )
     markersize = 4
 
-    scatterlines!(ax, proton_log_p_nat, CR_p_std_log_dNdp.pf;
-                  color = color_pf_p, label = "protons, plasma frame", markersize)
+    scatterlines!(
+        ax, proton_log_p_nat, CR_p_std_log_dNdp.pf;
+        color = color_pf_p, label = "protons, plasma frame", markersize
+    )
 
     if do_plot_electrons
-        scatterlines!(ax, electron_log_p_nat, CR_e_std_log_dNdp.pf;
-                      color = color_pf_e, label = "electrons, plasma frame", markersize)
+        scatterlines!(
+            ax, electron_log_p_nat, CR_e_std_log_dNdp.pf;
+            color = color_pf_e, label = "electrons, plasma frame", markersize
+        )
     end
 
     axislegend(ax, position = :lt, framevisible = false)
@@ -510,18 +515,22 @@ end
 let
     fig = Figure()
     ax = Axis(
-        fig[1,1];
+        fig[1, 1];
         title = "Sample skewness vs momentum slice",
         axis_properties...,
         xlabel = "log p (nat)", ylabel = "γ",
         #yscale = log10,
     )
 
-    scatterlines!(ax, proton_log_p_nat, gdf_sample_stats(skewness, CR_p_gdf_momentum; column = :log_dNdp_cr_pf);
-                  color = color_pf_p, label = "protons, plasma frame", markersize)
+    scatterlines!(
+        ax, proton_log_p_nat, gdf_sample_stats(skewness, CR_p_gdf_momentum; column = :log_dNdp_cr_pf);
+        color = color_pf_p, label = "protons, plasma frame", markersize
+    )
     if do_plot_electrons
-        scatterlines!(ax, electron_log_p_nat, gdf_sample_stats(skewness, CR_e_gdf_momentum; column = :log_dNdp_cr_pf);
-                      color = color_pf_e, label = "electrons, plasma frame", markersize)
+        scatterlines!(
+            ax, electron_log_p_nat, gdf_sample_stats(skewness, CR_e_gdf_momentum; column = :log_dNdp_cr_pf);
+            color = color_pf_e, label = "electrons, plasma frame", markersize
+        )
     end
 
     axislegend(ax, position = :lb, framevisible = false)
@@ -533,18 +542,22 @@ end
 let
     fig = Figure()
     ax = Axis(
-        fig[1,1];
+        fig[1, 1];
         title = "Sample kurtosis vs momentum slice",
         axis_properties...,
         xlabel = "log p (nat)", ylabel = "Kurtosis",
         #yscale = log10,
     )
 
-    scatterlines!(ax, proton_log_p_nat, gdf_sample_stats(kurtosis, CR_p_gdf_momentum; column = :log_dNdp_cr_pf);
-                  color = color_pf_p, label = "protons, plasma frame", markersize)
+    scatterlines!(
+        ax, proton_log_p_nat, gdf_sample_stats(kurtosis, CR_p_gdf_momentum; column = :log_dNdp_cr_pf);
+        color = color_pf_p, label = "protons, plasma frame", markersize
+    )
     if do_plot_electrons
-        scatterlines!(ax, electron_log_p_nat, gdf_sample_stats(kurtosis, CR_e_gdf_momentum; column = :log_dNdp_cr_pf);
-                      color = color_pf_e, label = "electrons, plasma frame", markersize)
+        scatterlines!(
+            ax, electron_log_p_nat, gdf_sample_stats(kurtosis, CR_e_gdf_momentum; column = :log_dNdp_cr_pf);
+            color = color_pf_e, label = "electrons, plasma frame", markersize
+        )
     end
 
     axislegend(ax, position = :lt, framevisible = false)

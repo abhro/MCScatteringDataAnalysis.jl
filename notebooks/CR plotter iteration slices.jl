@@ -167,13 +167,13 @@ Define controllers for which iterations to plot and which frames to plot withni 
 """
 
 # ╔═╡ 1abc4941-d902-450d-9694-aee830e6301d
-plot_pf_binder = @bind do_plot_pf  CheckBox(default=true);
+plot_pf_binder = @bind do_plot_pf  CheckBox(default = true);
 
 # ╔═╡ de79813e-1d8d-45c0-b291-203b7f19f23e
-plot_sf_binder = @bind do_plot_sf  CheckBox(default=false);
+plot_sf_binder = @bind do_plot_sf  CheckBox(default = false);
 
 # ╔═╡ c02fd290-c706-45a4-b963-c184d3bd6b2f
-plot_ISM_binder = @bind do_plot_ISM CheckBox(default=false);
+plot_ISM_binder = @bind do_plot_ISM CheckBox(default = false);
 
 # ╔═╡ 3fccf366-bf6d-4c7a-a3d1-916b8f13afd3
 map_layer = let
@@ -183,7 +183,7 @@ map_layer = let
     sf_map = mapping(x_map, :log_dNdp_cr_sf => y_label, color = direct("shock frame"))
     ISM_map = mapping(x_map, :log_dNdp_cr_ISM => y_label, color = direct("ISM frame"))
 
-    do_plot_pf*pf_map + do_plot_sf*sf_map + do_plot_ISM*ISM_map
+    do_plot_pf * pf_map + do_plot_sf * sf_map + do_plot_ISM * ISM_map
 end;
 
 # ╔═╡ d9b28dbe-b3d6-47d6-91c9-21b9350d5069
@@ -238,8 +238,8 @@ let fig = Figure(), df = CR_p_gdf_iter[plot_iter]
     # transform our data (`map_layer`), and how to present the data (`visual_layer`).
     spec = data(df) * map_layer * visual_layer
     title = "dN/dp of Cosmic rays (protons), iteration $plot_iter"
-    plt = draw!(fig[1,1], spec, axis = (; title, axis_properties...))
-    legend!(fig[1,1], plt; legend_properties...)
+    plt = draw!(fig[1, 1], spec, axis = (; title, axis_properties...))
+    legend!(fig[1, 1], plt; legend_properties...)
     fig
 end
 
@@ -247,8 +247,8 @@ end
 let fig = Figure(), df = CR_e_gdf_iter[plot_iter]
     spec = data(df) * map_layer * visual_layer
     title = "dN/dp of Cosmic rays (electrons), iteration $plot_iter"
-    plt = draw!(fig[1,1], spec, axis = (; title, axis_properties...))
-    legend!(fig[1,1], plt; legend_properties...)
+    plt = draw!(fig[1, 1], spec, axis = (; title, axis_properties...))
+    legend!(fig[1, 1], plt; legend_properties...)
     fig
 end
 
@@ -276,7 +276,7 @@ Create an AlgebraOfGraphics layer which transforms the ``\log(dN/dp)`` column to
     sf_map = mapping(x_map, (:log_p_nat, :log_dNdp_cr_sf) => flatten_log_dNdp => y_label, color = direct("shock frame"))
     ISM_map = mapping(x_map, (:log_p_nat, :log_dNdp_cr_ISM) => flatten_log_dNdp => y_label, color = direct("ISM frame"))
 
-    do_plot_pf*pf_map + do_plot_sf*sf_map + do_plot_ISM*ISM_map
+    do_plot_pf * pf_map + do_plot_sf * sf_map + do_plot_ISM * ISM_map
 end
 
 # ╔═╡ b352849e-eca0-4ac5-acbe-9f48d0507f38
@@ -297,8 +297,8 @@ Choose which frames to plot:
 let fig = Figure()
     spec = data(CR_p_gdf_iter[plot_iter]) * σ_map_layer * visual_layer
     title = "dN/dp of Cosmic rays (protons), iteration $plot_iter"
-    plt = draw!(fig[1,1], spec; axis = (; title, axis_properties...))
-    legend!(fig[1,1], plt; legend_properties..., halign = :center, valign = :bottom)
+    plt = draw!(fig[1, 1], spec; axis = (; title, axis_properties...))
+    legend!(fig[1, 1], plt; legend_properties..., halign = :center, valign = :bottom)
 
     ax = only(plt).axis # this is stupid
     hlines!(ax, 57.8, linewidth = 0.5)
@@ -310,8 +310,8 @@ end
 let fig = Figure()
     spec = data(CR_e_gdf_iter[plot_iter]) * σ_map_layer * visual_layer
     title = "dN/dp of Cosmic rays (electrons), iteration $plot_iter"
-    plt = draw!(fig[1,1], spec; axis = (; title, axis_properties...))
-    legend!(fig[1,1], plt; legend_properties..., halign = :center, valign = :bottom)
+    plt = draw!(fig[1, 1], spec; axis = (; title, axis_properties...))
+    legend!(fig[1, 1], plt; legend_properties..., halign = :center, valign = :bottom)
 
     ax = only(plt).axis # this is stupid
     hlines!(ax, 56.5, linewidth = 0.5)
@@ -330,14 +330,15 @@ proton_iterations = 5620:5630;
 # ╔═╡ 6c07e039-2575-49a6-a50d-531c40ee7965
 let fig = Figure()
     ax = Axis(
-        fig[1,1];
+        fig[1, 1];
         title = "dN/dp of Cosmic rays (protons)",
         xlabel = "log(p) (nat)", ylabel = "log(dN/dp) + σ log(p)",
-        axis_properties...)
+        axis_properties...
+    )
 
     for (i, dfp) in enumerate(CR_p_gdf_iter[proton_iterations])
         log_p, log_dNdp = dfp.log_p_nat, dfp.log_dNdp_cr_pf
-        scatterlines!(ax, log_p, log_dNdp + σ*log_p, label = "plasma frame (iter $i)"; markersize)
+        scatterlines!(ax, log_p, log_dNdp + σ * log_p, label = "plasma frame (iter $i)"; markersize)
     end
 
     xlims!(ax, 2, 5)
@@ -351,14 +352,15 @@ electron_iterations = 5775:5779;
 # ╔═╡ 1f35f220-7739-4097-b51d-0ab6000be247
 let fig = Figure()
     ax = Axis(
-        fig[1,1];
+        fig[1, 1];
         title = "dN/dp of Cosmic rays (electrons)",
         xlabel = "log(p) (nat)", ylabel = "log(dN/dp) + σ log(p)",
-        axis_properties...)
+        axis_properties...
+    )
 
     for (i, dfe) in enumerate(CR_e_gdf_iter[electron_iterations])
         log_p, log_dNdp = dfe.log_p_nat, dfe.log_dNdp_cr_pf
-        scatterlines!(ax, log_p, log_dNdp + σ*log_p, label = "plasma frame (iter $i)"; markersize)
+        scatterlines!(ax, log_p, log_dNdp + σ * log_p, label = "plasma frame (iter $i)"; markersize)
     end
 
     xlims!(ax, -0.3, 5)
@@ -369,10 +371,11 @@ end
 # ╔═╡ 5d03370e-5507-41c1-94a6-24c3b5c5e9c0
 let fig = Figure()
     ax = Axis(
-        fig[1,1];
+        fig[1, 1];
         title = "Flux of Cosmic rays",
         xlabel = "log(p) (mₚc)", ylabel = "log(dN/dp)",
-        axis_properties...)
+        axis_properties...
+    )
 
     for (i, dfp) in enumerate(CR_p_gdf_iter[proton_iterations])
         log_p, log_dNdp = dfp.log_p_nat, dfp.log_dNdp_cr_pf

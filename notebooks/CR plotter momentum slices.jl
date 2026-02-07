@@ -185,13 +185,13 @@ Define the PlutoUI binders for selecting which frames to plot
 """
 
 # ╔═╡ d6513272-7232-43e6-ac88-a58462181041
-plot_pf_binder = @bind do_plot_pf CheckBox(default=true);
+plot_pf_binder = @bind do_plot_pf CheckBox(default = true);
 
 # ╔═╡ 59be6983-6e37-4a70-8929-69176a5f807e
-plot_sf_binder = @bind do_plot_sf CheckBox(default=false);
+plot_sf_binder = @bind do_plot_sf CheckBox(default = false);
 
 # ╔═╡ 60deb76f-3efe-4e0d-b176-9f0169259dca
-plot_ISM_binder = @bind do_plot_ISM CheckBox(default=false);
+plot_ISM_binder = @bind do_plot_ISM CheckBox(default = false);
 
 # ╔═╡ 105361e9-cafd-4755-bcbd-fdcbcb07b291
 map_layer = let
@@ -216,7 +216,7 @@ map_layer = let
 end
 
 # ╔═╡ 4553a97d-6b78-4268-90de-d8bee348d3d4
-plot_electrons_binder = @bind do_plot_electrons CheckBox(default=true);
+plot_electrons_binder = @bind do_plot_electrons CheckBox(default = true);
 
 # ╔═╡ ce8b1307-dc78-463b-9f41-04fe5dded525
 md"""
@@ -241,7 +241,6 @@ CR_p_gdf_momentum[proton_momentum_index]
 md"""
 Proton momentum slice to plot (index): $proton_index_binder (min: $(minimum(idx_CR_p_gdf)), max: $(maximum(idx_CR_p_gdf)))
 """
-
 
 
 # ╔═╡ 7be1e6da-0eb9-45e5-a4f9-bb6deedc3def
@@ -273,7 +272,7 @@ md"""
 """
 
 # ╔═╡ 29ec59ad-0e22-462a-ab6d-2065a56fc001
-x, y = get_hist_curve(log_dNdp; nbins=bins)
+x, y = get_hist_curve(log_dNdp; nbins = bins)
 
 # ╔═╡ 6cb898b3-98c5-4f3a-8d77-3deef7cf5358
 md"""
@@ -351,7 +350,7 @@ Approach it like curve-fitting
 """
 
 # ╔═╡ f2fe3844-2be8-4da6-9656-40312304556b
-normal_distrib_protons_from_curves = fitdistributions(v -> fit_dist_to_histogram(Normal, v; nbins=bins), CR_p_gdf_momentum)
+normal_distrib_protons_from_curves = fitdistributions(v -> fit_dist_to_histogram(Normal, v; nbins = bins), CR_p_gdf_momentum)
 
 # ╔═╡ b0d555b3-5087-4405-8343-ce304d482ca9
 fitted_dist_curve = normal_distrib_protons_from_curves.pf[proton_momentum_index]
@@ -363,7 +362,7 @@ SSE_hist(log_dNdp, fitted_dist_curve)
 sum(logpdf.(fitted_dist_curve, log_dNdp))
 
 # ╔═╡ 97291776-74f0-428a-ab4f-3c498b630000
-normal_distrib_electrons_from_curves = fitdistributions(v -> fit_dist_to_histogram(Normal, v; nbins=bins), CR_e_gdf_momentum)
+normal_distrib_electrons_from_curves = fitdistributions(v -> fit_dist_to_histogram(Normal, v; nbins = bins), CR_e_gdf_momentum)
 
 # ╔═╡ 452c9b2f-7138-4310-b0c6-df2be7ab8c76
 md"""
@@ -536,10 +535,11 @@ Value of proton momentum at current slice: log(*p*/*m*ₚ*c*) = $log_p_nat_at_sl
 let df = CR_p_gdf_momentum[proton_momentum_index], distribs = normal_distrib_protons
     fig = Figure()
     ax = Axis(
-        fig[1,1];
-        xlabel = "log(dN/dp)", ylabel = "pdf",# yscale = log10,
+        fig[1, 1];
+        xlabel = "log(dN/dp)", ylabel = "pdf", # yscale = log10,
         title = "Histogram of protons dN/dp at log p = $log_p_nat_at_slice (mₚc)",
-        axis_properties...)
+        axis_properties...
+    )
 
     if do_plot_pf
         log_dNdp = df.log_dNdp_cr_pf |> skipmissing |> collect
@@ -588,14 +588,15 @@ let
     # bins = 200
     fig = Figure()
     ax = Axis(
-        fig[1,1];
+        fig[1, 1];
         xlabel = "log(dN/dp)", ylabel = "pdf",
         title = "Truncated Histogram of protons dN/dp at log p = $log_p_nat_at_slice (mₚc)",
-        axis_properties...)
+        axis_properties...
+    )
 
     log_dNdp = log_dNdp_cur_trunc
     isempty(log_dNdp) && error("Not the correct momentum slice")
-    x, y = get_hist_curve(log_dNdp; nbins=bins)
+    x, y = get_hist_curve(log_dNdp; nbins = bins)
     # lines!(ax, x, y, label = "bin-centered \"histogram\"", linewidth = 0.5)
     stephist!(ax, log_dNdp, label = "data"; bins, normalization, color = :teal, linewidth = 0.5)
     distrib = fitdistribution(Normal, allowmissing(log_dNdp_cur_trunc))
@@ -616,14 +617,15 @@ let
     # bins = 200
     fig = Figure()
     ax = Axis(
-        fig[1,1];
+        fig[1, 1];
         xlabel = "log(dN/dp)", ylabel = "pdf",
         title = "Histogram (left-tail) of protons dN/dp at log p = $log_p_nat_at_slice (mₚc)",
-        axis_properties...)
+        axis_properties...
+    )
 
     log_dNdp = log_dNdp_cur_lowtail
     isempty(log_dNdp) && error("Not the correct momentum slice")
-    x, y = get_hist_curve(log_dNdp; nbins=bins)
+    x, y = get_hist_curve(log_dNdp; nbins = bins)
     # lines!(ax, x, y, label = "bin-centered \"histogram\"", linewidth = 0.5)
     stephist!(ax, log_dNdp, label = "data"; bins, normalization, color = :teal, linewidth = 0.5)
     # lines!(ax, x, fitted_dist_MLE, label = "MLE fit dist", linewidth = 0.5)
@@ -637,14 +639,15 @@ let
     # bins = 200
     fig = Figure()
     ax = Axis(
-        fig[1,1];
+        fig[1, 1];
         xlabel = "log(dN/dp)", ylabel = "pdf",
         title = "Histogram (right-tail) of protons dN/dp at log p = $log_p_nat_at_slice (mₚc)",
-        axis_properties...)
+        axis_properties...
+    )
 
     log_dNdp = log_dNdp_cur_hightail
     isempty(log_dNdp) && error("Not the correct momentum slice")
-    x, y = get_hist_curve(log_dNdp; nbins=bins)
+    x, y = get_hist_curve(log_dNdp; nbins = bins)
     # lines!(ax, x, y, label = "bin-centered \"histogram\"", linewidth = 0.5)
     stephist!(ax, log_dNdp, label = "data"; bins, normalization, color = :teal, linewidth = 0.5)
     # distrib = fitdistribution(Normal, allowmissing(log_dNdp_cur_trunc))
@@ -660,10 +663,11 @@ end
 let
     fig = Figure()
     ax = Axis(
-        fig[1,1];
+        fig[1, 1];
         xlabel = "log(dN/dp)", ylabel = "pdf",
         title = "Histogram of protons dN/dp at log p = $log_p_nat_at_slice (mₚc)",
-        axis_properties...)
+        axis_properties...
+    )
 
     plot!(ax, specific_hist_fits[proton_momentum_index], label = "data"; color = :teal)
 
@@ -690,10 +694,11 @@ Value of electron momentum at current slice: log(*p*/*m*ₚ*c*) = $log_p_nat_at_
 let df = CR_e_gdf_momentum[electron_momentum_index], distribs = normal_distrib_electrons
     fig = Figure()
     ax = Axis(
-        fig[1,1];
+        fig[1, 1];
         xlabel = "log(dN/dp)", ylabel = "pdf",
         title = "Histogram of electrons dN/dp at log p = $log_p_nat_at_slice_e (mₚc)",
-        axis_properties...)
+        axis_properties...
+    )
 
     if do_plot_pf
         log_dNdp = df.log_dNdp_cr_pf |> skipmissing |> collect
@@ -737,11 +742,13 @@ end
 # ╔═╡ 7534104f-885d-48c5-8ae0-ddae56fcd86d
 let
     fig = Figure()
-    ax = Axis(fig[1,1];
-              yscale = log10,
-              axis_properties...,
-              title = "Distribution agreement curve",
-              xlabel = "log p (nat)", ylabel = "Bhattacharya distance")
+    ax = Axis(
+        fig[1, 1];
+        yscale = log10,
+        axis_properties...,
+        title = "Distribution agreement curve",
+        xlabel = "log p (nat)", ylabel = "Bhattacharya distance"
+    )
     scatterlines!(ax, proton_log_p_nat, proton_distances; label = "protons, plasma frame", markersize)
     scatterlines!(ax, electron_log_p_nat, electron_distances; label = "electrons, plasma frame", markersize)
     axislegend(ax, position = :ct)
@@ -752,7 +759,7 @@ end
 let
     fig = Figure()
     ax = Axis(
-        fig[1,1];
+        fig[1, 1];
         title = "Root-Sum-of-Squared-Errors vs momentum slice",
         axis_properties...,
         xminorticksvisible = true, yminorticksvisible = true,
@@ -776,7 +783,7 @@ end
 let
     fig = Figure()
     ax = Axis(
-        fig[1,1];
+        fig[1, 1];
         title = "Anderson–Darling p-value vs momentum slice",
         axis_properties...,
         xlabel = "log p (nat)",
@@ -795,7 +802,7 @@ end
 let
     fig = Figure()
     ax = Axis(
-        fig[1,1];
+        fig[1, 1];
         title = "Shapiro–Wilk p-value vs momentum slice",
         axis_properties...,
         xlabel = "log p (nat)",
@@ -814,7 +821,7 @@ end
 let
     fig = Figure()
     ax = Axis(
-        fig[1,1];
+        fig[1, 1];
         title = "Kolmogorov–Smirnov p-value vs momentum slice",
         axis_properties...,
         xlabel = "log p (nat)",

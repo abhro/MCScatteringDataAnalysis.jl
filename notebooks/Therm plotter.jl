@@ -168,16 +168,16 @@ Define controllers for which iterations to plot and which frames to plot withni 
 """
 
 # ╔═╡ 2e5e7272-0313-471d-8987-de64f79b84b0
-plot_pf_binder = @bind do_plot_pf  CheckBox(default=true);
+plot_pf_binder = @bind do_plot_pf  CheckBox(default = true);
 
 # ╔═╡ 8c12b2c3-b5e3-4145-97b8-bba2ab5f03fc
-plot_sf_binder = @bind do_plot_sf  CheckBox(default=false);
+plot_sf_binder = @bind do_plot_sf  CheckBox(default = false);
 
 # ╔═╡ dc4d6726-25e1-4aeb-9029-fa88282667db
-plot_ISM_binder = @bind do_plot_ISM CheckBox(default=false);
+plot_ISM_binder = @bind do_plot_ISM CheckBox(default = false);
 
 # ╔═╡ 3b1ecd57-8f9f-40f7-818c-651a8a320f6f
-map_layer = do_plot_pf*pf_map + do_plot_sf*sf_map + do_plot_ISM*ISM_map;
+map_layer = do_plot_pf * pf_map + do_plot_sf * sf_map + do_plot_ISM * ISM_map;
 
 # ╔═╡ 6aae8a53-9e2a-4c54-b5da-af9452fa2d5b
 idx_therm_p_gdf = axes(therm_p_gdf_iter, 1);
@@ -238,8 +238,8 @@ let fig = Figure(), df = therm_p_gdf_iter[plot_iter]
     # transform our data (`map_layer`), and how to present the data (`visual_layer`).
     spec = data(df) * map_layer * (visual_layer + visual(Scatter; markersize))
     title = "dN/dp of thermal particles (protons), iteration $plot_iter"
-    plt = draw!(fig[1,1], spec, axis = (; title, axis_properties...))
-    legend!(fig[1,1], plt; legend_properties...)
+    plt = draw!(fig[1, 1], spec, axis = (; title, axis_properties...))
+    legend!(fig[1, 1], plt; legend_properties...)
     fig
 end
 

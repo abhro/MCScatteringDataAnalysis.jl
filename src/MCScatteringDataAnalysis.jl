@@ -20,7 +20,7 @@ Helper datatype for parsing text data created by the mc\\_cr program.
     uses_sentinels::Bool
 end
 ColumnSpecification(colname, eltype; uses_sentinels = false) =
-        ColumnSpecification(colname, eltype, uses_sentinels)
+    ColumnSpecification(colname, eltype, uses_sentinels)
 colname(cs::ColumnSpecification) = cs.colname
 name(cs::ColumnSpecification) = cs.colname
 Base.eltype(cs::ColumnSpecification) = cs.eltype
@@ -38,7 +38,7 @@ export dehistogram
 include("batch-utils.jl")
 export BatchProcessingUtilities
 
-sse(ŷ, y) = sum((y - ŷ).^2)
+sse(ŷ, y) = sum((y - ŷ) .^ 2)
 export sse
 
 include("fitters.jl")
@@ -99,8 +99,10 @@ The `pdf` is evaluated at the center of each bin.
 - `bias`: Offset term used when calculating the relative error to prevent division by
   small floating point numbers. Defaults to `eps(T)` where `T` is the type of a data point.
 """
-function SSE_hist(occurrences::AbstractVector{T}, dist;
-                  nbins = 90, relative = true, bias = eps(T)) where {T}
+function SSE_hist(
+        occurrences::AbstractVector{T}, dist;
+        nbins = 90, relative = true, bias = eps(T)
+    ) where {T}
     occurrences = collect(skipmissing(occurrences))
     x, hist_y = get_hist_curve(occurrences; nbins)
     dist_y = pdf.(dist, x)
@@ -119,7 +121,7 @@ export SSE_hist
 
 Return array of each element being the center (mean) of adjacent elements
 """
-centers(v) = (v[begin:end-1] + v[begin+1:end])/2;
+centers(v) = (v[begin:(end - 1)] + v[(begin + 1):end]) / 2;
 export centers
 
 """
@@ -133,7 +135,7 @@ x-values as the bin centers, and the y-values as the value of the pdf at the bin
 - `y`: pdf at each `x`.
 """
 function get_hist_curve(occurrences; nbins)
-    histogram = normalize(StatsBase.fit(Histogram, occurrences; nbins); mode=:pdf)
+    histogram = normalize(StatsBase.fit(Histogram, occurrences; nbins); mode = :pdf)
 
     x = histogram.edges |> only |> centers
     hist_y = histogram.weights
@@ -157,7 +159,7 @@ Get Shapiro―Wilk scores for a `GroupedDataFrame` `gdf`.
 """
 function get_sw_scores(gdf; col)
     n = length(gdf)
-    arr = Vector{Union{ShapiroWilkTest,Missing}}(undef, n)
+    arr = Vector{Union{ShapiroWilkTest, Missing}}(undef, n)
     for (i, df) in enumerate(gdf)
         vec = df[!, col] |> skipmissing |> collect
         if length(vec) < 3

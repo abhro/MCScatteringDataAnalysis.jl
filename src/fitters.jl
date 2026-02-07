@@ -1,4 +1,4 @@
-function fit_dist_to_histogram(::Type{BiNormal}, v::AbstractVector{T}; params, nbins = 150) where T
+function fit_dist_to_histogram(::Type{BiNormal}, v::AbstractVector{T}; params, nbins = 150) where {T}
     v = collect(skipmissing(v))
     if isempty(v)
         return (missing, missing)
@@ -44,7 +44,7 @@ function fit_dist_to_histogram(::Type{BiNormal}, v::AbstractVector{T}; params, n
     return (best_model, best_fit_score)
 end
 
-function fit_dist_to_histogram(::Type{Normal}, v::AbstractVector{T}; nbins = 150) where T
+function fit_dist_to_histogram(::Type{Normal}, v::AbstractVector{T}; nbins = 150) where {T}
     v = collect(skipmissing(v))
     if isempty(v)
         return missing
@@ -61,15 +61,16 @@ function fit_dist_to_histogram(::Type{Normal}, v::AbstractVector{T}; nbins = 150
     function ∇model(t, (μ, σ))
         f = model(t, (μ, σ))
         J = zeros(length(t), 2)
-        J[:,1] .= f .* (t .- μ)/σ^2            # ∂f/∂μ
-        J[:,2] .= f .* ((t .- μ)/σ^3 .- 1/σ)   # ∂f/∂σ
+        z = (t .- μ) / σ^2
+        J[:, 1] .= f .* z            # ∂f/∂μ
+        J[:, 2] .= f/σ .* (z .- 1)   # ∂f/∂σ
         return J
     end
 
     # Make initial guesses as good as they can be,
     # i.e., the actual sample mean and standard deviation
     μ₀ = mean(v)
-    σ₀ = std(v, mean=μ₀)
+    σ₀ = std(v, mean = μ₀)
 
     fit = curve_fit(model, ∇model, x, y, [μ₀, σ₀])
 
@@ -84,7 +85,7 @@ end
 Wrapper around `Distributions.fit`, but it also allows `x` to contain `missing` values.
 If `x` contains _only_ missing values, or is empty, `missing` is returned.
 """
-function fitdistribution(DT::Type{<:Distribution}, x::AbstractVector{Union{Missing,T}}) where {T}
+function fitdistribution(DT::Type{<:Distribution}, x::AbstractVector{Union{Missing, T}}) where {T}
     x = collect(skipmissing(x))
     if isempty(x) # don't fit to a dataset with only `missing`s
         return missing
@@ -127,7 +128,7 @@ function fitdistributions(fitfunc, gdf::GroupedDataFrame)
     pf = Vector{Union{Set(typeof.(pf))...}}(pf)
     ISM = Vector{Union{Set(typeof.(ISM))...}}(ISM)
 
-    (; sf, pf, ISM)
+    return (; sf, pf, ISM)
 end
 
 """
@@ -159,7 +160,7 @@ Like `fit(Histogram, v, ...)`, but specify bin `width` instead of `nbins`.
 function specific_width_histogram_fits(gdf, width, col = :log_dNdp_cr_pf, normalization = :pdf)
     hists = Vector{Any}(undef, length(gdf))
     for (i, df) in enumerate(gdf)
-        v = df[!,col] |> skipmissing |> collect
+        v = df[!, col] |> skipmissing |> collect
         if length(v) < 3
             hists[i] = missing
             continue
@@ -181,5 +182,5 @@ TODO: write better docstring
 """
 function edges(v, width)
     xmin, xmax = extrema(skipmissing(v))
-    return range(xmin, xmax, step=width)
+    return range(xmin, xmax, step = width)
 end

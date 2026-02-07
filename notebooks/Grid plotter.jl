@@ -75,7 +75,7 @@ df_to_plot = grid_df_grouped[df_to_plot_index]
 # ╔═╡ 79401d93-a2b7-4dac-beed-0e52d33d7f23
 let
     fig = Figure()
-    ax = Axis(fig[1,1])
+    ax = Axis(fig[1, 1])
     lines!(ax, df_to_plot.x_grid_log, df_to_plot.pressure_tot_MC_log, label = "pressure_tot_MC_log")
     lines!(ax, df_to_plot.x_grid_log, df_to_plot.pxx_norm_log, label = "pxx_norm_log")
     lines!(ax, df_to_plot.x_grid_log, df_to_plot.en_norm_log, label = "en_norm_log")

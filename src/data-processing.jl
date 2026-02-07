@@ -70,11 +70,13 @@ end
 A DataFrame containing.... (TODO: finish writing docstring)
 """
 function read_one_file_over_all_dirs(
-    dirs::AbstractVector, filename, colspec::AbstractVector{<:ColumnSpecification};
-    tags = seeds, tagname = :initial_seed, predicate = data_row_predicate)
+        dirs::AbstractVector, filename, colspec::AbstractVector{<:ColumnSpecification};
+        tags = seeds, tagname = :initial_seed, predicate = data_row_predicate
+    )
 
-    length(dirs) == length(tags) || throw(DimensionMismatch(
-        "number of directories and tags must be equal"))
+    if length(dirs) != length(tags)
+        throw(DimensionMismatch("number of directories and tags must be equal"))
+    end
 
     bigdf = DataFrame()
 
@@ -88,7 +90,7 @@ function read_one_file_over_all_dirs(
         # tag each thing with the same tag, based on which directory they're in
         # so each df here has the same value in all rows, but it'll be different
         # for the next iteration
-        insertcols!(df, 1, tagname=>tag)
+        insertcols!(df, 1, tagname => tag)
 
         append!(bigdf, df)
     end
@@ -117,12 +119,14 @@ A `DataFrame` containing columns as specified in `colspec`.
 It also has two extra columns as specified by `dirtagname` and `filetagname`.
 """
 function read_multiple_file_over_all_dirs(
-    dirs::AbstractVector, filename_pattern, colspec::AbstractVector{<:ColumnSpecification};
-    dirtags = seeds, filetags, dirtagname = :initial_seed, filetagname = :iteration,
-    predicate = data_row_predicate)
+        dirs::AbstractVector, filename_pattern, colspec::AbstractVector{<:ColumnSpecification};
+        dirtags = seeds, filetags, dirtagname = :initial_seed, filetagname = :iteration,
+        predicate = data_row_predicate
+    )
 
-    length(dirs) == length(dirtags) || throw(DimensionMismatch(
-        "number of directories and directory tags must be equal"))
+    if length(dirs) != length(dirtags)
+        throw(DimensionMismatch("number of directories and directory tags must be equal"))
+    end
 
     bigdf = DataFrame()
 
@@ -134,9 +138,13 @@ function read_multiple_file_over_all_dirs(
         # go in to the directory first before reading multiple files
         cd(dir) do
             filenames = glob(filename_pattern) |> sort
-            length(filenames) == length(filetags) || throw(DimensionMismatch(
-                "In directory $dir: number of files must match number of file tags"
-            ))
+            if length(filenames) != length(filetags)
+                throw(
+                    DimensionMismatch(
+                        "In directory $dir: number of files must match number of file tags"
+                    )
+                )
+            end
 
             for (filetag, filename) in zip(filetags, filenames)
                 df = readdlm(filteredstream(filename; predicate), DataFrame; colspec)
@@ -160,7 +168,7 @@ function dehistogram(gdf::GroupedDataFrame)
     df_dehistogrammed = DataFrame()
     for df in gdf
         # de-histogram each of the sub-dataframes (make a copy first)
-        df_dehist = df[begin+1:2:end,:]
+        df_dehist = df[(begin + 1):2:end, :]
 
         # XXX XXX XXX XXX
         # **Need to explore `psd_mom_bounds`**, and how data repeats in adjacent cells (high/low bounds)
