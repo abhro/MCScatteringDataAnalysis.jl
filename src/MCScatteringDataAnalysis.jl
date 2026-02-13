@@ -1,8 +1,10 @@
 module MCScatteringDataAnalysis
 
-using LinearAlgebra
-using StatsBase
-using Distributions
+using LinearAlgebra: norm, normalize
+using Statistics: std, mean
+using StatsAPI: params, fit
+using StatsBase: Histogram
+using Distributions: Distribution, Normal, pdf
 using DataFrames: AbstractDataFrame, DataFrame, GroupedDataFrame, nrow
 using BiNormalDistributions: BiNormal
 using HypothesisTests: OneSampleADTest, ExactOneSampleKSTest, ShapiroWilkTest
@@ -135,7 +137,7 @@ x-values as the bin centers, and the y-values as the value of the pdf at the bin
 - `y`: pdf at each `x`.
 """
 function get_hist_curve(occurrences; nbins)
-    histogram = normalize(StatsBase.fit(Histogram, occurrences; nbins); mode = :pdf)
+    histogram = normalize(fit(Histogram, occurrences; nbins); mode = :pdf)
 
     x = histogram.edges |> only |> centers
     hist_y = histogram.weights

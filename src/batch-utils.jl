@@ -1,9 +1,9 @@
 module BatchProcessingUtilities
-using DrWatson
+using DrWatson: @quickactivate, datadir
 @quickactivate "MCScatteringDataAnalysis"
 
-using Dates
-using Format
+using Dates: Dates, now
+using Format: format
 
 const seeds = 1:1000
 

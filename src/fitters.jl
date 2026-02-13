@@ -91,7 +91,7 @@ function fitdistribution(DT::Type{<:Distribution}, x::AbstractVector{Union{Missi
         return missing
     end
 
-    return Distributions.fit(DT{T}, x)
+    return fit(DT{T}, x)
 end
 
 """
