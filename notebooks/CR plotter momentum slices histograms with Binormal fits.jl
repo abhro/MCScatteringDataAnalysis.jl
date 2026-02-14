@@ -16,12 +16,6 @@ macro bind(def, element)
     #! format: on
 end
 
-# ╔═╡ f1ee2cb0-8274-11ef-0826-f55183647219
-using DrWatson
-
-# ╔═╡ e5e0e4e2-2df1-4536-9cc5-bdcec6fc13de
-@quickactivate "MCScatteringDataAnalysis"
-
 # ╔═╡ 4c3e74c4-99d8-4d27-8787-1ea5a00e3a27
 using Revise
 
@@ -94,6 +88,19 @@ md"""
 md"""
 ## Preamble
 """
+
+# ╔═╡ 29b0ffcc-1799-491b-9853-7296c68483cf
+md"""
+!!! warning "Do not run"
+
+    The following two cells with DrWatson are commented out because the root Project.toml file no longer contain some of the packages used in ths notebook for perfomance reasons. If you need to re-run, uncomment the lines invloving `DrWatson` and `@quickactivate`, and re-add the packages to the Project.toml file.
+"""
+
+# ╔═╡ f1ee2cb0-8274-11ef-0826-f55183647219
+# using DrWatson
+
+# ╔═╡ e5e0e4e2-2df1-4536-9cc5-bdcec6fc13de
+# @quickactivate "MCScatteringDataAnalysis"
 
 # ╔═╡ cd809ca8-2cc4-435d-ab8b-b7b24fa40ed1
 md"""
@@ -202,6 +209,7 @@ pcutdf = CR_p_gdf_momentum[proton_momentum_index]
   ╠═╡ =#
 
 # ╔═╡ b88ef78f-6d6f-4b38-a9af-6da4f540f8c3
+# ╠═╡ disabled = true
 #=╠═╡
 describe(pcutdf)
   ╠═╡ =#
@@ -221,12 +229,6 @@ testset_index = 67;
 
 # ╔═╡ e0cc631f-28a1-42db-84fc-9e7dcc9387bf
 CR_p_gdf_momentum[testset_index]
-
-# ╔═╡ b63ff630-624b-4e9b-bc03-dc32fd691b05
-# ╠═╡ disabled = true
-#=╠═╡
-testset = CR_p_gdf_momentum[testset_index].log_dNdp_cr_pf |> skipmissing|> collect
-  ╠═╡ =#
 
 # ╔═╡ 96b36184-f98e-4b31-a2d5-1754bb40d84a
 filter(:log_dNdp_cr_pf => >(38.7), CR_p_gdf_momentum[testset_index])
@@ -301,10 +303,9 @@ md"""
 # ╔═╡ 86652a24-379b-4ae1-8ed2-4f6ef3035b6c
 CR_p_gdf_momentum[testset_index]
 
-# ╔═╡ f66bbb64-2415-46bf-9974-ad43d3622cb5
-testset = CR_p_gdf_momentum[testset_index].log_dNdp_cr_pf |> skipmissing |> collect
-
 # ╔═╡ cf870504-0f29-4354-9a4a-76971459aeba
+# ╠═╡ disabled = true
+#=╠═╡
 let testset = filter(>(38.68), testset)
     fig = Figure()
     ax = Axis(fig[1, 1]; axis_properties...)
@@ -314,21 +315,33 @@ let testset = filter(>(38.68), testset)
     #lines!(ax, xplt, pdf.(mixture_model_test, xplt) * 60)
     fig
 end
+  ╠═╡ =#
 
 # ╔═╡ 3596bac9-5797-40c6-a4da-cdcc1cc9a451
+# ╠═╡ disabled = true
+#=╠═╡
 testset
+  ╠═╡ =#
 
 # ╔═╡ 7e776afd-fb12-4c90-a489-966541540599
+# ╠═╡ disabled = true
+#=╠═╡
 n2_tentative = Distributions.fit(Normal, filter(>(38.7), testset))
+  ╠═╡ =#
 
 # ╔═╡ ac9a9859-cf1f-4084-b784-47315c0e18c1
+# ╠═╡ disabled = true
+#=╠═╡
 bn_tentative = BiNormal(
     0.99,
     Distributions.fit(Normal, testset),
     n2_tentative
 )
+  ╠═╡ =#
 
 # ╔═╡ 0b1c1d4f-6ffd-423b-bf9b-31b229488038
+# ╠═╡ disabled = true
+#=╠═╡
 with_theme() do
     fig = Figure()
     ax = Axis(fig[1, 1], title = "Fit after filtering out main distrib and manually adjusting λ"; axis_properties...)
@@ -339,18 +352,27 @@ with_theme() do
     axislegend(ax, framevisible = false)
     fig
 end
+  ╠═╡ =#
 
 # ╔═╡ 4eeb0f0b-311d-410b-b528-cbcb6f7490a7
+# ╠═╡ disabled = true
+#=╠═╡
 q = normalize(StatsBase.fit(StatsBase.Histogram, testset, nbins = 90), mode = :pdf)
+  ╠═╡ =#
 
 # ╔═╡ 860ad43f-8683-481e-b0d2-06194ebc1af9
+# ╠═╡ disabled = true
+#=╠═╡
 let
     ŷ = pdf.(manual_bn, centers(q.edges |> first))
     y = q.weights
     sse(ŷ, y)
 end
+  ╠═╡ =#
 
 # ╔═╡ 4d245ac7-6329-457a-970e-8a8aa23775dc
+# ╠═╡ disabled = true
+#=╠═╡
 #let
 with_theme() do
     fig = Figure()
@@ -363,32 +385,59 @@ with_theme() do
     axislegend(ax, framevisible = false)
     fig
 end
+  ╠═╡ =#
 
 # ╔═╡ bc44add8-d20f-4e67-ae68-7af945020d55
+# ╠═╡ disabled = true
+#=╠═╡
 argmax(q.weights)
+  ╠═╡ =#
 
 # ╔═╡ 6eeb6453-dee0-45eb-89ec-19b7cb2d26c1
+# ╠═╡ disabled = true
+#=╠═╡
 plot(q)
+  ╠═╡ =#
 
 # ╔═╡ bd7fa9ce-3049-44d3-844f-df048003bfc5
+# ╠═╡ disabled = true
+#=╠═╡
 q.weights |> Print
+  ╠═╡ =#
 
 # ╔═╡ 53fbfeb5-7993-453f-bd57-2d3c409ed46e
+# ╠═╡ disabled = true
+#=╠═╡
 q.edges
+  ╠═╡ =#
 
 # ╔═╡ d72cc184-01ce-440d-90e3-6977f9b8af7e
+# ╠═╡ disabled = true
+#=╠═╡
 centers(q.edges |> only)
+  ╠═╡ =#
 
 # ╔═╡ df94b5b9-959c-49b8-b0b0-d8c965c61a9b
+# ╠═╡ disabled = true
+#=╠═╡
 q.weights
+  ╠═╡ =#
 
 # ╔═╡ e6a6cbe6-d8e4-40e1-8c29-aea7703f35a9
+# ╠═╡ disabled = true
+#=╠═╡
 brute_fitted = fit_dist_to_histogram(Normal, testset; nbins = bins)
+  ╠═╡ =#
 
 # ╔═╡ a97412e6-9681-4afa-8ceb-6f37f2f6dd0b
+# ╠═╡ disabled = true
+#=╠═╡
 brute_fit_dist = first(brute_fitted)
+  ╠═╡ =#
 
 # ╔═╡ c305f828-96c5-4839-9524-6a890a5d68fa
+# ╠═╡ disabled = true
+#=╠═╡
 #let
 with_theme(Makie.theme(nothing)) do
     fig = Figure()
@@ -407,34 +456,58 @@ with_theme(Makie.theme(nothing)) do
     axislegend(ax, framevisible = false)
     fig
 end
+  ╠═╡ =#
 
 # ╔═╡ 8999b23b-4357-4655-baa6-273b218006b7
+# ╠═╡ disabled = true
+#=╠═╡
 Makie.density(testset)
+  ╠═╡ =#
 
 # ╔═╡ b822d103-e6c1-4b76-86ea-84eb84736133
+# ╠═╡ disabled = true
+#=╠═╡
 testset_kde, density_maxes = BiNormalDistributions.kdemaxes(testset, 2)
+  ╠═╡ =#
 
 # ╔═╡ dbcc47ad-952e-475b-9657-f7fd280de743
+# ╠═╡ disabled = true
+#=╠═╡
 let
     fig, ax, _ = plot(testset_kde, label = "KDE")
     plot!(ax, testset_kde.x[density_maxes.indices], density_maxes.heights, label = "modes")
     axislegend(ax)
     fig
 end
+  ╠═╡ =#
 
 # ╔═╡ d6516ed8-0a21-4509-a1b4-34f6521ab222
+# ╠═╡ disabled = true
+#=╠═╡
 testset_kde.x[density_maxes.indices]
+  ╠═╡ =#
 
 # ╔═╡ 5b7baac9-e657-4666-be4d-62233362aa09
+# ╠═╡ disabled = true
+#=╠═╡
 testset_kde.x |> length
+  ╠═╡ =#
 
 # ╔═╡ 54c75433-c9e3-4d13-863e-3a1aa51f5e3e
+# ╠═╡ disabled = true
+#=╠═╡
 testset_kde.density |> length
+  ╠═╡ =#
 
 # ╔═╡ 1360285b-8b6a-4d1c-bbb5-c6acfeddb8b6
+# ╠═╡ disabled = true
+#=╠═╡
 testset_mle_fit_distrib = fit_mle(MixtureModel([Normal(), Normal()]), testset; method = StochasticEM(MersenneTwister(2)))
+  ╠═╡ =#
 
 # ╔═╡ 788836a8-e168-4eed-b5cd-3522e43b80a6
+# ╠═╡ disabled = true
+#=╠═╡
 let fig = Figure()
     ax = Axis(fig[1, 1], xminorgridvisible = true, yminorgridvisible = true)
     ##stephist!(ax, testset; bins, normalization = :pdf, label = "stephist")
@@ -445,11 +518,17 @@ let fig = Figure()
     axislegend(ax)
     fig
 end
+  ╠═╡ =#
 
 # ╔═╡ d85e0253-c894-41c7-a255-ded58aca322e
+# ╠═╡ disabled = true
+#=╠═╡
 testset_trunc = filter(>(38.7), testset)
+  ╠═╡ =#
 
 # ╔═╡ c31984a0-5612-403e-9278-bfd16759cacd
+# ╠═╡ disabled = true
+#=╠═╡
 let
     fig = Figure()
     ax = Axis(fig[1, 1]; axis_properties...)
@@ -459,21 +538,25 @@ let
     #lines!(ax, xplt, pdf.(mixture_model_test, xplt) * 60)
     fig
 end
+  ╠═╡ =#
 
 # ╔═╡ deb75b95-e3a2-4e94-bce0-8af69754475b
-moms = moment.(Ref(testset), 1:8, 0)
-
-# ╔═╡ 2e44614c-71ce-4258-bfaa-1346fb2a1e2a
-cmoms = moment.(Ref(testset), 1:8)
-
-# ╔═╡ b98f9e53-cf5c-4422-8d41-2731cd2c57e0
 # ╠═╡ disabled = true
 #=╠═╡
-mixture_model_test = BiNormal(abs.(s.zero)...)
+moms = moment.(Ref(testset), 1:8, 0)
+  ╠═╡ =#
+
+# ╔═╡ 2e44614c-71ce-4258-bfaa-1346fb2a1e2a
+# ╠═╡ disabled = true
+#=╠═╡
+cmoms = moment.(Ref(testset), 1:8)
   ╠═╡ =#
 
 # ╔═╡ 6d9b6782-e121-4e1b-8d71-047d327f5676
+# ╠═╡ disabled = true
+#=╠═╡
 Distributions.fit_mle(BiNormal, testset)
+  ╠═╡ =#
 
 # ╔═╡ 4464b217-2736-45b2-ae55-8bc05c934359
 md"""
@@ -486,7 +569,10 @@ md"""
 """
 
 # ╔═╡ d8e08ef4-91af-44e8-a20b-098279d19427
+# ╠═╡ disabled = true
+#=╠═╡
 p = moment.(Ref(testset), 1:4, 0)
+  ╠═╡ =#
 
 # ╔═╡ 166d52da-07a2-443e-878f-98502cc1db25
 md"""
@@ -505,7 +591,10 @@ md"""
 Base.:*(x::Bool, l::AoG.Layer) = x ? l : AoG.zerolayer()
 
 # ╔═╡ 0aab1add-5285-4da7-b4eb-d1445b96b035
+# ╠═╡ disabled = true
+#=╠═╡
 brute_fit_dist.N₁ * brute_fit_dist.λ
+  ╠═╡ =#
 
 # ╔═╡ 7f0c2a67-1631-47d7-9d81-f87b44eab1c4
 function modelfunc(x, (β, μ₁, s₁, μ₂, s₂))
@@ -514,6 +603,8 @@ function modelfunc(x, (β, μ₁, s₁, μ₂, s₂))
 end
 
 # ╔═╡ 00f44bb7-7074-457c-aef8-566da755d748
+# ╠═╡ disabled = true
+#=╠═╡
 hist_curve_fit = let
     x_data = centers(q.edges |> only)
     LsqFit.curve_fit(
@@ -521,8 +612,11 @@ hist_curve_fit = let
         [1.0, mean(x_data), 1.0, mean(x_data), 1.0]
     )
 end
+  ╠═╡ =#
 
 # ╔═╡ 7140dc51-55ca-437a-a6da-8812ffc35332
+# ╠═╡ disabled = true
+#=╠═╡
 kde_curve_fit = let
     x_data = testset_kde.x
     LsqFit.curve_fit(
@@ -530,22 +624,31 @@ kde_curve_fit = let
         [1.0, mean(x_data), 1.0, mean(x_data), 1.0]
     )
 end
+  ╠═╡ =#
 
 # ╔═╡ c8a9815e-ed1b-44de-8d8b-9aee518cfe4e
+# ╠═╡ disabled = true
+#=╠═╡
 hist_curve_fit_distrib = let
     β, μ₁, s₁, μ₂, s₂ = hist_curve_fit.param
     λ = (2 + exp(-β)) / (2 + 2exp(-β))
     BiNormal(λ, μ₁, s₁^2, μ₂, s₂^2)
 end
+  ╠═╡ =#
 
 # ╔═╡ 78e6146f-74f1-4033-9a18-1e5f8cfdd8cd
+# ╠═╡ disabled = true
+#=╠═╡
 kde_curve_fit_distrib = let
     β, μ₁, s₁, μ₂, s₂ = kde_curve_fit.param
     λ = (2 + exp(-β)) / (2 + 2exp(-β))
     BiNormal(λ, μ₁, s₁^2, μ₂, s₂^2)
 end
+  ╠═╡ =#
 
 # ╔═╡ 8572d3a4-405c-438c-9dfc-0d37222eee9b
+# ╠═╡ disabled = true
+#=╠═╡
 let fig = Figure()
     ax = Axis(fig[1, 1], xminorgridvisible = true, yminorgridvisible = true)
     ##stephist!(ax, testset; bins, normalization = :pdf)
@@ -556,9 +659,52 @@ let fig = Figure()
     axislegend(ax)
     fig
 end
+  ╠═╡ =#
 
 # ╔═╡ 1c71c8ee-4ce0-4672-8afa-1d0fe46d1959
+# ╠═╡ disabled = true
+#=╠═╡
 starter = [0.5, moms[1], cmoms[2], moms[1] * 1.2, cmoms[2]]
+  ╠═╡ =#
+
+# ╔═╡ 59cb8faf-467a-4d02-9fa4-e301d01659aa
+# ╠═╡ disabled = true
+#=╠═╡
+s = nlsolve(x -> mom_residuals(x, moms), starter)
+  ╠═╡ =#
+
+# ╔═╡ 25cdc9ef-8f50-4b1e-bd74-b1385d6fe8c1
+# ╠═╡ disabled = true
+#=╠═╡
+let fig = Figure()
+    ax = Axis(fig[1, 1], xminorgridvisible = true, yminorgridvisible = true)
+    #stephist!(ax, testset; bins, normalization = :pdf, label = "stephist")
+    #plot!(ax, testset_kde, label = "KDE")
+    xplt = range(extrema(testset)..., length = 1000)
+    lines!(ax, xplt, mixture_model_test, label = "MoM fit from nlsolve")
+    #lines!(ax, xplt, pdf.(mixture_model_test, xplt))
+    axislegend(ax)
+    fig
+end
+  ╠═╡ =#
+
+# ╔═╡ 501fa36b-1ab9-44cf-8bcc-5bcd2dfd0b43
+# ╠═╡ disabled = true
+#=╠═╡
+mean(mixture_model_test)
+  ╠═╡ =#
+
+# ╔═╡ a725cea7-9d30-4d3f-90f2-0bb60b1a14d6
+# ╠═╡ disabled = true
+#=╠═╡
+quantile(mixture_model_test, 0.3)
+  ╠═╡ =#
+
+# ╔═╡ 834bf416-d123-49a5-9a1a-4dcb96d6008b
+# ╠═╡ disabled = true
+#=╠═╡
+s.zero
+  ╠═╡ =#
 
 # ╔═╡ 71404de8-f8b2-4d26-b7d7-41064cae1447
 log_p_nat_at_slice_p = keys(CR_p_gdf_momentum)[proton_momentum_index] |> values |> only;
@@ -676,12 +822,6 @@ function mom_residuals(θ, params)
     return norm(err)^2
 end
 
-# ╔═╡ 59cb8faf-467a-4d02-9fa4-e301d01659aa
-s = nlsolve(x -> mom_residuals(x, moms), starter)
-
-# ╔═╡ 834bf416-d123-49a5-9a1a-4dcb96d6008b
-s.zero
-
 # ╔═╡ f91178b5-772a-4f95-89eb-eb326db3640f
 """
     cmom_residuals(θ, params)
@@ -719,26 +859,44 @@ function probfunc(u, p)
 end
 
 # ╔═╡ cdb5fb97-da99-4958-8a7e-9c9dbbe55fe6
+# ╠═╡ disabled = true
+#=╠═╡
 prob = NonlinearProblem(probfunc, u₀, p)
+  ╠═╡ =#
 
 # ╔═╡ b4b1b2e0-7927-4fde-8984-aa5c3ebfaecd
+# ╠═╡ disabled = true
+#=╠═╡
 sciml_sol = solve(prob)
+  ╠═╡ =#
 
 # ╔═╡ bf6da895-936a-42d2-b935-c522cc192343
+# ╠═╡ disabled = true
+#=╠═╡
 sciml_sol.u
+  ╠═╡ =#
 
 # ╔═╡ 63fd27c1-a5d0-4cf4-8be1-e52edf0fc028
+# ╠═╡ disabled = true
+#=╠═╡
 sciml_sol_dist = let
     β, μ₁, logσ₁, μ₂, logσ₂ = sciml_sol.u
     λ = constrained(β)
     BiNormal(λ, μ₁, exp(logσ₁), μ₂, exp(logσ₂))
 end
+  ╠═╡ =#
 
 # ╔═╡ fcd6cf72-e16c-4758-8667-9cc09315904d
+# ╠═╡ disabled = true
+#=╠═╡
 plot(sciml_sol_dist)
+  ╠═╡ =#
 
 # ╔═╡ 85b951fd-29c2-499a-bd4a-bc08d47ab281
+# ╠═╡ disabled = true
+#=╠═╡
 BiNormalDistributions.componentpdfs(sciml_sol_dist, 3)
+  ╠═╡ =#
 
 # ╔═╡ 62b23be8-ef06-4a31-ba79-d3e8bf6b7f5a
 """
@@ -777,30 +935,34 @@ function fit_mom(::Type{BiNormal{T}}, x::AbstractVector{T}; solver = nothing) wh
     return BiNormal(sol.u...)
 end
 
+# ╔═╡ f66bbb64-2415-46bf-9974-ad43d3622cb5
+# ╠═╡ disabled = true
+#=╠═╡
+testset = CR_p_gdf_momentum[testset_index].log_dNdp_cr_pf |> skipmissing |> collect
+  ╠═╡ =#
+
 # ╔═╡ 2f84712e-5585-4f2a-817f-5a81c6b30df8
+# ╠═╡ disabled = true
+#=╠═╡
 mixture_model_test = fit_mom(BiNormal{eltype(testset)}, testset, solver = Optim.NelderMead())
+  ╠═╡ =#
 
-# ╔═╡ 25cdc9ef-8f50-4b1e-bd74-b1385d6fe8c1
-let fig = Figure()
-    ax = Axis(fig[1, 1], xminorgridvisible = true, yminorgridvisible = true)
-    #stephist!(ax, testset; bins, normalization = :pdf, label = "stephist")
-    #plot!(ax, testset_kde, label = "KDE")
-    xplt = range(extrema(testset)..., length = 1000)
-    lines!(ax, xplt, mixture_model_test, label = "MoM fit from nlsolve")
-    #lines!(ax, xplt, pdf.(mixture_model_test, xplt))
-    axislegend(ax)
-    fig
-end
+# ╔═╡ b98f9e53-cf5c-4422-8d41-2731cd2c57e0
+# ╠═╡ disabled = true
+#=╠═╡
+mixture_model_test = BiNormal(abs.(s.zero)...)
+  ╠═╡ =#
 
-# ╔═╡ 501fa36b-1ab9-44cf-8bcc-5bcd2dfd0b43
-mean(mixture_model_test)
-
-# ╔═╡ a725cea7-9d30-4d3f-90f2-0bb60b1a14d6
-quantile(mixture_model_test, 0.3)
+# ╔═╡ b63ff630-624b-4e9b-bc03-dc32fd691b05
+# ╠═╡ disabled = true
+#=╠═╡
+testset = CR_p_gdf_momentum[testset_index].log_dNdp_cr_pf |> skipmissing|> collect
+  ╠═╡ =#
 
 # ╔═╡ Cell order:
 # ╟─4a0e2184-0950-4b19-9b8b-061150d17ec5
 # ╟─a5526239-2f05-4618-8868-0f552855d574
+# ╟─29b0ffcc-1799-491b-9853-7296c68483cf
 # ╠═f1ee2cb0-8274-11ef-0826-f55183647219
 # ╠═e5e0e4e2-2df1-4536-9cc5-bdcec6fc13de
 # ╠═4c3e74c4-99d8-4d27-8787-1ea5a00e3a27
