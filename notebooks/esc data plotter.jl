@@ -17,8 +17,7 @@ using CSV, DataFrames
 using PlutoUI
 
 # ╔═╡ 590b9a88-33ff-4400-82ba-40be75d8da23
-# using CairoMakie
-using GLMakie
+using CairoMakie
 
 # ╔═╡ cd76c040-d2b5-11ef-3898-079cb259eed1
 md"""

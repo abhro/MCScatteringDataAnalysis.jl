@@ -35,9 +35,7 @@ using JLD2
 using DataFrames
 
 # ╔═╡ e50e35b0-885a-4f34-b716-a0167f62d8f7
-# using CairoMakie
-using WGLMakie
-# using GLMakie
+using CairoMakie
 
 # ╔═╡ 9e779980-f661-45cd-bdd1-20e073df9ede
 begin

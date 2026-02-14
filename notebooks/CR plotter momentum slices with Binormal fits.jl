@@ -35,8 +35,7 @@ using Distributions
 using MCScatteringDataAnalysis
 
 # ╔═╡ 1e0808e1-a106-4f0e-8649-13989b8ca855
-# using CairoMakie
-using WGLMakie
+using CairoMakie
 
 # ╔═╡ 547aad6f-32db-405d-9886-a727f1591101
 begin
@@ -410,7 +409,7 @@ with_theme(Makie.theme(nothing)) do
 end
 
 # ╔═╡ 8999b23b-4357-4655-baa6-273b218006b7
-WGLMakie.density(testset)
+Makie.density(testset)
 
 # ╔═╡ b822d103-e6c1-4b76-86ea-84eb84736133
 testset_kde, density_maxes = BiNormalDistributions.kdemaxes(testset, 2)

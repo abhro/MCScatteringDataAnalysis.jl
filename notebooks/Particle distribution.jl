@@ -17,7 +17,7 @@ using Unitful
 using Unitful: mp, c, yg
 
 # ╔═╡ 9825cd92-8576-4554-90c0-97654c032526
-using WGLMakie
+using CairoMakie
 
 # ╔═╡ 7fab5df1-c431-4aa1-83f2-55244a50175b
 md"""

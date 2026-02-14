@@ -35,8 +35,7 @@ using Distributions
 using MCScatteringDataAnalysis
 
 # ╔═╡ d8a66ccd-efdc-4b85-9af3-cfa5624c88e8
-# using CairoMakie
-using WGLMakie
+using CairoMakie
 
 # ╔═╡ 547aad6f-32db-405d-9886-a727f1591101
 begin

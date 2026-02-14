@@ -36,8 +36,6 @@ using PlutoUI
 
 # ╔═╡ acbe8855-c586-46e3-a72b-a556df77b547
 using CairoMakie
-# using WGLMakie
-# using GLMakie
 
 # ╔═╡ 5eaf1fbb-9dc7-40e4-87b8-8a0af299f815
 begin
