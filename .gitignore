@@ -115,7 +115,7 @@ Binormal properties.pdf
 # Exported html version of notebooks
 notebooks/*.html
 # Backup versions of notebooks
-notebooks/* backup *.jl
+notebooks/* backup ?.jl
 
 ################################################################################
 #                               Microsoft Office                               #
