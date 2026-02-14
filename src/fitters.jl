@@ -44,6 +44,10 @@ function fit_dist_to_histogram(::Type{BiNormal}, v::AbstractVector{T}; params, n
     return (best_model, best_fit_score)
 end
 
+"""
+Given a vector `v` of sample points, fit a histogram to it, then fit a normal
+distribution that histogram using least-squares optimization.
+"""
 function fit_dist_to_histogram(::Type{Normal}, v::AbstractVector{T}; nbins = 150) where {T}
     v = collect(skipmissing(v))
     if isempty(v)
