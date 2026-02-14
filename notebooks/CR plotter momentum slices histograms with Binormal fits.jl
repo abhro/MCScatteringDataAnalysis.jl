@@ -935,6 +935,12 @@ function fit_mom(::Type{BiNormal{T}}, x::AbstractVector{T}; solver = nothing) wh
     return BiNormal(sol.u...)
 end
 
+# ╔═╡ b63ff630-624b-4e9b-bc03-dc32fd691b05
+# ╠═╡ disabled = true
+#=╠═╡
+testset = CR_p_gdf_momentum[testset_index].log_dNdp_cr_pf |> skipmissing|> collect
+  ╠═╡ =#
+
 # ╔═╡ f66bbb64-2415-46bf-9974-ad43d3622cb5
 # ╠═╡ disabled = true
 #=╠═╡
@@ -951,12 +957,6 @@ mixture_model_test = fit_mom(BiNormal{eltype(testset)}, testset, solver = Optim.
 # ╠═╡ disabled = true
 #=╠═╡
 mixture_model_test = BiNormal(abs.(s.zero)...)
-  ╠═╡ =#
-
-# ╔═╡ b63ff630-624b-4e9b-bc03-dc32fd691b05
-# ╠═╡ disabled = true
-#=╠═╡
-testset = CR_p_gdf_momentum[testset_index].log_dNdp_cr_pf |> skipmissing|> collect
   ╠═╡ =#
 
 # ╔═╡ Cell order:
