@@ -523,11 +523,11 @@ Vector of momentum slices
 proton_log_p_nat = keys(CR_p_gdf_momentum) .|> values .|> first;
 
 # ╔═╡ 71404de8-f8b2-4d26-b7d7-41064cae1447
-log_p_nat_at_slice = proton_log_p_nat[proton_momentum_index];
+log_p_nat_at_slice_p = proton_log_p_nat[proton_momentum_index];
 
 # ╔═╡ 89bcb29b-0b1c-4e3a-91cb-282c05df2bc5
 md"""
-Value of proton momentum at current slice: log(*p*/*m*ₚ*c*) = $log_p_nat_at_slice
+Value of proton momentum at current slice: log(*p*/*m*ₚ*c*) = $log_p_nat_at_slice_p
 """
 
 # ╔═╡ 4051e244-4c84-4983-8cb9-bc7f53daa9f6
@@ -536,7 +536,7 @@ let df = CR_p_gdf_momentum[proton_momentum_index], distribs = normal_distrib_pro
     ax = Axis(
         fig[1, 1];
         xlabel = "log(dN/dp)", ylabel = "pdf", # yscale = log10,
-        title = "Histogram of protons dN/dp at log p = $log_p_nat_at_slice (mₚc)",
+        title = "Histogram of protons dN/dp at log p = $log_p_nat_at_slice_p (mₚc)",
         axis_properties...
     )
 
@@ -589,7 +589,7 @@ let
     ax = Axis(
         fig[1, 1];
         xlabel = "log(dN/dp)", ylabel = "pdf",
-        title = "Truncated Histogram of protons dN/dp at log p = $log_p_nat_at_slice (mₚc)",
+        title = "Truncated Histogram of protons dN/dp at log p = $log_p_nat_at_slice_p (mₚc)",
         axis_properties...
     )
 
@@ -618,7 +618,7 @@ let
     ax = Axis(
         fig[1, 1];
         xlabel = "log(dN/dp)", ylabel = "pdf",
-        title = "Histogram (left-tail) of protons dN/dp at log p = $log_p_nat_at_slice (mₚc)",
+        title = "Histogram (left-tail) of protons dN/dp at log p = $log_p_nat_at_slice_p (mₚc)",
         axis_properties...
     )
 
@@ -640,7 +640,7 @@ let
     ax = Axis(
         fig[1, 1];
         xlabel = "log(dN/dp)", ylabel = "pdf",
-        title = "Histogram (right-tail) of protons dN/dp at log p = $log_p_nat_at_slice (mₚc)",
+        title = "Histogram (right-tail) of protons dN/dp at log p = $log_p_nat_at_slice_p (mₚc)",
         axis_properties...
     )
 
@@ -664,7 +664,7 @@ let
     ax = Axis(
         fig[1, 1];
         xlabel = "log(dN/dp)", ylabel = "pdf",
-        title = "Histogram of protons dN/dp at log p = $log_p_nat_at_slice (mₚc)",
+        title = "Histogram of protons dN/dp at log p = $log_p_nat_at_slice_p (mₚc)",
         axis_properties...
     )
 
