@@ -52,14 +52,11 @@ using Missings
 # ╔═╡ fe2b3846-c753-4685-8704-e6fb50624989
 using Printf
 
-# ╔═╡ 66a40e6b-a7f6-4b78-b5e2-f343fb02f4fe
-using StaticArrays
+# ╔═╡ de7bbc47-64c6-4e3c-bd2e-71f189225d52
+using KernelDensity
 
 # ╔═╡ 77733d10-ba25-4de5-b8a3-c52a4130227c
 using LinearAlgebra
-
-# ╔═╡ de7bbc47-64c6-4e3c-bd2e-71f189225d52
-using KernelDensity
 
 # ╔═╡ 4a0e2184-0950-4b19-9b8b-061150d17ec5
 md"""
@@ -69,13 +66,6 @@ md"""
 # ╔═╡ a5526239-2f05-4618-8868-0f552855d574
 md"""
 ## Preamble
-"""
-
-# ╔═╡ 29b0ffcc-1799-491b-9853-7296c68483cf
-md"""
-!!! warning "Do not run"
-
-    The following two cells with DrWatson are commented out because the root Project.toml file no longer contain some of the packages used in ths notebook for perfomance reasons. If you need to re-run, uncomment the lines invloving `DrWatson` and `@quickactivate`, and re-add the packages to the Project.toml file.
 """
 
 # ╔═╡ cd809ca8-2cc4-435d-ab8b-b7b24fa40ed1
@@ -178,12 +168,6 @@ md"""
 ### Kernel density estimates
 """
 
-# ╔═╡ 7b238d92-5588-43af-a861-ef89f2e8178d
-testset = CR_p_gdf_momentum[proton_momentum_index].log_dNdp_cr_pf
-
-# ╔═╡ 8999b23b-4357-4655-baa6-273b218006b7
-Makie.density(testset)
-
 # ╔═╡ dbcc47ad-952e-475b-9657-f7fd280de743
 # ╠═╡ disabled = true
 #=╠═╡
@@ -200,6 +184,11 @@ end
 #=╠═╡
 testset_kde.x[density_maxes.indices]
   ╠═╡ =#
+
+# ╔═╡ a2fdbe38-3728-4ef5-ab33-7525cc5d62b1
+md"""
+## Curve fitting
+"""
 
 # ╔═╡ 5252c2c6-969d-45c1-839c-32db557aa4b8
 md"""
@@ -251,6 +240,47 @@ Proton momentum slice to plot (index): $(proton_index_binder) (min: $(minimum(pr
 Value of proton momentum at slice: 10^$(log_p_nat_at_slice_p) _m_ₚ_c_
 """
 
+# ╔═╡ 31b3cd49-4dba-4bc5-a0df-b2a6c9566cd2
+md"""
+Proton momentum slice to plot (index): $(proton_index_binder) (min: $(minimum(proton_indices)), max: $(maximum(proton_indices)))
+
+Value of proton momentum at slice: 10^$(log_p_nat_at_slice_p) _m_ₚ_c_
+"""
+
+# ╔═╡ e3f4c665-f4a9-4b63-bf62-1112561bb37f
+let df = CR_p_gdf_momentum[proton_momentum_index]
+    fig = Figure()
+    ax = Axis(
+        fig[1, 1];
+        xlabel = "log(dN/dp)", ylabel = "pdf", # yscale = log10,
+        title = "Kernel density estimate of protons dN/dp at log p = $log_p_nat_at_slice_p (mₚc)",
+        axis_properties...
+    )
+
+    if do_plot_pf
+        log_dNdp = df.log_dNdp_cr_pf |> skipmissing |> collect
+        # log_dNdp ./= std(log_dNdp)
+        !isempty(log_dNdp) && lines!(ax, kde(log_dNdp), label = "plasma frame ($(length(log_dNdp)) samples)"; color = color_pf_p)
+    end
+
+    if do_plot_sf
+        log_dNdp = df.log_dNdp_cr_sf |> skipmissing |> collect
+        !isempty(log_dNdp) && lines!(ax, kde(log_dNdp), label = "shock frame ($(length(log_dNdp)) samples)"; color = color_sf_p)
+    end
+    if do_plot_ISM
+        log_dNdp = df.log_dNdp_cr_ISM |> skipmissing |> collect
+        !isempty(log_dNdp) && lines!(ax, kde(log_dNdp), label = "ISM frame ($(length(log_dNdp)) samples)"; color = color_ISM_p)
+    end
+
+    try
+        leg = axislegend(ax, framevisible = false, position = :lt)
+        # leg.tellheight = true
+    catch e
+        # axislegend has no plots to work with, because the current index doesn't have any samples. stop it complaining.
+    end
+    fig
+end
+
 # ╔═╡ cef8f0a4-0967-4e86-bfde-7fa84c474e31
 log_p_nat_at_slice_e = keys(CR_p_gdf_momentum)[electron_momentum_index] |> values |> only;
 
@@ -264,7 +294,6 @@ Value of electron momentum at slice: 10^$(log_p_nat_at_slice_e) *m*ₚ*c*
 # ╔═╡ Cell order:
 # ╟─4a0e2184-0950-4b19-9b8b-061150d17ec5
 # ╟─a5526239-2f05-4618-8868-0f552855d574
-# ╟─29b0ffcc-1799-491b-9853-7296c68483cf
 # ╠═f1ee2cb0-8274-11ef-0826-f55183647219
 # ╠═e5e0e4e2-2df1-4536-9cc5-bdcec6fc13de
 # ╠═4c3e74c4-99d8-4d27-8787-1ea5a00e3a27
@@ -277,7 +306,7 @@ Value of electron momentum at slice: 10^$(log_p_nat_at_slice_e) *m*ₚ*c*
 # ╠═7a050dc5-7772-4933-959f-bf4fb478fc7d
 # ╠═3791e767-dcf1-4f9d-909d-a7d08e4c5f9c
 # ╠═fe2b3846-c753-4685-8704-e6fb50624989
-# ╠═66a40e6b-a7f6-4b78-b5e2-f343fb02f4fe
+# ╠═de7bbc47-64c6-4e3c-bd2e-71f189225d52
 # ╠═77733d10-ba25-4de5-b8a3-c52a4130227c
 # ╟─334b4ffc-1c5d-4743-88fb-ab383a3e6f80
 # ╠═b544df91-fe2d-4396-892c-7faea2edd141
@@ -304,11 +333,11 @@ Value of electron momentum at slice: 10^$(log_p_nat_at_slice_e) *m*ₚ*c*
 # ╟─7be1e6da-0eb9-45e5-a4f9-bb6deedc3def
 # ╟─ecf80697-b786-4b02-9563-f3d082383b76
 # ╟─c1b47c6c-66ea-4014-9c04-8aa142449178
-# ╠═7b238d92-5588-43af-a861-ef89f2e8178d
-# ╠═8999b23b-4357-4655-baa6-273b218006b7
-# ╠═de7bbc47-64c6-4e3c-bd2e-71f189225d52
+# ╟─31b3cd49-4dba-4bc5-a0df-b2a6c9566cd2
+# ╠═e3f4c665-f4a9-4b63-bf62-1112561bb37f
 # ╠═dbcc47ad-952e-475b-9657-f7fd280de743
 # ╠═d6516ed8-0a21-4509-a1b4-34f6521ab222
+# ╟─a2fdbe38-3728-4ef5-ab33-7525cc5d62b1
 # ╟─5252c2c6-969d-45c1-839c-32db557aa4b8
 # ╠═5b7baac9-e657-4666-be4d-62233362aa09
 # ╠═54c75433-c9e3-4d13-863e-3a1aa51f5e3e
