@@ -81,10 +81,13 @@ coupled-weights.csv.gz  dNdp-CR-protons.csv.gz    dNdp-esc.csv.gz  grid.csv.gz
 ```
 
 ## Running the notebooks
+
 Make sure the project environment has been instantiated. Then, from the project root directory, run
+
 ```sh
 $ julia --project scripts/runpluto.jl
 ```
-If you want to also open up the browser, append `--browser` to the end of the command line string.
+
+This will start up a [Pluto.jl](https://plutojl.org/) notebook server. If you want to also open up the browser, append `--browser` to the end of the command line string.
 
 <!-- vim: set ft=markdown:tw=0:spell: -->
