@@ -247,6 +247,19 @@ md"""
 Electron momentum slice to plot (index): $electron_index_binder (min: $(minimum(idx_CR_e_gdf)), max: $(maximum(idx_CR_e_gdf)))
 """
 
+# ╔═╡ 4a32f313-8ba7-4354-9843-efd86607efb8
+md"""
+## Specified bin-width histograms
+"""
+
+# ╔═╡ 762fe736-070e-4624-b683-e1fcbeb0f1e0
+specific_hist_fits = specific_width_histogram_fits(CR_p_gdf_momentum, 0.01)
+
+# ╔═╡ 80df5127-2df2-4b8d-a2f9-b1d234a96e01
+md"""
+Proton momentum slice to plot (index): $proton_index_binder (min: $(minimum(idx_CR_p_gdf)), max: $(maximum(idx_CR_p_gdf)))
+"""
+
 # ╔═╡ a6a63cb1-1a13-4cc2-9730-b78dd3d3aee4
 md"""
 # Inspect tail
@@ -488,24 +501,6 @@ md"""
 Should we plot electrons? $plot_electrons_binder
 """
 
-# ╔═╡ dec211fb-33a0-4b16-ad5f-74dc010cfd6f
-md"""
-# Fitting histograms
-"""
-
-# ╔═╡ 4a32f313-8ba7-4354-9843-efd86607efb8
-md"""
-## Specified bin-width histograms
-"""
-
-# ╔═╡ 762fe736-070e-4624-b683-e1fcbeb0f1e0
-specific_hist_fits = specific_width_histogram_fits(CR_p_gdf_momentum, 0.01)
-
-# ╔═╡ 80df5127-2df2-4b8d-a2f9-b1d234a96e01
-md"""
-Proton momentum slice to plot (index): $proton_index_binder (min: $(minimum(idx_CR_p_gdf)), max: $(maximum(idx_CR_p_gdf)))
-"""
-
 # ╔═╡ 8d03de5e-d344-4efd-b9af-dd5391028780
 md"""
 # Constants and functions
@@ -576,6 +571,26 @@ let df = CR_p_gdf_momentum[proton_momentum_index], distribs = normal_distrib_pro
     try
         leg = axislegend(ax, framevisible = false, position = :rt)
         # leg.tellheight = true
+    catch e
+        # axislegend has no plots to work with, because the current index doesn't have any samples. stop it complaining.
+    end
+    fig
+end
+
+# ╔═╡ 5e67c332-b2cb-45d6-8dff-eeea5acfb779
+let
+    fig = Figure()
+    ax = Axis(
+        fig[1, 1];
+        xlabel = "log(dN/dp)", ylabel = "pdf",
+        title = "Histogram of protons dN/dp at log p = $log_p_nat_at_slice_p (mₚc)",
+        axis_properties...
+    )
+
+    plot!(ax, specific_hist_fits[proton_momentum_index], label = "data"; color = :teal)
+
+    try
+        axislegend(ax, framevisible = false, position = :rt)
     catch e
         # axislegend has no plots to work with, because the current index doesn't have any samples. stop it complaining.
     end
@@ -655,26 +670,6 @@ let
     # lines!(ax, x, fitted_dist_curve, label = "curve-fit dist", linewidth = 0.5)
 
     axislegend(ax, framevisible = false, position = :rt)
-    fig
-end
-
-# ╔═╡ 5e67c332-b2cb-45d6-8dff-eeea5acfb779
-let
-    fig = Figure()
-    ax = Axis(
-        fig[1, 1];
-        xlabel = "log(dN/dp)", ylabel = "pdf",
-        title = "Histogram of protons dN/dp at log p = $log_p_nat_at_slice_p (mₚc)",
-        axis_properties...
-    )
-
-    plot!(ax, specific_hist_fits[proton_momentum_index], label = "data"; color = :teal)
-
-    try
-        axislegend(ax, framevisible = false, position = :rt)
-    catch e
-        # axislegend has no plots to work with, because the current index doesn't have any samples. stop it complaining.
-    end
     fig
 end
 
@@ -889,6 +884,10 @@ end
 # ╟─4051e244-4c84-4983-8cb9-bc7f53daa9f6
 # ╟─7be1e6da-0eb9-45e5-a4f9-bb6deedc3def
 # ╟─88822f52-aab8-4931-9091-1909da6c604b
+# ╟─4a32f313-8ba7-4354-9843-efd86607efb8
+# ╠═762fe736-070e-4624-b683-e1fcbeb0f1e0
+# ╟─80df5127-2df2-4b8d-a2f9-b1d234a96e01
+# ╠═5e67c332-b2cb-45d6-8dff-eeea5acfb779
 # ╟─a6a63cb1-1a13-4cc2-9730-b78dd3d3aee4
 # ╠═54452e38-227e-4d06-ae74-7347aae2c021
 # ╠═b0d555b3-5087-4405-8343-ce304d482ca9
@@ -962,11 +961,6 @@ end
 # ╟─b825855d-bdfc-4aaa-ad9e-82ee4e8d1201
 # ╟─cabc5f90-2e66-41fc-956a-8d2cd0b36bf5
 # ╟─08542eea-964a-4f1d-aae5-2b50a628588a
-# ╟─dec211fb-33a0-4b16-ad5f-74dc010cfd6f
-# ╟─4a32f313-8ba7-4354-9843-efd86607efb8
-# ╠═762fe736-070e-4624-b683-e1fcbeb0f1e0
-# ╟─80df5127-2df2-4b8d-a2f9-b1d234a96e01
-# ╠═5e67c332-b2cb-45d6-8dff-eeea5acfb779
 # ╟─8d03de5e-d344-4efd-b9af-dd5391028780
 # ╠═377aaf8f-b909-4c42-bc77-912fd300c300
 # ╟─32edc221-e586-4510-9427-977b22f62f6c
