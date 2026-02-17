@@ -39,6 +39,32 @@ using DrWatson
 ```
 which auto-activate the project and enable local path handling from DrWatson.
 
+## Creating a sysimage
+
+If you are frustrated by the long loading times of some packages, you can create a [sysimage](https://julialang.github.io/PackageCompiler.jl/stable/sysimages) by running
+
+```sh
+$ julia scripts/create-sysimage.jl
+```
+
+(Note that this script does it's own environment management, so there's no need to use the `--project`) option.
+
+The above command will take some time to run. When it is finished, it will create a shared library file called "project-sysimage.so" (or ".dll" or ".dylib" depending on your operating system). In case of issues, please contact the lead maintainer of this project. If they have died of old age while you were waiting for this to compile, then you'll have to resolve the issue yourself, unfortunately.
+
+Note that the sysimage contains the exact versions of project dependencies. Therefore, if Project.toml or Manifest.toml changes, then you will have to create a new sysimage.
+
+To use the sysimage, add the `-J` option (or equivalently, the `--sysimage` option) followed by the path to the sysimage file (`project-sysimage.so`), to any line where you invoke `julia`. That is, instead of running a script like this:
+
+```sh
+$ julia --project .../script.jl
+```
+
+use the following (again, changing the filename extension as appropriate):
+
+```sh
+$ julia -J project-sysimage.so --project .../script.jl
+```
+
 ## Processing the raw data
 For each distinct mc\_in.txt file that's being fed to the MonteCarlo\_cr Fortran program, put each of them in a distinct folder. You may group these folders as is convenient. Generally, you do not want to mix folders that contain different physical parameters, but only differ in the initial RNG seed. Here, the common approach is to create a folder for each set of distinct physical parameters, then within that folder, create subfolders titled as Seed-NNNN where NNNN is a 4-digit number from 0000 to 9999. Once you're in the top-level directory, you can aggregate all the different simulation data using the `delimited-to-big-csv.jl` script. For example,
 ```sh
@@ -60,3 +86,5 @@ Make sure the project environment has been instantiated. Then, from the project 
 $ julia --project scripts/runpluto.jl
 ```
 If you want to also open up the browser, append `--browser` to the end of the command line string.
+
+<!-- vim: set ft=markdown:tw=0:spell: -->
