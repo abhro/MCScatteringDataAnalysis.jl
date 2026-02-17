@@ -396,29 +396,29 @@ let
     )
 
     if do_plot_pf
-        means = gdf_sample_stats(mean, CR_p_gdf_momentum; column = :log_dNdp_cr_pf)
+        means = CR_p_mean_log_dNdp.pf
         lines!(ax, proton_log_p_nat, means, color = color_pf_p, label = "protons, plasma frame")
 
         if do_plot_electrons
-            means = gdf_sample_stats(mean, CR_e_gdf_momentum; column = :log_dNdp_cr_pf)
+            means = CR_e_mean_log_dNdp.pf
             lines!(ax, electron_log_p_nat, means, color = color_pf_e, label = "electrons, plasma frame")
         end
     end
     if do_plot_sf
-        means = gdf_sample_stats(mean, CR_p_gdf_momentum; column = :log_dNdp_cr_sf)
+        means = CR_p_mean_log_dNdp.sf
         lines!(ax, proton_log_p_nat, means, color = color_sf_p, label = "protons, shock frame")
 
         if do_plot_electrons
-            means = gdf_sample_stats(mean, CR_e_gdf_momentum; column = :log_dNdp_cr_sf)
+            means = CR_e_mean_log_dNdp.sf
             lines!(ax, electron_log_p_nat, means, color = color_sf_e, label = "electrons, shock frame")
         end
     end
     if do_plot_ISM
-        means = gdf_sample_stats(mean, CR_p_gdf_momentum; column = :log_dNdp_cr_ISM)
+        means = CR_p_mean_log_dNdp.ISM
         lines!(ax, proton_log_p_nat, means, color = color_ISM_p, label = "protons, ISM frame")
 
         if do_plot_electrons
-            means = gdf_sample_stats(mean, CR_e_gdf_momentum; column = :log_dNdp_cr_ISM)
+            means = CR_e_mean_log_dNdp.ISM
             lines!(ax, electron_log_p_nat, means, color = color_ISM_e, label = "electrons, ISM frame")
         end
     end
@@ -493,18 +493,33 @@ let
     )
     markersize = 4
 
-    scatterlines!(
-        ax, proton_log_p_nat, CR_p_std_log_dNdp.pf;
-        color = color_pf_p, label = "protons, plasma frame", markersize
-    )
+    if do_plot_pf
+        std_devs = CR_p_std_log_dNdp.pf
+        scatterlines!(ax, proton_log_p_nat, std_devs; color = color_pf_p, label = "protons, plasma frame", markersize)
 
-    if do_plot_electrons
-        scatterlines!(
-            ax, electron_log_p_nat, CR_e_std_log_dNdp.pf;
-            color = color_pf_e, label = "electrons, plasma frame", markersize
-        )
+        if do_plot_electrons
+            std_devs = CR_e_std_log_dNdp.pf
+            scatterlines!(ax, electron_log_p_nat, std_devs; color = color_pf_e, label = "electrons, plasma frame", markersize)
+        end
     end
+    if do_plot_sf
+        std_devs = CR_p_std_log_dNdp.sf
+        scatterlines!(ax, proton_log_p_nat, std_devs; color = color_sf_p, label = "protons, shock frame", markersize)
 
+        if do_plot_electrons
+            std_devs = CR_e_std_log_dNdp.sf
+            scatterlines!(ax, electron_log_p_nat, std_devs; color = color_sf_e, label = "electrons, shock frame", markersize)
+        end
+    end
+    if do_plot_ISM
+        std_devs = CR_p_std_log_dNdp.ISM
+        scatterlines!(ax, proton_log_p_nat, std_devs; color = color_ISM_p, label = "protons, ISM frame", markersize)
+
+        if do_plot_electrons
+            std_devs = CR_e_std_log_dNdp.ISM
+            scatterlines!(ax, electron_log_p_nat, std_devs; color = color_ISM_e, label = "electrons, ISM frame", markersize)
+        end
+    end
     axislegend(ax, position = :lt, framevisible = false)
 
     fig
