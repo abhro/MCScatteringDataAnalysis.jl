@@ -18,6 +18,11 @@ elseif Sys.isapple()
 else
     extension = "so"
 end
+
 sysimage_path = "project-sysimage.$extension"
 precompile_statements_file = "compile-statements.jl"
-create_sysimage(; project = pwd(), sysimage_path, precompile_statements_file, import_into_main = false)
+packages = nothing # replace with vector of packages as needed
+project = pwd()
+import_into_main = false
+flush(handle)
+create_sysimage(packages; project, sysimage_path, precompile_statements_file, import_into_main)
