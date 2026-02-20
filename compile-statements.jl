@@ -132,8 +132,6 @@ precompile(Tuple{JLD2.var"##s708#68", Vararg{Any, 7}}) # recompile
 precompile(Tuple{JLD2.var"#load_object##0#load_object##1"{String}, JLD2.JLDFile{JLD2.MmapIO}})
 precompile(Tuple{JLD2.var"#load_object##0#load_object##1"{String}, JLD2.JLDFile{JLD2.MmapIO}}) # recompile
 precompile(Tuple{KernelDensity.var"##kde#3", Float64, Type, Int64, Tuple{Float64, Float64}, KernelDensity.UniformWeights{5000}, typeof(KernelDensity.kde), Array{Float64, 1}})
-precompile(Tuple{Main.var"##gdf_sample_stats#1", Symbol, typeof(Main.gdf_sample_stats), typeof(Statistics.mean), DataFrames.GroupedDataFrame{DataFrames.SubDataFrame{DataFrames.DataFrame, DataFrames.Index, Array{Int64, 1}}}})
-precompile(Tuple{Main.var"##gdf_sample_stats#1", Symbol, typeof(Main.gdf_sample_stats), typeof(Statistics.std), DataFrames.GroupedDataFrame{DataFrames.SubDataFrame{DataFrames.DataFrame, DataFrames.Index, Array{Int64, 1}}}})
 precompile(Tuple{Makie.var"##band!#713", Base.Pairs{Symbol, Any, Nothing, NamedTuple{(:alpha, :color, :label), Tuple{Float64, ColorTypes.RGBA{Float32}, String}}}, typeof(Makie.band!), Makie.Axis, Vararg{Any}})
 precompile(Tuple{Makie.var"##band!#713", Base.Pairs{Symbol, ComputePipeline.Computed, Nothing, NamedTuple{(:color, :colormap, :colorscale, :colorrange, :inspectable, :alpha, :visible), NTuple{7, ComputePipeline.Computed}}}, typeof(Makie.band!), Makie.Plot{Makie.density, Tuple{Array{Float64, 1}}}, Vararg{Any}})
 precompile(Tuple{Makie.var"##barplot!#732", Base.Pairs{Symbol, ComputePipeline.Computed, Nothing, NamedTuple{(:bar_labels, :color), Tuple{ComputePipeline.Computed, ComputePipeline.Computed}}}, typeof(Makie.barplot!), Makie.Plot{Makie.hist, Tuple{Array{Float64, 1}}}, Vararg{Any}})
@@ -976,7 +974,6 @@ precompile(Tuple{typeof(Core.kwcall), NamedTuple{(:color,), Tuple{ComputePipelin
 precompile(Tuple{typeof(Core.kwcall), NamedTuple{(:color,), Tuple{ComputePipeline.Computed}}, typeof(Makie.mesh!), Makie.Plot{Makie.band, Tuple{Array{GeometryBasics.Point{2, Float64}, 1}, Array{GeometryBasics.Point{2, Float64}, 1}}}, Vararg{Any}})
 precompile(Tuple{typeof(Core.kwcall), NamedTuple{(:color,), Tuple{ComputePipeline.Computed}}, typeof(Makie.stairs!), Makie.Plot{Makie.stephist, Tuple{Array{Float64, 1}}}, Vararg{Any}})
 precompile(Tuple{typeof(Core.kwcall), NamedTuple{(:color,), Tuple{Symbol}}, typeof(Base.printstyled), Base.Terminals.TTYTerminal, String})
-precompile(Tuple{typeof(Core.kwcall), NamedTuple{(:column,), Tuple{Symbol}}, typeof(Main.gdf_sample_stats), Function, DataFrames.GroupedDataFrame{DataFrames.SubDataFrame{DataFrames.DataFrame, DataFrames.Index, Array{Int64, 1}}}})
 precompile(Tuple{typeof(Core.kwcall), NamedTuple{(:complete_modules_only, :shift), Tuple{Bool, Bool}}, typeof(REPL.REPLCompletions.complete_symbol!), Array{REPL.REPLCompletions.Completion, 1}, Any, String, Module}) # recompile
 precompile(Tuple{typeof(Core.kwcall), NamedTuple{(:context,), Tuple{Base.ImmutableDict{Symbol, Any}}}, typeof(Base.sprint), Function, Type, Vararg{Any}})
 precompile(Tuple{typeof(Core.kwcall), NamedTuple{(:dirsep,), Tuple{Char}}, typeof(REPL.REPLCompletions.joinpath_withsep), String, String})

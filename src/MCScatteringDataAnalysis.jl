@@ -213,4 +213,14 @@ function get_onesample_scores(test, gdf, dists; col)
     arr = Vector{Union{Set(typeof.(arr))...}}(arr)
     return arr
 end
+
+"""
+    gdf_sample_stats(statistic, gdf; column)
+
+Apply `statistic` to `column` of each subdataframe of `gdf`.
+"""
+function gdf_sample_stats(statistic, gdf; column)
+    return [statistic(collect(skipmissing(df[!, column]))) for df in gdf]
+end
+export gdf_sample_stats
 end

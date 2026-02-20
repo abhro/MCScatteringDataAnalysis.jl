@@ -187,11 +187,6 @@ md"""
 ## Sample statistics
 """
 
-# ╔═╡ 70717f68-e97b-401e-bcf7-0684ade30b07
-gdf_sample_stats(statistic, gdf; column) = [
-    statistic(collect(skipmissing(df[!, column]))) for df in gdf
-];
-
 # ╔═╡ c09cf00d-0a07-4159-9009-45afdb8343fb
 CR_p_mean_log_dNdp = (;
     pf = gdf_sample_stats(mean, CR_p_gdf_momentum; column = :log_dNdp_cr_pf),
@@ -618,7 +613,6 @@ end
 # ╠═60deb76f-3efe-4e0d-b176-9f0169259dca
 # ╠═4553a97d-6b78-4268-90de-d8bee348d3d4
 # ╟─3bf64608-0fa2-4fcb-9782-fd7a8de47bda
-# ╠═70717f68-e97b-401e-bcf7-0684ade30b07
 # ╠═c09cf00d-0a07-4159-9009-45afdb8343fb
 # ╠═a8fdec46-2d8d-4a06-800a-7e03c64468dd
 # ╠═a9b9b9aa-b850-49de-8412-2930e7004a36
