@@ -241,6 +241,17 @@ let fig = Figure(), df = therm_p_gdf_iter[plot_iter]
     fig
 end
 
+# ╔═╡ 08b8d65c-bd5f-4267-9330-52d68aa4f7b5
+let fig = Figure(), df = therm_e_gdf_iter[plot_iter]
+    # Create a plotting specification, which specifies our data source, how to
+    # transform our data (`map_layer`), and how to present the data (`visual_layer`).
+    spec = data(df) * map_layer * (visual_layer + visual(Scatter; markersize))
+    title = "dN/dp of thermal particles (electrons), iteration $plot_iter"
+    plt = draw!(fig[1, 1], spec, axis = (; title, axis_properties...))
+    legend!(fig[1, 1], plt; legend_properties...)
+    fig
+end
+
 # ╔═╡ Cell order:
 # ╟─a1e20290-55e9-4355-bc45-74c5f825565f
 # ╠═b0d4ca90-bb62-11f0-80dd-b560b36acdf6
@@ -290,3 +301,4 @@ end
 # ╟─1dd37d49-25aa-4eb8-bc96-52968ae302aa
 # ╟─6a790ec5-430f-4ad3-9315-dbda9b2a591f
 # ╠═e916e00e-9b31-478b-b4b5-abca4259385e
+# ╠═08b8d65c-bd5f-4267-9330-52d68aa4f7b5
