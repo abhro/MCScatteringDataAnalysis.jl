@@ -65,9 +65,9 @@ function fit_dist_to_histogram(::Type{Normal}, v::AbstractVector{T}; nbins = 150
     function ∇model(t, (μ, σ))
         f = model(t, (μ, σ))
         J = zeros(length(t), 2)
-        z = (t .- μ) / σ^2
-        J[:, 1] .= f .* z            # ∂f/∂μ
-        J[:, 2] .= f/σ .* (z .- 1)   # ∂f/∂σ
+        z = (t .- μ) / σ
+        J[:, 1] .= @. f * z / σ         # ∂f/∂μ
+        J[:, 2] .= @. f/σ * (z^2 - 1)   # ∂f/∂σ
         return J
     end
 
