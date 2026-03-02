@@ -137,7 +137,18 @@ x-values as the bin centers, and the y-values as the value of the pdf at the bin
 - `y`: pdf at each `x`.
 """
 function get_hist_curve(occurrences; nbins)
-    histogram = normalize(fit(Histogram, occurrences; nbins); mode = :pdf)
+    return get_hist_curve(fit(Histogram, occurrences; nbins))
+end
+
+"""
+    get_hist_curve(histogram::Histogram)
+
+Normalize a given histogram with pdf normalization, then return an x-y data
+series with the histogram's bin centers as the x values and the weights as the y
+values.
+"""
+function get_hist_curve(histogram::Histogram)
+    histogram = normalize(histogram; mode = :pdf)
 
     x = histogram.edges |> only |> centers
     hist_y = histogram.weights
