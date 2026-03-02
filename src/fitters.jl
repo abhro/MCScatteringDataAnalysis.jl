@@ -45,6 +45,34 @@ function fit_dist_to_histogram(::Type{BiNormal}, v::AbstractVector{T}; params, n
 end
 
 """
+    fit(T <: Distribution, h, θ₀)
+
+Fit a distribution given a histogram. Uses a root finder on the MLE equation.
+
+!!! note
+    This method is an instance of type piracy since `Distribution` or
+    `Histogram` aren't types declared in this package.
+
+### Arguments
+
+- `T`: Type of distribution to fit
+- `h`: Histogram
+- `θ₀`: Initial guess for model parameters
+"""
+function fit(T::Type{<:Distribution}, h::Histogram, θ₀)
+    x, y = get_hist_curve(h)
+    model(x, θ) = pdf(T(θ), x)
+
+    # We want the histogram curve and the pdf to overlap as much as possible
+    fit = curve_fit(model, x, y, θ₀)
+
+    # best fit parameters
+    θ_best = fit.params
+
+    return T(θ_best)
+end
+
+"""
 Given a vector `v` of sample points, fit a histogram to it, then fit a normal
 distribution that histogram using least-squares optimization.
 """
