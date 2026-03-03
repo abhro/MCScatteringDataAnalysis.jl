@@ -2,6 +2,7 @@ module MCScatteringDataAnalysis
 
 using LinearAlgebra: norm, normalize
 using Statistics: std, mean
+import StatsAPI
 using StatsAPI: params, fit
 using StatsBase: Histogram
 using Distributions: Distribution, Normal, pdf

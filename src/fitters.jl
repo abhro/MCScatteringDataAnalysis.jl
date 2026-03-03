@@ -59,7 +59,7 @@ Fit a distribution given a histogram. Uses a root finder on the MLE equation.
 - `h`: Histogram
 - `θ₀`: Initial guess for model parameters
 """
-function fit(T::Type{<:Distribution}, h::Histogram, θ₀)
+function StatsAPI.fit(T::Type{<:Distribution}, h::Histogram, θ₀)
     x, y = get_hist_curve(h)
     model(x, θ) = pdf(T(θ), x)
 
