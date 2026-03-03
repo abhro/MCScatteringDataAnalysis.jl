@@ -52,15 +52,6 @@ using Missings
 # ╔═╡ fe2b3846-c753-4685-8704-e6fb50624989
 using Printf
 
-# ╔═╡ 49902e99-870d-4d19-afb0-1de612c185df
-using StatsBase
-
-# ╔═╡ 4ac32bef-af81-4f7e-8e97-7eac4dd2bf69
-using LinearAlgebra
-
-# ╔═╡ fd47dab7-426c-44fc-8038-00e378324e41
-using HypothesisTests
-
 # ╔═╡ 70f93b37-a977-4dce-9fdd-a0497603a864
 using MCScatteringDataAnalysis: get_onesample_scores
 
@@ -376,9 +367,14 @@ sum(logpdf.(fitted_dist_curve, log_dNdp))
 # ╔═╡ 97291776-74f0-428a-ab4f-3c498b630000
 normal_distrib_electrons_from_curves = fitdistributions(v -> fit_dist_to_histogram(Normal, v; nbins = bins), CR_e_gdf_momentum)
 
+# ╔═╡ 355205d3-aaf6-4eb2-90c8-332bd9c2a75b
+md"""
+## Histogram goodness of fits
+"""
+
 # ╔═╡ 452c9b2f-7138-4310-b0c6-df2be7ab8c76
 md"""
-## Distribution agreement curve
+### Distribution agreement curve
 """
 
 # ╔═╡ b238afe1-3d1f-4e15-bc49-1b015a39c02c
@@ -386,16 +382,6 @@ proton_distances = bcdistances(normal_distrib_protons.pf, normal_distrib_protons
 
 # ╔═╡ 78a22648-c76a-4b5c-b552-9be000a60109
 electron_distances = bcdistances(normal_distrib_electrons.pf, normal_distrib_electrons_from_curves.pf)
-
-# ╔═╡ da107273-c428-4c68-80a9-8f82cb211497
-md"""
-# Hypothesis tests
-"""
-
-# ╔═╡ f330af91-60a6-46ac-bdc5-ec49c216fccb
-md"""
-Get goodness of fits
-"""
 
 # ╔═╡ d77a95bf-2d54-46d5-81ca-b671ee1db695
 p_values_scale_checkbox_binder = @bind plot_p_values_in_logscale CheckBox();
@@ -431,72 +417,6 @@ $p_values_scale_checkbox_binder
 """
 
 # ╔═╡ b51148d5-cce6-4310-b7d4-dcbb6d4ac66b
-md"""
-Should we plot electrons? $plot_electrons_binder
-"""
-
-# ╔═╡ 98675d19-3b1b-4be0-9e48-ab0ffd019647
-md"""
-## Anderson–Darling test
-"""
-
-# ╔═╡ 2e79471f-3430-4b1c-91fe-80434de63cb2
-ad_scores_p = get_ad_scores(CR_p_gdf_momentum, normal_distrib_protons.pf, col = :log_dNdp_cr_pf);
-
-# ╔═╡ bd8f636c-6033-434e-a220-a07397679431
-ad_scores_e = get_ad_scores(CR_e_gdf_momentum, normal_distrib_electrons.pf, col = :log_dNdp_cr_pf);
-
-# ╔═╡ 89b7b4d0-fb46-4436-a48d-0731cef1dc2c
-md"""
-Plot p-values in log scale? (Uncheck for linear)
-$p_values_scale_checkbox_binder
-"""
-
-# ╔═╡ e68032c7-36bd-4817-9bae-09e7dcb04802
-md"""
-Should we plot electrons? $plot_electrons_binder
-"""
-
-# ╔═╡ b499bf86-3e7a-441a-809a-934a1a8dd402
-md"""
-## Shapiro–Wilk test
-"""
-
-# ╔═╡ a2dca585-2b84-4958-8ba6-af51602c4d8a
-sw_scores_p = get_sw_scores(CR_p_gdf_momentum, col = :log_dNdp_cr_pf);
-
-# ╔═╡ ec6883c9-b6bb-4e7e-bd6d-e65d6e06144d
-sw_scores_e = get_sw_scores(CR_e_gdf_momentum, col = :log_dNdp_cr_pf);
-
-# ╔═╡ 1b8925de-a9fe-4326-ad1a-a0a022ccbc6b
-md"""
-Plot p-values in log scale? (Uncheck for linear)
-$p_values_scale_checkbox_binder
-"""
-
-# ╔═╡ 79736549-5c2c-4193-9757-16a57b0a535d
-md"""
-Should we plot electrons? $plot_electrons_binder
-"""
-
-# ╔═╡ 2ab2979f-1ad4-4168-b59c-a25e57d4826a
-md"""
-## Kolmogorov–Smirnov test
-"""
-
-# ╔═╡ fc4dddd0-cfca-407e-ad94-622f53b148b3
-ks_scores_p = get_ks_scores(CR_p_gdf_momentum, normal_distrib_protons.pf, col = :log_dNdp_cr_pf);
-
-# ╔═╡ cfdbbdea-c4fe-44ac-9de5-70720a138286
-ks_scores_e = get_ks_scores(CR_e_gdf_momentum, normal_distrib_electrons.pf, col = :log_dNdp_cr_pf);
-
-# ╔═╡ b825855d-bdfc-4aaa-ad9e-82ee4e8d1201
-md"""
-Plot p-values in log scale? (Uncheck for linear)
-$p_values_scale_checkbox_binder
-"""
-
-# ╔═╡ cabc5f90-2e66-41fc-956a-8d2cd0b36bf5
 md"""
 Should we plot electrons? $plot_electrons_binder
 """
@@ -773,63 +693,6 @@ let
     fig
 end
 
-# ╔═╡ cee91c99-adc0-4185-a7c3-e2164b95a003
-let
-    fig = Figure()
-    ax = Axis(
-        fig[1, 1];
-        title = "Anderson–Darling p-value vs momentum slice",
-        axis_properties...,
-        xlabel = "log p (nat)",
-        yscale = p_val_yscale,
-    )
-
-    scatterlines!(ax, proton_log_p_nat, passmissing(pvalue).(ad_scores_p), color = color_pf_p, label = "protons, plasma frame"; markersize)
-    do_plot_electrons && scatterlines!(ax, electron_log_p_nat, passmissing(pvalue).(ad_scores_e), color = color_pf_e, label = "electrons, plasma frame"; markersize)
-
-    axislegend(ax, position = :lt, framevisible = false)
-
-    fig
-end
-
-# ╔═╡ a49ff5ab-6077-4bb2-b694-6f3662982745
-let
-    fig = Figure()
-    ax = Axis(
-        fig[1, 1];
-        title = "Shapiro–Wilk p-value vs momentum slice",
-        axis_properties...,
-        xlabel = "log p (nat)",
-        yscale = p_val_yscale,
-    )
-
-    scatterlines!(ax, proton_log_p_nat, passmissing(pvalue).(sw_scores_p), color = color_pf_p, label = "protons, plasma frame"; markersize)
-    do_plot_electrons && scatterlines!(ax, electron_log_p_nat, passmissing(pvalue).(sw_scores_e), color = color_pf_e, label = "electrons, plasma frame"; markersize)
-
-    axislegend(ax, position = plot_p_values_in_logscale ? :cb : :lt)
-
-    fig
-end
-
-# ╔═╡ 08542eea-964a-4f1d-aae5-2b50a628588a
-let
-    fig = Figure()
-    ax = Axis(
-        fig[1, 1];
-        title = "Kolmogorov–Smirnov p-value vs momentum slice",
-        axis_properties...,
-        xlabel = "log p (nat)",
-        yscale = p_val_yscale,
-    )
-
-    scatterlines!(ax, proton_log_p_nat, passmissing(pvalue).(ks_scores_p), color = color_pf_p, label = "protons, plasma frame"; markersize)
-    do_plot_electrons && scatterlines!(ax, electron_log_p_nat, passmissing(pvalue).(ks_scores_e), color = color_pf_e, label = "electrons, plasma frame"; markersize)
-
-    axislegend(ax, position = plot_p_values_in_logscale ? :cb : :lt, framevisible = false)
-
-    fig
-end
-
 # ╔═╡ Cell order:
 # ╟─f0e77bbd-e420-49f1-9b40-f9d994888b93
 # ╟─cd809ca8-2cc4-435d-ab8b-b7b24fa40ed1
@@ -923,15 +786,11 @@ end
 # ╟─3860d0cf-20f4-4256-9286-8757afc38ef9
 # ╠═f2fe3844-2be8-4da6-9656-40312304556b
 # ╠═97291776-74f0-428a-ab4f-3c498b630000
+# ╠═355205d3-aaf6-4eb2-90c8-332bd9c2a75b
 # ╟─452c9b2f-7138-4310-b0c6-df2be7ab8c76
 # ╠═b238afe1-3d1f-4e15-bc49-1b015a39c02c
 # ╠═78a22648-c76a-4b5c-b552-9be000a60109
 # ╠═7534104f-885d-48c5-8ae0-ddae56fcd86d
-# ╟─da107273-c428-4c68-80a9-8f82cb211497
-# ╠═49902e99-870d-4d19-afb0-1de612c185df
-# ╠═4ac32bef-af81-4f7e-8e97-7eac4dd2bf69
-# ╟─f330af91-60a6-46ac-bdc5-ec49c216fccb
-# ╠═fd47dab7-426c-44fc-8038-00e378324e41
 # ╠═d77a95bf-2d54-46d5-81ca-b671ee1db695
 # ╟─04dad413-0dc0-4ceb-81c2-e208ef082f38
 # ╟─94a91acd-a878-4c3c-9716-8bed60bf8c6c
@@ -943,24 +802,6 @@ end
 # ╟─79dc57bb-d66d-4608-a775-9dfc58af1995
 # ╟─b51148d5-cce6-4310-b7d4-dcbb6d4ac66b
 # ╟─e7a26d10-0e00-444d-a8f9-27874a8f821e
-# ╟─98675d19-3b1b-4be0-9e48-ab0ffd019647
-# ╠═2e79471f-3430-4b1c-91fe-80434de63cb2
-# ╠═bd8f636c-6033-434e-a220-a07397679431
-# ╟─89b7b4d0-fb46-4436-a48d-0731cef1dc2c
-# ╟─e68032c7-36bd-4817-9bae-09e7dcb04802
-# ╟─cee91c99-adc0-4185-a7c3-e2164b95a003
-# ╟─b499bf86-3e7a-441a-809a-934a1a8dd402
-# ╠═a2dca585-2b84-4958-8ba6-af51602c4d8a
-# ╠═ec6883c9-b6bb-4e7e-bd6d-e65d6e06144d
-# ╟─1b8925de-a9fe-4326-ad1a-a0a022ccbc6b
-# ╟─79736549-5c2c-4193-9757-16a57b0a535d
-# ╟─a49ff5ab-6077-4bb2-b694-6f3662982745
-# ╟─2ab2979f-1ad4-4168-b59c-a25e57d4826a
-# ╠═fc4dddd0-cfca-407e-ad94-622f53b148b3
-# ╠═cfdbbdea-c4fe-44ac-9de5-70720a138286
-# ╟─b825855d-bdfc-4aaa-ad9e-82ee4e8d1201
-# ╟─cabc5f90-2e66-41fc-956a-8d2cd0b36bf5
-# ╟─08542eea-964a-4f1d-aae5-2b50a628588a
 # ╟─8d03de5e-d344-4efd-b9af-dd5391028780
 # ╠═377aaf8f-b909-4c42-bc77-912fd300c300
 # ╟─32edc221-e586-4510-9427-977b22f62f6c
