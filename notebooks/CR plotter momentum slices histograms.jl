@@ -23,7 +23,7 @@ using DrWatson
 @quickactivate "MCScatteringDataAnalysis"
 
 # ╔═╡ fb9581c0-15f2-4e26-9a1b-2f6ba2bcc5b9
-using Revise
+using PlutoLinks: @revise
 
 # ╔═╡ f755007f-5573-42a1-aa39-cc0a859988a2
 using JLD2: load_object
@@ -34,11 +34,11 @@ using DataFrames
 # ╔═╡ b137e7fa-f2ce-4cb1-85d7-87078a9aa9cc
 using Distributions
 
-# ╔═╡ 800673a1-dcb4-471a-a628-74a92aee2941
-using MCScatteringDataAnalysis
-
 # ╔═╡ d8a66ccd-efdc-4b85-9af3-cfa5624c88e8
 using CairoMakie
+
+# ╔═╡ 800673a1-dcb4-471a-a628-74a92aee2941
+@revise using MCScatteringDataAnalysis
 
 # ╔═╡ 547aad6f-32db-405d-9886-a727f1591101
 begin
@@ -705,8 +705,8 @@ end
 # ╠═f755007f-5573-42a1-aa39-cc0a859988a2
 # ╠═7899ae97-fbc2-43e5-ac77-c6d725f0371e
 # ╠═b137e7fa-f2ce-4cb1-85d7-87078a9aa9cc
-# ╠═800673a1-dcb4-471a-a628-74a92aee2941
 # ╠═d8a66ccd-efdc-4b85-9af3-cfa5624c88e8
+# ╠═800673a1-dcb4-471a-a628-74a92aee2941
 # ╠═547aad6f-32db-405d-9886-a727f1591101
 # ╠═7a050dc5-7772-4933-959f-bf4fb478fc7d
 # ╠═3791e767-dcf1-4f9d-909d-a7d08e4c5f9c

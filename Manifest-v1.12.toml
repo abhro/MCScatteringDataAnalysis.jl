@@ -2,7 +2,7 @@
 
 julia_version = "1.12.5"
 manifest_format = "2.0"
-project_hash = "249291539fb4cb4858979af2395a3383b0d9cc7a"
+project_hash = "6f9d853323dfc8f5d41e8f3710adc5e8b4884ae7"
 
 [[deps.ADTypes]]
 git-tree-sha1 = "f7304359109c768cf32dc5fa2d371565bb63b68a"
@@ -1266,7 +1266,7 @@ uuid = "2fda8390-95c7-5789-9bda-21331edee243"
 version = "0.15.1"
 
 [[deps.MCScatteringDataAnalysis]]
-deps = ["AlgebraOfGraphics", "BiNormalDistributions", "CSV", "CairoMakie", "Comonicon", "DataFrames", "Dates", "DelimitedFiles", "Distributions", "DrWatson", "Format", "Glob", "HypothesisTests", "JLD2", "KernelDensity", "LinearAlgebra", "LsqFit", "Missings", "Pluto", "PlutoUI", "Printf", "Revise", "StaticArrays", "Statistics", "StatsAPI", "StatsBase"]
+deps = ["AlgebraOfGraphics", "BiNormalDistributions", "CSV", "CairoMakie", "Comonicon", "DataFrames", "Dates", "DelimitedFiles", "Distributions", "DrWatson", "Format", "Glob", "HypothesisTests", "JLD2", "KernelDensity", "LinearAlgebra", "LsqFit", "Missings", "Pluto", "PlutoLinks", "PlutoUI", "Printf", "Revise", "StaticArrays", "Statistics", "StatsAPI", "StatsBase"]
 path = "."
 uuid = "bf7559df-1170-47f2-96bf-287de9cbd746"
 version = "0.0.1"
@@ -1564,6 +1564,18 @@ deps = ["ExpressionExplorer", "InteractiveUtils", "Markdown"]
 git-tree-sha1 = "c3e5073a977b1c58b2d55c1ec187c3737e64e6af"
 uuid = "72656b73-756c-7461-726b-72656b6b696b"
 version = "1.2.2"
+
+[[deps.PlutoHooks]]
+deps = ["InteractiveUtils", "Markdown", "UUIDs"]
+git-tree-sha1 = "844a829c8dc9fd0fe62eced22bc2d0dfd66a3f51"
+uuid = "0ff47ea0-7a50-410d-8455-4348d5de0774"
+version = "0.1.0"
+
+[[deps.PlutoLinks]]
+deps = ["FileWatching", "InteractiveUtils", "Markdown", "PlutoHooks", "Revise", "UUIDs"]
+git-tree-sha1 = "10c258e189b8d097c1404ed59f6c171281a39b85"
+uuid = "0ff47ea0-7a50-410d-8455-4348d5de0420"
+version = "0.1.7"
 
 [[deps.PlutoUI]]
 deps = ["AbstractPlutoDingetjes", "Base64", "ColorTypes", "Dates", "Downloads", "FixedPointNumbers", "Hyperscript", "HypertextLiteral", "IOCapture", "InteractiveUtils", "Logging", "MIMEs", "Markdown", "Random", "Reexport", "URIs", "UUIDs"]
