@@ -1,4 +1,5 @@
 import Pkg
+using TOML
 @info "Activating temporary environment and installing PackageCompiler.jl"
 Pkg.activate(; temp = true)
 Pkg.add("PackageCompiler")
@@ -21,8 +22,12 @@ end
 
 sysimage_path = "project-sysimage.$extension"
 precompile_statements_file = "compile-statements.jl"
-packages = nothing # replace with vector of packages as needed
 project = pwd()
+
+# Get the packages as the ones explicitly in the Project.toml. This excludes self.
+packages = TOML.parsefile(joinpath(project, "Project.toml"))["deps"] |> keys |> collect
+@debug "Putting the following in the sysimage" packages
+
 import_into_main = false
-flush(handle)
+
 create_sysimage(packages; project, sysimage_path, precompile_statements_file, import_into_main)
