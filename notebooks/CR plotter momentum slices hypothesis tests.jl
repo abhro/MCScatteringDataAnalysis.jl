@@ -17,13 +17,13 @@ macro bind(def, element)
 end
 
 # ╔═╡ f1ee2cb0-8274-11ef-0826-f55183647219
-using DrWatson
-
-# ╔═╡ e5e0e4e2-2df1-4536-9cc5-bdcec6fc13de
-@quickactivate "MCScatteringDataAnalysis"
+import Pkg; Pkg.activate(Base.current_project())
 
 # ╔═╡ fb9581c0-15f2-4e26-9a1b-2f6ba2bcc5b9
 using Revise
+
+# ╔═╡ e5e0e4e2-2df1-4536-9cc5-bdcec6fc13de
+using DrWatson: datadir
 
 # ╔═╡ b0f9b523-5272-4735-8c0a-1694ffbf72fd
 using JLD2: load_object
