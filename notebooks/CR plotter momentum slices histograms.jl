@@ -368,8 +368,14 @@ SSE_hist(log_dNdp, fitted_dist_curve)
 # ╔═╡ 89f8d7a8-ea2e-4906-9460-da16154b0404
 sum(logpdf.(fitted_dist_curve, log_dNdp))
 
+# ╔═╡ b238afe1-3d1f-4e15-bc49-1b015a39c02c
+proton_distances = bcdistances(normal_distrib_protons.pf, normal_distrib_protons_from_curves.pf)
+
 # ╔═╡ 97291776-74f0-428a-ab4f-3c498b630000
 normal_distrib_electrons_from_curves = fitdistributions(v -> fit_dist_to_histogram(Normal, v; nbins = bins), CR_e_gdf_momentum)
+
+# ╔═╡ 78a22648-c76a-4b5c-b552-9be000a60109
+electron_distances = bcdistances(normal_distrib_electrons.pf, normal_distrib_electrons_from_curves.pf)
 
 # ╔═╡ 355205d3-aaf6-4eb2-90c8-332bd9c2a75b
 md"""
@@ -381,11 +387,10 @@ md"""
 ### Distribution agreement curve
 """
 
-# ╔═╡ b238afe1-3d1f-4e15-bc49-1b015a39c02c
-proton_distances = bcdistances(normal_distrib_protons.pf, normal_distrib_protons_from_curves.pf)
-
-# ╔═╡ 78a22648-c76a-4b5c-b552-9be000a60109
-electron_distances = bcdistances(normal_distrib_electrons.pf, normal_distrib_electrons_from_curves.pf)
+# ╔═╡ e890ae58-8664-4234-88d6-4e6da5624a55
+md"""
+Should we plot electrons? $plot_electrons_binder
+"""
 
 # ╔═╡ d77a95bf-2d54-46d5-81ca-b671ee1db695
 p_values_scale_checkbox_binder = @bind plot_p_values_in_logscale CheckBox();
@@ -674,7 +679,7 @@ let
         yscale = p_val_yscale,
     )
     scatterlines!(ax, proton_log_p_nat, proton_distances; label = "protons, plasma frame", markersize)
-    scatterlines!(ax, electron_log_p_nat, electron_distances; label = "electrons, plasma frame", markersize)
+    do_plot_electrons && scatterlines!(ax, electron_log_p_nat, electron_distances; label = "electrons, plasma frame", markersize)
     axislegend(ax, position = :ct)
     fig
 end
@@ -800,6 +805,7 @@ end
 # ╟─452c9b2f-7138-4310-b0c6-df2be7ab8c76
 # ╠═b238afe1-3d1f-4e15-bc49-1b015a39c02c
 # ╠═78a22648-c76a-4b5c-b552-9be000a60109
+# ╟─e890ae58-8664-4234-88d6-4e6da5624a55
 # ╟─b1c91648-8150-4694-9c2f-4d4a9cf6c195
 # ╠═7534104f-885d-48c5-8ae0-ddae56fcd86d
 # ╠═d77a95bf-2d54-46d5-81ca-b671ee1db695
