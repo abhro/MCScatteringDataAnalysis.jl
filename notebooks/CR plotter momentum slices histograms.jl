@@ -277,9 +277,6 @@ md"""
 (log-)Likelihoods for analytical fit and histogram curve fit:
 """
 
-# ╔═╡ 29ec59ad-0e22-462a-ab6d-2065a56fc001
-x, y = get_hist_curve(log_dNdp; nbins = bins)
-
 # ╔═╡ 6cb898b3-98c5-4f3a-8d77-3deef7cf5358
 md"""
 ---
@@ -772,7 +769,6 @@ end
 # ╟─aebbf1a7-d047-4fa6-aa36-4b9ae8b68127
 # ╠═55d8c831-27e6-4914-a836-7a05281e8fb3
 # ╠═89f8d7a8-ea2e-4906-9460-da16154b0404
-# ╠═29ec59ad-0e22-462a-ab6d-2065a56fc001
 # ╠═32f07cd2-f62f-41e0-9211-8ac333bdd98d
 # ╟─6cb898b3-98c5-4f3a-8d77-3deef7cf5358
 # ╟─2374b968-1172-48db-8ddd-7b4deae7817c
