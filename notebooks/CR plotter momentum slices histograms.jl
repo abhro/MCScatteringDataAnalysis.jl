@@ -389,6 +389,12 @@ electron_distances = bcdistances(normal_distrib_electrons.pf, normal_distrib_ele
 # ╔═╡ d77a95bf-2d54-46d5-81ca-b671ee1db695
 p_values_scale_checkbox_binder = @bind plot_p_values_in_logscale CheckBox();
 
+# ╔═╡ b1c91648-8150-4694-9c2f-4d4a9cf6c195
+md"""
+Plot p-values in log scale? (Uncheck for linear)
+$p_values_scale_checkbox_binder
+"""
+
 # ╔═╡ 04dad413-0dc0-4ceb-81c2-e208ef082f38
 p_val_yscale = plot_p_values_in_logscale ? log10 : identity;
 
@@ -661,10 +667,10 @@ let
     fig = Figure()
     ax = Axis(
         fig[1, 1];
-        yscale = log10,
         axis_properties...,
         title = "Distribution agreement curve",
-        xlabel = "log p (nat)", ylabel = "Bhattacharya distance"
+        xlabel = "log p (nat)", ylabel = "Bhattacharya distance",
+        yscale = p_val_yscale,
     )
     scatterlines!(ax, proton_log_p_nat, proton_distances; label = "protons, plasma frame", markersize)
     scatterlines!(ax, electron_log_p_nat, electron_distances; label = "electrons, plasma frame", markersize)
@@ -794,6 +800,7 @@ end
 # ╟─452c9b2f-7138-4310-b0c6-df2be7ab8c76
 # ╠═b238afe1-3d1f-4e15-bc49-1b015a39c02c
 # ╠═78a22648-c76a-4b5c-b552-9be000a60109
+# ╟─b1c91648-8150-4694-9c2f-4d4a9cf6c195
 # ╠═7534104f-885d-48c5-8ae0-ddae56fcd86d
 # ╠═d77a95bf-2d54-46d5-81ca-b671ee1db695
 # ╟─04dad413-0dc0-4ceb-81c2-e208ef082f38
