@@ -167,7 +167,11 @@ axis_properties = (
 )
 
 # ╔═╡ f86707a1-9d79-4df8-8798-3f7ea1d1797c
+# bins = 40;
+# bins = 50;
 bins = 90;
+# bins = 180;
+# bins = 900;
 
 # ╔═╡ 50b1a87f-49ff-4d93-aa6e-f042a87b875e
 color_pf_p, color_sf_p, color_ISM_p, color_pf_e, color_sf_e, color_ISM_e = Makie.wong_colors();
