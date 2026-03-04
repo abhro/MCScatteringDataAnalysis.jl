@@ -248,6 +248,12 @@ md"""
 #### Mean with uncertainty envelope
 """
 
+# ╔═╡ d9b1e2c3-d3d3-4bdb-b4b2-c7849f61d2c9
+md"""
+!!! note
+    TODO: draw vlines at different momenta for thesis, then pull the histograms out of them to show that if we pick a momentum, it has an entire sample set with a given histogram and a distribution. Pick some from low, middle, and high end of spectra.
+"""
+
 # ╔═╡ 5767b9ac-64c2-4d2f-ad42-961184c7edc7
 md"""
 ### Standard deviations
@@ -626,6 +632,7 @@ end
 # ╟─932c2a77-0198-4df4-a4bd-30d0bda93946
 # ╟─91bba2da-c925-4123-bb8a-c1f9be8619e9
 # ╟─7da22399-718c-4f16-ba02-7ae27773942b
+# ╠═d9b1e2c3-d3d3-4bdb-b4b2-c7849f61d2c9
 # ╟─3f36fc06-3799-41f3-971b-d13d43e5fc20
 # ╟─5767b9ac-64c2-4d2f-ad42-961184c7edc7
 # ╟─b6ce51e5-b4ff-49eb-83db-ecf3e8a081ac

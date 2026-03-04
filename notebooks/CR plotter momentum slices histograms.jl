@@ -392,6 +392,12 @@ md"""
 Should we plot electrons? $plot_electrons_binder
 """
 
+# ╔═╡ 1e90778b-ce06-4b77-b0c2-93c87f78f1ec
+md"""
+!!! note
+    Robust enough for different bin sizes.
+"""
+
 # ╔═╡ d77a95bf-2d54-46d5-81ca-b671ee1db695
 p_values_scale_checkbox_binder = @bind plot_p_values_in_logscale CheckBox();
 
@@ -681,6 +687,7 @@ let
     scatterlines!(ax, proton_log_p_nat, proton_distances; label = "protons, plasma frame", markersize)
     do_plot_electrons && scatterlines!(ax, electron_log_p_nat, electron_distances; label = "electrons, plasma frame", markersize)
     axislegend(ax, position = :ct)
+    vlines!(ax, 7.5, linewidth = 0.4)
     fig
 end
 
@@ -807,6 +814,7 @@ end
 # ╠═78a22648-c76a-4b5c-b552-9be000a60109
 # ╟─e890ae58-8664-4234-88d6-4e6da5624a55
 # ╟─b1c91648-8150-4694-9c2f-4d4a9cf6c195
+# ╟─1e90778b-ce06-4b77-b0c2-93c87f78f1ec
 # ╠═7534104f-885d-48c5-8ae0-ddae56fcd86d
 # ╠═d77a95bf-2d54-46d5-81ca-b671ee1db695
 # ╟─04dad413-0dc0-4ceb-81c2-e208ef082f38
