@@ -470,7 +470,7 @@ let df = CR_p_gdf_momentum[proton_momentum_index], distribs = normal_distrib_pro
 
         curve_fit_distrib = normal_distrib_protons_from_curves.pf[proton_momentum_index]
         if !ismissing(curve_fit_distrib)
-            plot!(ax, curve_fit_distrib, label = @sprintf("Curve fit 𝒩 (%.6f, %.6f)", params(distrib)...), color = :orange)
+            plot!(ax, curve_fit_distrib, label = @sprintf("Curve fit 𝒩 (%.6f, %.6f)", params(curve_fit_distrib)...), color = :orange)
         end
     end
 
