@@ -8,7 +8,14 @@ repo_root = normpath(@__DIR__, "..")
 @info "Moving to $repo_root"
 cd(repo_root)
 
-ENV["JULIA_DEBUG"] = "Pkg,PackageCompiler"
+dbg_modules_preset = get(ENV, "JULIA_DEBUG", "")
+##dbg_modules_extra = "Pkg,PackageCompiler,Core,Main"
+dbg_modules_extra = "Pkg,PackageCompiler"
+if isempty(dbg_modules_preset)
+    ENV["JULIA_DEBUG"] = dbg_modules_preset * "," * dbg_modules_extra
+else
+    ENV["JULIA_DEBUG"] = dbg_modules_extra
+end
 
 using PackageCompiler
 
