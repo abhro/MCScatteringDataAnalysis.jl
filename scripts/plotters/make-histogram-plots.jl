@@ -130,10 +130,17 @@ function get_parser()
         Dict(:help => "Where to look for the .jld2 files", :required => true),
         "out-dir",
         Dict(:help => "Where to save the plots", :required => true),
+
         "--bins",
-        Dict(:help => "Number of bins to use for the histogram", :default => 90, :arg_type => Integer),
+        Dict(
+            :help => "Number of bins to use for the histogram",
+            :default => 90,
+            :arg_type => Integer,
+            :metavar => "N",
+        ),
         "--column",
         Dict(:help => "Which column of the dataframe to bin", :default => :log_dNdp_cr_pf),
+
         "--plot-electrons",
         Dict(:help => "Whether we should also plot electrons", :action => :store_true),
         "--no-plot-electrons",
