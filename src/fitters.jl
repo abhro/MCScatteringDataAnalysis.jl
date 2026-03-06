@@ -61,7 +61,7 @@ Fit a distribution given a histogram. Uses a root finder on the MLE equation.
 """
 function StatsAPI.fit(T::Type{<:Distribution}, h::Histogram, θ₀)
     x, y = get_hist_curve(h)
-    model(x, θ) = pdf(T(θ), x)
+    model(x, θ) = pdf(T(θ...), x)
 
     # We want the histogram curve and the pdf to overlap as much as possible
     fit = curve_fit(model, x, y, θ₀)
@@ -69,7 +69,7 @@ function StatsAPI.fit(T::Type{<:Distribution}, h::Histogram, θ₀)
     # best fit parameters
     θ_best = fit.params
 
-    return T(θ_best)
+    return T(θ_best...)
 end
 
 """
