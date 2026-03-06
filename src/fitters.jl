@@ -164,20 +164,20 @@ function fitdistributions(fitfunc, gdf::GroupedDataFrame)
 end
 
 """
-    fitnormal(x::AbstractVector)
+    fitnormal(x::AbstractVector; corrected = false)
 
 Analogue of `fitdistribution`, but directly constructs a `Normal` using the mean and variance.
 
-Note: Does not use the Bessel correction for the variance
+Note: Does not use the Bessel correction for the variance by default (set `corrected`)
 """
-function fitnormal(x::AbstractVector)
+function fitnormal(x::AbstractVector; corrected = false)
     x = collect(skipmissing(x))
     if isempty(x) # don't fit to a dataset with only missing values
         return missing
     end
 
     μ = mean(x)
-    σ = std(x, corrected = false, mean = μ)
+    σ = std(x; corrected, mean = μ)
     if isnan(μ) || isnan(σ)
         return missing
     end
