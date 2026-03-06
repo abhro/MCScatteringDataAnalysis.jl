@@ -5,6 +5,7 @@ version = "0.0.1"
 
 [deps]
 AlgebraOfGraphics = "cbdf2221-f076-402e-a563-3d30da359d67"
+ArgParse = "c7e460c6-2fb9-53a9-8c5b-16f535851c63"
 BiNormalDistributions = "35cb82aa-8885-40e5-a2ce-8461cb5c8dfc"
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
 CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
@@ -37,6 +38,7 @@ BiNormalDistributions = {rev = "main", url = "https://github.com/abhro/BiNormalD
 
 [compat]
 AlgebraOfGraphics = "=0.12.1"
+ArgParse = "=1.2.0"
 CSV = "=0.10.15"
 CairoMakie = "=0.15.8"
 Comonicon = "=1.0.8"

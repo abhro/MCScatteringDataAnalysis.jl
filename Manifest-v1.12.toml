@@ -2,7 +2,7 @@
 
 julia_version = "1.12.5"
 manifest_format = "2.0"
-project_hash = "6f9d853323dfc8f5d41e8f3710adc5e8b4884ae7"
+project_hash = "db0e6be819c3c1d5bd2df916e083e431568b6b3b"
 
 [[deps.ADTypes]]
 git-tree-sha1 = "f7304359109c768cf32dc5fa2d371565bb63b68a"
@@ -106,6 +106,12 @@ deps = ["Colors"]
 git-tree-sha1 = "e092fa223bf66a3c41f9c022bd074d916dc303e7"
 uuid = "27a7e980-b3e6-11e9-2bcd-0b925532e340"
 version = "0.4.2"
+
+[[deps.ArgParse]]
+deps = ["Logging", "TextWrap"]
+git-tree-sha1 = "22cf435ac22956a7b45b0168abbc871176e7eecc"
+uuid = "c7e460c6-2fb9-53a9-8c5b-16f535851c63"
+version = "1.2.0"
 
 [[deps.ArgTools]]
 uuid = "0dad84c5-d112-42e6-8d28-ef12dabb789f"
@@ -1266,7 +1272,7 @@ uuid = "2fda8390-95c7-5789-9bda-21331edee243"
 version = "0.15.1"
 
 [[deps.MCScatteringDataAnalysis]]
-deps = ["AlgebraOfGraphics", "BiNormalDistributions", "CSV", "CairoMakie", "Comonicon", "DataFrames", "Dates", "DelimitedFiles", "Distributions", "DrWatson", "Format", "Glob", "HypothesisTests", "JLD2", "KernelDensity", "LinearAlgebra", "LsqFit", "Missings", "Pluto", "PlutoLinks", "PlutoUI", "Printf", "Revise", "StaticArrays", "Statistics", "StatsAPI", "StatsBase"]
+deps = ["AlgebraOfGraphics", "ArgParse", "BiNormalDistributions", "CSV", "CairoMakie", "Comonicon", "DataFrames", "Dates", "DelimitedFiles", "Distributions", "DrWatson", "Format", "Glob", "HypothesisTests", "JLD2", "KernelDensity", "LinearAlgebra", "LsqFit", "Missings", "Pluto", "PlutoLinks", "PlutoUI", "Printf", "Revise", "StaticArrays", "Statistics", "StatsAPI", "StatsBase"]
 path = "."
 uuid = "bf7559df-1170-47f2-96bf-287de9cbd746"
 version = "0.0.1"
@@ -2021,6 +2027,11 @@ version = "0.1.1"
 deps = ["InteractiveUtils", "Logging", "Random", "Serialization"]
 uuid = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 version = "1.11.0"
+
+[[deps.TextWrap]]
+git-tree-sha1 = "43044b737fa70bc12f6105061d3da38f881a3e3c"
+uuid = "b718987f-49a8-5099-9789-dcd902bef87d"
+version = "1.0.2"
 
 [[deps.TiffImages]]
 deps = ["ColorTypes", "DataStructures", "DocStringExtensions", "FileIO", "FixedPointNumbers", "IndirectArrays", "Inflate", "Mmap", "OffsetArrays", "PkgVersion", "PrecompileTools", "ProgressMeter", "SIMD", "UUIDs"]
