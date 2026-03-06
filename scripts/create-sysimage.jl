@@ -9,8 +9,8 @@ repo_root = normpath(@__DIR__, "..")
 cd(repo_root)
 
 dbg_modules_preset = get(ENV, "JULIA_DEBUG", "")
-##dbg_modules_extra = "Pkg,PackageCompiler,Core,Main"
-dbg_modules_extra = "Pkg,PackageCompiler"
+dbg_modules_extra = "Pkg,PackageCompiler,Main"
+##dbg_modules_extra *= ",Core"
 if isempty(dbg_modules_preset)
     ENV["JULIA_DEBUG"] = dbg_modules_preset * "," * dbg_modules_extra
 else
