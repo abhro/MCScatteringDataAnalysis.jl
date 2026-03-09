@@ -40,6 +40,7 @@ Pluto.run(;
     #root_url = "http://$hostname:$port/",
     sysimage,
     launch_browser,
+    depwarn = "error",
     auto_reload_from_file = true,
     enable_ai_editor_features = false,
 )
