@@ -137,7 +137,7 @@ axis_properties = (
     yminorgridvisible = true,
     xminorticksvisible = true,
     yminorticksvisible = true,
-    xlabel = "log(dN/dp)",
+    xlabel = "log p (nat)",
 )
 
 # ╔═╡ 50b1a87f-49ff-4d93-aa6e-f042a87b875e
@@ -351,7 +351,7 @@ let
         fig[1, 1];
         title = "Sample size vs momentum slice",
         axis_properties...,
-        xlabel = "log p (nat)", ylabel = "# of samples",
+        ylabel = "# of samples",
     )
 
     if do_plot_pf
@@ -393,7 +393,7 @@ let
         fig[1, 1];
         title = "Sample mean vs momentum slice",
         axis_properties...,
-        xlabel = "log p (nat)", ylabel = "⟨log dN/dp⟩",
+        ylabel = "⟨log dN/dp⟩",
     )
 
     if do_plot_pf
@@ -435,7 +435,7 @@ let
         fig[1, 1];
         title = "Sample mean vs momentum slice",
         axis_properties...,
-        xlabel = "log p (nat)", ylabel = "⟨log dN/dp⟩",
+        ylabel = "⟨log dN/dp⟩",
     )
 
     if do_plot_pf
@@ -489,7 +489,7 @@ let
         fig[1, 1];
         title = "Sample standard deviation vs momentum slice",
         axis_properties...,
-        xlabel = "log p (nat)", ylabel = "σ",
+        ylabel = "σ",
         # yscale = log10,
     )
     markersize = 4
@@ -533,7 +533,7 @@ let
         fig[1, 1];
         title = "Sample skewness vs momentum slice",
         axis_properties...,
-        xlabel = "log p (nat)", ylabel = "γ",
+        ylabel = "γ",
         #yscale = log10,
     )
 
@@ -560,7 +560,7 @@ let
         fig[1, 1];
         title = "Sample kurtosis vs momentum slice",
         axis_properties...,
-        xlabel = "log p (nat)", ylabel = "Kurtosis",
+        ylabel = "Kurtosis",
         #yscale = log10,
     )
 
