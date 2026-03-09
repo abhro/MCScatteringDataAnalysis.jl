@@ -147,7 +147,10 @@ function get_parser()
         Dict(:dest_name => "plot-electrons", :action => :store_false),
 
         "--mle-fit",
-        Dict(:help => "Whether to overlay a plot of the MLE fitted Gaussian distribution", :action => :store_true),
+        Dict(
+            :help => "Whether to overlay a plot of the MLE fitted Gaussian distribution",
+            :action => :store_true,
+        ),
         "--no-mle-fit",
         Dict(:dest_name => "mle-fit", :action => :store_false),
 
