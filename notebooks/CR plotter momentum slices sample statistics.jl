@@ -17,10 +17,10 @@ macro bind(def, element)
 end
 
 # ╔═╡ f1ee2cb0-8274-11ef-0826-f55183647219
-using DrWatson
+import Pkg; Pkg.activate(Base.current_project())
 
 # ╔═╡ e5e0e4e2-2df1-4536-9cc5-bdcec6fc13de
-@quickactivate "MCScatteringDataAnalysis"
+using DrWatson: datadir
 
 # ╔═╡ 7899ae97-fbc2-43e5-ac77-c6d725f0371e
 using JLD2, DataFrames
