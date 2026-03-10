@@ -96,7 +96,7 @@ function make_plot(samples, dist; bins, yscale, mle_fit)
     fig = Figure()
     ax = Axis(
         fig[1, 1];
-        xlabel = "log(dN/dp)", ylabel = "pdf",
+        ylabel = "pdf",
         yscale,
         ##title = "Histogram of protons dN/dp at log p = $log_p_nat_at_slice_p (mₚc)",
         axis_properties...
