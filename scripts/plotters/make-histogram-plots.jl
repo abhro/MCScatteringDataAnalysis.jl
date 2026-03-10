@@ -135,7 +135,7 @@ function get_parser()
         Dict(
             :help => "Number of bins to use for the histogram",
             :default => 90,
-            :arg_type => Integer,
+            :arg_type => Int64,
             :metavar => "N",
         ),
         "--column",
