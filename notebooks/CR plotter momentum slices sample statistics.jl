@@ -187,6 +187,15 @@ md"""
 ## Sample statistics
 """
 
+# ╔═╡ ad0e0d21-707c-4c3f-bc5f-3e3718421f13
+function span(v::AbstractArray{T}) where {T}
+    if isempty(v)
+        return zero(T)
+	end
+    vmin, vmax = extrema(v)
+    return vmax - vmin
+end
+
 # ╔═╡ c09cf00d-0a07-4159-9009-45afdb8343fb
 CR_p_mean_log_dNdp = (;
     pf = gdf_sample_stats(mean, CR_p_gdf_momentum; column = :log_dNdp_cr_pf),
@@ -206,6 +215,20 @@ CR_p_std_log_dNdp = (;
     pf = gdf_sample_stats(std, CR_p_gdf_momentum; column = :log_dNdp_cr_pf),
     sf = gdf_sample_stats(std, CR_p_gdf_momentum; column = :log_dNdp_cr_sf),
     ISM = gdf_sample_stats(std, CR_p_gdf_momentum; column = :log_dNdp_cr_ISM),
+);
+
+# ╔═╡ 8b453952-b190-45c3-9cfa-5a5df29bbe0f
+CR_p_std_scaled_log_dNdp = (;
+    pf = gdf_sample_stats(v -> std(v)/span(v), CR_p_gdf_momentum; column = :log_dNdp_cr_pf),
+    sf = gdf_sample_stats(v -> std(v)/span(v), CR_p_gdf_momentum; column = :log_dNdp_cr_sf),
+    ISM = gdf_sample_stats(v -> std(v)/span(v), CR_p_gdf_momentum; column = :log_dNdp_cr_ISM),
+);
+
+# ╔═╡ 7a17522e-6ab4-48bc-9902-81b760ec01b1
+CR_e_std_scaled_log_dNdp = (;
+    pf = gdf_sample_stats(v -> std(v)/span(v), CR_e_gdf_momentum; column = :log_dNdp_cr_pf),
+    sf = gdf_sample_stats(v -> std(v)/span(v), CR_e_gdf_momentum; column = :log_dNdp_cr_sf),
+    ISM = gdf_sample_stats(v -> std(v)/span(v), CR_e_gdf_momentum; column = :log_dNdp_cr_ISM),
 );
 
 # ╔═╡ 734626db-7646-4a0c-9303-2aec6e371159
@@ -262,6 +285,11 @@ md"""
 # ╔═╡ 7495e7e9-3d50-4401-baef-d2e3c11e6b46
 md"""
 ### Skewness
+"""
+
+# ╔═╡ de5f1493-a018-40cd-8b30-0681f1c61768
+md"""
+Should we plot electrons? $plot_electrons_binder
 """
 
 # ╔═╡ bb3a74ce-78ee-487e-a413-4c0e035e8818
@@ -526,6 +554,44 @@ let
     fig
 end
 
+# ╔═╡ 6266b083-269c-442b-8682-2587c944a276
+let
+    fig = Figure()
+    ax = Axis(
+        fig[1, 1];
+        title = "Sample standard deviation over data range vs momentum slice",
+        axis_properties...,
+        ylabel = "σ/span(v)",
+        yscale = log10,
+    )
+    markersize = 4
+
+    if do_plot_pf
+        scatterlines!(ax, proton_log_p_nat, CR_p_std_scaled_log_dNdp.pf; color = color_pf_p, label = "protons, plasma frame", markersize)
+
+        if do_plot_electrons
+            scatterlines!(ax, electron_log_p_nat, CR_e_std_scaled_log_dNdp.pf; color = color_pf_e, label = "electrons, plasma frame", markersize)
+        end
+    end
+    if do_plot_sf
+        scatterlines!(ax, proton_log_p_nat, CR_p_std_scaled_log_dNdp.sf; color = color_sf_p, label = "protons, shock frame", markersize)
+
+        if do_plot_electrons
+            scatterlines!(ax, electron_log_p_nat, CR_e_std_scaled_log_dNdp.sf; color = color_sf_e, label = "electrons, shock frame", markersize)
+        end
+    end
+    if do_plot_ISM
+        scatterlines!(ax, proton_log_p_nat, CR_p_std_scaled_log_dNdp.ISM; color = color_ISM_p, label = "protons, ISM frame", markersize)
+
+        if do_plot_electrons
+            scatterlines!(ax, electron_log_p_nat, CR_e_std_scaled_log_dNdp.ISM; color = color_ISM_e, label = "electrons, ISM frame", markersize)
+        end
+    end
+    axislegend(ax, position = :lt, framevisible = false)
+
+    fig
+end
+
 # ╔═╡ adf24143-4be1-46c7-a63a-fe4dd490791d
 let
     fig = Figure()
@@ -619,9 +685,12 @@ end
 # ╠═60deb76f-3efe-4e0d-b176-9f0169259dca
 # ╠═4553a97d-6b78-4268-90de-d8bee348d3d4
 # ╟─3bf64608-0fa2-4fcb-9782-fd7a8de47bda
+# ╠═ad0e0d21-707c-4c3f-bc5f-3e3718421f13
 # ╠═c09cf00d-0a07-4159-9009-45afdb8343fb
 # ╠═a8fdec46-2d8d-4a06-800a-7e03c64468dd
 # ╠═a9b9b9aa-b850-49de-8412-2930e7004a36
+# ╠═8b453952-b190-45c3-9cfa-5a5df29bbe0f
+# ╠═7a17522e-6ab4-48bc-9902-81b760ec01b1
 # ╠═734626db-7646-4a0c-9303-2aec6e371159
 # ╟─e85bc3ef-97a4-4d0e-937e-3ca290a28086
 # ╟─88527827-9710-4c63-964f-691aa8909d1f
@@ -636,7 +705,9 @@ end
 # ╟─3f36fc06-3799-41f3-971b-d13d43e5fc20
 # ╟─5767b9ac-64c2-4d2f-ad42-961184c7edc7
 # ╟─b6ce51e5-b4ff-49eb-83db-ecf3e8a081ac
+# ╠═6266b083-269c-442b-8682-2587c944a276
 # ╟─7495e7e9-3d50-4401-baef-d2e3c11e6b46
+# ╟─de5f1493-a018-40cd-8b30-0681f1c61768
 # ╟─adf24143-4be1-46c7-a63a-fe4dd490791d
 # ╟─bb3a74ce-78ee-487e-a413-4c0e035e8818
 # ╟─67533f87-b016-45fe-b582-53c3c225c056
