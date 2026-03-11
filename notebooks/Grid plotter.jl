@@ -5,10 +5,10 @@ using Markdown
 using InteractiveUtils
 
 # ╔═╡ 8cecd3b0-d2b1-11ef-35c7-1fb9d13a3262
-using DrWatson
+using Pkg; Pkg.activate(Base.current_project())
 
 # ╔═╡ e5e0e4e2-2df1-4536-9cc5-bdcec6fc13de
-@quickactivate "MCScatteringDataAnalysis"
+using DrWatson: datadir
 
 # ╔═╡ a0c6b97e-f294-4c6e-ac80-7bfc902d58e7
 using CSV, DataFrames
@@ -66,20 +66,74 @@ describe(grid_df)
 # ╔═╡ 2c672cea-a59a-4bab-a4fc-42276cad6127
 grid_df_grouped = groupby(grid_df, [:initial_seed, :itr]);
 
+# ╔═╡ d073743c-25db-40d2-a1c9-3c1d7e62b2f3
+length(grid_df_grouped)
+
 # ╔═╡ 18160515-3f5d-43c5-a4e4-4738e3500ac6
-df_to_plot_index = 5
+df_to_plot_index = 5000
 
 # ╔═╡ 0bb14d0b-0cb6-457a-b8d6-19d07fa74e36
 df_to_plot = grid_df_grouped[df_to_plot_index]
+
+# ╔═╡ bc7a7fe4-d0b4-4d7b-9fc4-32b88e465539
+grid_axis_log_rg = df_to_plot[!, :x_grid_log]
+
+# ╔═╡ bc556f5b-6702-4baa-b8a6-c3446b34605f
+grid_axis_log_cm = df_to_plot[!, :x_grid_log_cm]
+
+# ╔═╡ bfd2cce3-e6e1-4802-b1c7-c7cfbf4dcfc8
+let
+    fig = Figure()
+    ax = Axis(fig[1, 1]; title = "Velocity profile", xlabel = "log x (r_g)")
+    lines!(ax, grid_axis_log_rg, df_to_plot.ux_norm, label = "ux_norm")
+    lines!(ax, grid_axis_log_rg, df_to_plot.uz_norm, label = "uz_norm")
+
+    axislegend(ax, framevisible = false, position = :lc)
+
+    fig
+end
+
+# ╔═╡ f0d19c52-943c-4896-8248-119419c13f29
+let
+    fig = Figure()
+    ax = Axis(fig[1, 1]; title = "Velocity profile", xlabel = "log x (cm)")
+    lines!(ax, grid_axis_log_cm, df_to_plot.ux_norm, label = "ux_norm")
+    lines!(ax, grid_axis_log_cm, df_to_plot.uz_norm, label = "uz_norm")
+
+    axislegend(ax, framevisible = false, position = :lc)
+
+    fig
+end
 
 # ╔═╡ 79401d93-a2b7-4dac-beed-0e52d33d7f23
 let
     fig = Figure()
     ax = Axis(fig[1, 1])
-    lines!(ax, df_to_plot.x_grid_log, df_to_plot.pressure_tot_MC_log, label = "pressure_tot_MC_log")
-    lines!(ax, df_to_plot.x_grid_log, df_to_plot.pxx_norm_log, label = "pxx_norm_log")
-    lines!(ax, df_to_plot.x_grid_log, df_to_plot.en_norm_log, label = "en_norm_log")
-    lines!(ax, df_to_plot.x_grid_log, df_to_plot.bmag_log, label = "bmag_log")
+    lines!(ax, grid_axis_log_rg, df_to_plot.pressure_tot_MC_log, label = "pressure_tot_MC_log")
+    lines!(ax, grid_axis_log_rg, df_to_plot.pxx_norm_log, label = "pxx_norm_log")
+    lines!(ax, grid_axis_log_rg, df_to_plot.en_norm_log, label = "en_norm_log")
+
+    axislegend(ax, framevisible = false, position = :rb)
+
+    fig
+end
+
+# ╔═╡ 95b61332-bc46-4e04-9d51-dd1bdb0eccc2
+let
+    fig = Figure()
+    ax = Axis(fig[1, 1]; title = "Mean field magnetic strength", xlabel = "log x (r_g)")
+    lines!(ax, grid_axis_log_rg, df_to_plot.bmag_log, label = "bmag_log")
+
+    axislegend(ax, framevisible = false, position = :rb)
+
+    fig
+end
+
+# ╔═╡ 07673943-6c28-445b-bda3-dc6a232b3269
+let
+    fig = Figure()
+    ax = Axis(fig[1, 1]; title = "Mean field magnetic strength", xlabel = "log x (cm)")
+    lines!(ax, grid_axis_log_cm, df_to_plot.bmag_log, label = "bmag_log")
 
     axislegend(ax, framevisible = false, position = :rb)
 
@@ -102,6 +156,13 @@ end
 # ╠═4c194f9d-bf3b-4547-bc29-bf73a4570551
 # ╠═6e28bd19-e152-420b-905b-58ffcfc84f8f
 # ╠═2c672cea-a59a-4bab-a4fc-42276cad6127
+# ╠═d073743c-25db-40d2-a1c9-3c1d7e62b2f3
 # ╠═18160515-3f5d-43c5-a4e4-4738e3500ac6
 # ╠═0bb14d0b-0cb6-457a-b8d6-19d07fa74e36
+# ╠═bc7a7fe4-d0b4-4d7b-9fc4-32b88e465539
+# ╠═bc556f5b-6702-4baa-b8a6-c3446b34605f
+# ╠═bfd2cce3-e6e1-4802-b1c7-c7cfbf4dcfc8
+# ╠═f0d19c52-943c-4896-8248-119419c13f29
 # ╠═79401d93-a2b7-4dac-beed-0e52d33d7f23
+# ╠═95b61332-bc46-4e04-9d51-dd1bdb0eccc2
+# ╠═07673943-6c28-445b-bda3-dc6a232b3269
