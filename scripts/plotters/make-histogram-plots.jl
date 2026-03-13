@@ -3,9 +3,10 @@ using DataFrames
 using LinearAlgebra: normalize
 using CairoMakie
 using StatsBase
-using Distributions
+using Distributions: Normal, params
 using Printf: @sprintf
-using ArgParse
+using ArgParse: ArgParseSettings, add_arg_table!, parse_args
+using MCScatteringDataAnalysis: fit_dist_to_histogram
 
 const normalization = :pdf
 
@@ -26,29 +27,16 @@ function (@main)(args)
     bins = args["bins"]
 
     yscale = args["log-scale"] ? log10 : identity
-    mle_fit = args["mle-fit"]
+    should_plot_mle_fit = args["mle-fit"]
+    should_plot_hist_fit = args["hist-fit"]
 
     CR_p_gdf_momentum_filename = joinpath(dir, "dNdp-CR-protons-momentum-split.jld2")
     CR_p_gdf_momentum = load_object(CR_p_gdf_momentum_filename)
     proton_log_p_nat = keys(CR_p_gdf_momentum) .|> values .|> first
 
     @info("Starting plots of protons")
-    # loop over momentum slices in particle species
-    for (log_p, df) in zip(proton_log_p_nat, CR_p_gdf_momentum)
-        log_nₚ = df[!, column] |> skipmissing |> collect
-        if isempty(log_nₚ)
-            continue
-        end
-        # make histogram of the thing -- ends up not being used :/
-        ##histfit = fit(Histogram, log_nₚ; nbins = bins)
-        ##histfit = normalize(histfit, mode = :pdf)
-        # make normal distribution of the thing
-        distfit = fit(Normal, log_nₚ)
-        # make the plot of the thing
-        fig = make_plot(log_nₚ, distfit; bins, yscale, mle_fit)
-        filename = @sprintf("proton-momentum-slice-histogram-log-p-%.01f-mpc.svg", log_p)
-        save(joinpath(outdir, filename), fig)
-    end
+    process_species(CR_p_gdf_momentum, proton_log_p_nat, "proton", outdir;
+                    column, bins, yscale, should_plot_mle_fit, should_plot_hist_fit)
     @info("Finished plots of protons")
 
     if args["plot-electrons"]
@@ -57,26 +45,39 @@ function (@main)(args)
         electron_log_p_nat = keys(CR_e_gdf_momentum) .|> values .|> first
 
         @info("Starting plots of electrons")
-        # loop over momentum slices in particle species
-        for (log_p, df) in zip(electron_log_p_nat, CR_e_gdf_momentum)
-            log_nₚ = df[!, column] |> skipmissing |> collect
-            if isempty(log_nₚ)
-                continue
-            end
-            # make histogram of the thing -- ends up not being used :/
-            ##histfit = fit(Histogram, log_nₚ; nbins = bins)
-            ##histfit = normalize(histfit, mode = :pdf)
-            # make normal distribution of the thing
-            distfit = fit(Normal, log_nₚ)
-            # make the plot of the thing
-            fig = make_plot(log_nₚ, distfit; bins, yscale, mle_fit)
-            filename = @sprintf("electron-momentum-slice-histogram-log-p-%.01f-mpc.svg", log_p)
-            save(joinpath(outdir, filename), fig)
-        end
+        process_species(CR_e_gdf_momentum, electron_log_p_nat, "electron", outdir;
+                        column, bins, yscale, should_plot_mle_fit, should_plot_hist_fit)
         @info("Finished plots of electrons")
     end
 
     return
+end
+
+function process_species(
+        species_gdf, log_p_all, species_name, outdir;
+        column, bins, yscale, should_plot_mle_fit, should_plot_hist_fit,
+    )
+    # loop over momentum slices in particle species
+    for (log_p, df) in zip(log_p_all, species_gdf)
+        log_nₚ = df[!, column] |> skipmissing |> collect
+
+        if isempty(log_nₚ)
+            continue
+        end
+
+        # make histogram of the thing -- ends up not being used :/
+        ##histfit = fit(Histogram, log_nₚ; nbins = bins)
+        ##histfit = normalize(histfit, mode = :pdf)
+        histfit = fit_dist_to_histogram(Normal, log_nₚ; nbins = bins)
+
+        # make normal distribution of the thing
+        distfit = fit(Normal, log_nₚ)
+
+        # make the plot of the thing
+        fig = make_plot(log_nₚ, distfit, histfit; bins, yscale, should_plot_mle_fit, should_plot_hist_fit)
+        filename = @sprintf("%s-momentum-slice-histogram-log-p-%.01f-mpc.svg", species_name, log_p)
+        save(joinpath(outdir, filename), fig)
+    end
 end
 
 const axis_properties = (;
@@ -92,7 +93,7 @@ const color_pf_p, color_sf_p, color_ISM_p, color_pf_e, color_sf_e, color_ISM_e =
 """
 Plot a histogram of samples and associated distribution.
 """
-function make_plot(samples, dist; bins, yscale, mle_fit)
+function make_plot(samples, mle_dist, hist_dist; bins, yscale, should_plot_mle_fit, should_plot_hist_fit)
     fig = Figure()
     ax = Axis(
         fig[1, 1];
@@ -105,15 +106,23 @@ function make_plot(samples, dist; bins, yscale, mle_fit)
     n = length(samples)
     ##samples ./= std(samples)
     if n != 0
-        stephist!(ax, samples; label = "plasma frame ($n samples)", bins, normalization, color = color_pf_p)
+        stephist!(ax, samples; label = "plasma frame ($n samples)", bins, normalization, color = color_pf_p, linewidth = 2)
     end
 
-    if mle_fit && !ismissing(dist)
+    if should_plot_mle_fit && !ismissing(mle_dist)
         # n points seems like a good heuristic
         data_span = range(extrema(samples)..., length = max(n, 2000))
-        dist_label = @sprintf("MLE fit 𝒩 (%.6f, %.6f)", params(dist)...)
-        plot!(ax, data_span, dist, label = dist_label, color = :indianred)
+        dist_label = @sprintf("MLE fit (μ=%.3f, σ=%.3f)", params(mle_dist)...)
+        plot!(ax, data_span, mle_dist, label = dist_label, color = :indianred, linewidth = 1)
     end
+    if should_plot_hist_fit && !ismissing(hist_dist)
+        # n points seems like a good heuristic
+        data_span = range(extrema(samples)..., length = max(n, 2000))
+        dist_label = @sprintf("Curve fit (μ=%.3f, σ=%.3f)", params(hist_dist)...)
+        plot!(ax, data_span, hist_dist, label = dist_label, color = :brown, linestyle = :dash)
+    end
+
+    axislegend(ax, framevisible = false)
 
     return fig
 end
@@ -138,6 +147,7 @@ function get_parser()
             :arg_type => Int64,
             :metavar => "N",
         ),
+
         "--column",
         Dict(:help => "Which column of the dataframe to bin", :default => :log_dNdp_cr_pf),
 
@@ -153,6 +163,14 @@ function get_parser()
         ),
         "--no-mle-fit",
         Dict(:dest_name => "mle-fit", :action => :store_false),
+
+        "--hist-fit",
+        Dict(
+            :help => "Whether to overlay a plot of the histogram fitted Gaussian distribution",
+            :action => :store_true,
+        ),
+        "--no-hist-fit",
+        Dict(:dest_name => "hist-fit", :action => :store_false),
 
         "--log-scale",
         Dict(:help => "Whether the y-axis should be in log-scale", :action => :store_true),
