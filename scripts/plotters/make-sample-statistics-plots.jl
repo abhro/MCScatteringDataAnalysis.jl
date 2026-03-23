@@ -190,6 +190,8 @@ function make_skewness_plots(proton_log_p_nat, electron_log_p_nat, p_skewness, e
     lines!(ax, electron_log_p_nat, e_skewness, color = color_pf_e, label = "electrons")
     axislegend(ax, framevisible = false)
     save(joinpath(outdir, "combined-skewness.svg"), fig)
+
+    return
 end
 
 function make_kurtosis_plots(proton_log_p_nat, electron_log_p_nat, p_kurtosis, e_kurtosis; column, outdir)
@@ -214,6 +216,8 @@ function make_kurtosis_plots(proton_log_p_nat, electron_log_p_nat, p_kurtosis, e
     lines!(ax, electron_log_p_nat, e_kurtosis, color = color_pf_e, label = "electrons")
     axislegend(ax, framevisible = false)
     save(joinpath(outdir, "combined-kurtosis.svg"), fig)
+
+    return
 end
 
 const color_pf_p, color_sf_p, color_ISM_p, color_pf_e, color_sf_e, color_ISM_e = Makie.wong_colors();

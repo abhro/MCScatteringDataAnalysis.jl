@@ -35,8 +35,10 @@ function (@main)(args)
     proton_log_p_nat = keys(CR_p_gdf_momentum) .|> values .|> first
 
     @info("Starting plots of protons")
-    process_species(CR_p_gdf_momentum, proton_log_p_nat, "proton", outdir;
-                    column, bins, yscale, should_plot_mle_fit, should_plot_hist_fit)
+    process_species(
+        CR_p_gdf_momentum, proton_log_p_nat, "proton", outdir;
+        column, bins, yscale, should_plot_mle_fit, should_plot_hist_fit,
+    )
     @info("Finished plots of protons")
 
     if args["plot-electrons"]
@@ -45,8 +47,10 @@ function (@main)(args)
         electron_log_p_nat = keys(CR_e_gdf_momentum) .|> values .|> first
 
         @info("Starting plots of electrons")
-        process_species(CR_e_gdf_momentum, electron_log_p_nat, "electron", outdir;
-                        column, bins, yscale, should_plot_mle_fit, should_plot_hist_fit)
+        process_species(
+            CR_e_gdf_momentum, electron_log_p_nat, "electron", outdir;
+            column, bins, yscale, should_plot_mle_fit, should_plot_hist_fit,
+        )
         @info("Finished plots of electrons")
     end
 
@@ -78,6 +82,7 @@ function process_species(
         filename = @sprintf("%s-momentum-slice-histogram-log-p-%.01f-mpc.svg", species_name, log_p)
         save(joinpath(outdir, filename), fig)
     end
+    return
 end
 
 const axis_properties = (;

@@ -191,7 +191,7 @@ md"""
 function span(v::AbstractArray{T}) where {T}
     if isempty(v)
         return zero(T)
-	end
+    end
     vmin, vmax = extrema(v)
     return vmax - vmin
 end
@@ -219,16 +219,16 @@ CR_p_std_log_dNdp = (;
 
 # ╔═╡ 8b453952-b190-45c3-9cfa-5a5df29bbe0f
 CR_p_std_scaled_log_dNdp = (;
-    pf = gdf_sample_stats(v -> std(v)/span(v), CR_p_gdf_momentum; column = :log_dNdp_cr_pf),
-    sf = gdf_sample_stats(v -> std(v)/span(v), CR_p_gdf_momentum; column = :log_dNdp_cr_sf),
-    ISM = gdf_sample_stats(v -> std(v)/span(v), CR_p_gdf_momentum; column = :log_dNdp_cr_ISM),
+    pf = gdf_sample_stats(v -> std(v) / span(v), CR_p_gdf_momentum; column = :log_dNdp_cr_pf),
+    sf = gdf_sample_stats(v -> std(v) / span(v), CR_p_gdf_momentum; column = :log_dNdp_cr_sf),
+    ISM = gdf_sample_stats(v -> std(v) / span(v), CR_p_gdf_momentum; column = :log_dNdp_cr_ISM),
 );
 
 # ╔═╡ 7a17522e-6ab4-48bc-9902-81b760ec01b1
 CR_e_std_scaled_log_dNdp = (;
-    pf = gdf_sample_stats(v -> std(v)/span(v), CR_e_gdf_momentum; column = :log_dNdp_cr_pf),
-    sf = gdf_sample_stats(v -> std(v)/span(v), CR_e_gdf_momentum; column = :log_dNdp_cr_sf),
-    ISM = gdf_sample_stats(v -> std(v)/span(v), CR_e_gdf_momentum; column = :log_dNdp_cr_ISM),
+    pf = gdf_sample_stats(v -> std(v) / span(v), CR_e_gdf_momentum; column = :log_dNdp_cr_pf),
+    sf = gdf_sample_stats(v -> std(v) / span(v), CR_e_gdf_momentum; column = :log_dNdp_cr_sf),
+    ISM = gdf_sample_stats(v -> std(v) / span(v), CR_e_gdf_momentum; column = :log_dNdp_cr_ISM),
 );
 
 # ╔═╡ 734626db-7646-4a0c-9303-2aec6e371159

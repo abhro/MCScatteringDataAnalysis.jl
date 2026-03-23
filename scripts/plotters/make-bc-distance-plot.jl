@@ -49,7 +49,7 @@ function proton_plots(CR_p_gdf_momentum_filename; bins, outdir)
     CR_p_gdf_momentum = load_object(CR_p_gdf_momentum_filename)
     proton_log_p_nat = keys(CR_p_gdf_momentum) .|> values .|> first
     # create histogram for each of the momentum slices
-    normal_distrib_protons_from_curves = fitdistributions(v -> fit_dist_to_histogram(Normal, v; nbins=bins), CR_p_gdf_momentum)
+    normal_distrib_protons_from_curves = fitdistributions(v -> fit_dist_to_histogram(Normal, v; nbins = bins), CR_p_gdf_momentum)
     # create MLE fitted distribution for each of the slices
     normal_distrib_protons = fitdistributions(v -> fitdistribution(Normal, v), CR_p_gdf_momentum)
     proton_distances = bcdistances(normal_distrib_protons.pf, normal_distrib_protons_from_curves.pf)
@@ -59,6 +59,7 @@ function proton_plots(CR_p_gdf_momentum_filename; bins, outdir)
     hlines!(ax, 2.0e-3, linewidth = 0.4, color = color_pf_p, linestyle = :dash)
     axislegend(ax, position = :ct, framevisible = false)
     save(joinpath(outdir, "bc-distances-protons-$bins-bins.svg"), fig)
+    return
 end
 
 function electron_plots(CR_e_gdf_momentum_filename; bins, outdir)
@@ -73,6 +74,7 @@ function electron_plots(CR_e_gdf_momentum_filename; bins, outdir)
     hlines!(ax, 2.0e-3, linewidth = 0.4, color = color_pf_e, linestyle = :dash)
     axislegend(ax, position = :ct, framevisible = false)
     save(joinpath(outdir, "bc-distances-electrons-$bins-bins.svg"), fig)
+    return
 end
 
 const axis_properties = (;
@@ -116,4 +118,3 @@ function get_parser()
     )
     return s
 end
-
