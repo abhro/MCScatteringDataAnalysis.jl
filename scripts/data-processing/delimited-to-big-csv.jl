@@ -6,7 +6,6 @@ using DataFrames: AbstractDataFrame, DataFrame, insertcols!
 using Glob: glob
 using DelimitedFiles
 using Format: format
-import Comonicon
 
 using MCScatteringDataAnalysis
 using MCScatteringDataAnalysis: ColumnSpecification, name, uses_sentinels,
