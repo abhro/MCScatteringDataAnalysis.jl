@@ -58,36 +58,12 @@ function (@main)(args = [])
         outdir, stat_title = "mean", ylabel = "⟨log nₚ⟩"
     )
 
-    @info("Creating std_dev plots ($(now()))")
+    @info("Creating std. dev. plots ($(now()))")
     make_std_dev_plots(proton_log_p_nat, electron_log_p_nat, p_std_devs, e_std_devs; outdir)
 
     # mean with std_dev envelope
-    @info("Creating mean with std_dev envelope plots ($(now()))")
-    # proton plot
-    @info("Making proton plot")
-    fig, ax = make_figax(stat_title = "mean", ylabel = "⟨log nₚ⟩")
-    lines!(ax, proton_log_p_nat, p_means, color = color_pf_p, label = "protons")
-    band!(ax, proton_log_p_nat, p_means + p_std_devs, p_means - p_std_devs, alpha = 0.4, color = color_pf_p, label = "protons")
-    axislegend(ax, framevisible = false, merge = true)
-    save(joinpath(outdir, "proton-means-w-envelope.svg"), fig)
-
-    # electron plot
-    @info("Making electron plot")
-    fig, ax = make_figax(stat_title = "mean", ylabel = "⟨log nₚ⟩")
-    lines!(ax, electron_log_p_nat, e_means, color = color_pf_e, label = "electrons")
-    band!(ax, electron_log_p_nat, e_means + e_std_devs, e_means - e_std_devs, alpha = 0.4, color = color_pf_e, label = "electrons")
-    axislegend(ax, framevisible = false, merge = true)
-    save(joinpath(outdir, "electron-means-w-envelope.svg"), fig)
-
-    # combined plot
-    @info("Making combined plot")
-    fig, ax = make_figax(stat_title = "mean", ylabel = "⟨log nₚ⟩")
-    lines!(ax, proton_log_p_nat, p_means, color = color_pf_p, label = "protons")
-    band!(ax, proton_log_p_nat, p_means + p_std_devs, p_means - p_std_devs, alpha = 0.4, color = color_pf_p, label = "protons")
-    lines!(ax, electron_log_p_nat, e_means, color = color_pf_e, label = "electrons")
-    band!(ax, electron_log_p_nat, e_means + e_std_devs, e_means - e_std_devs, alpha = 0.4, color = color_pf_e, label = "electrons")
-    axislegend(ax, framevisible = false, merge = true)
-    save(joinpath(outdir, "combined-means-w-envelope.svg"), fig)
+    @info("Creating mean with std. dev. envelope plots ($(now()))")
+    make_envelope_plots(proton_log_p_nat, electron_log_p_nat, p_means, e_means, p_std_devs, e_std_devs; outdir)
 
     # skewness
     @info("Creating skewness plots ($(now()))")
@@ -130,37 +106,6 @@ function make_figax(; stat_title, ylabel)
     return fig, ax
 end
 
-function make_std_dev_plots(log_pₚ, log_pₑ, p_std_devs, e_std_devs; outdir)
-    # plotting configs
-    stat_title = "standard deviation"
-    ylabel = "σ"
-    species_map = [
-        ("protons", log_pₚ, p_std_devs, color_pf_p),
-        ("electrons", log_pₑ, e_std_devs, color_pf_e)
-    ]
-
-    for (species, log_p, σ, color) in species_map
-        @info("Making $species plot")
-        fig, ax = make_figax(; stat_title, ylabel)
-        lines!(ax, log_p, σ; color, label = species)
-        axislegend(ax, framevisible = false, position = :lt)
-        save(joinpath(outdir, "$species-std-devs.svg"), fig)
-        ax.yscale = log10
-        save(joinpath(outdir, "$species-std-devs-logscale.svg"), fig)
-    end
-
-    # combined plot
-    @info("Making combined plot")
-    fig, ax = make_figax(; stat_title, ylabel)
-    lines!(ax, log_pₚ, p_std_devs, color = color_pf_p, label = "protons")
-    lines!(ax, log_pₑ, e_std_devs, color = color_pf_e, label = "electrons")
-    axislegend(ax, framevisible = false, position = :lt)
-    save(joinpath(outdir, "combined-std-devs.svg"), fig)
-    ax.yscale = log10
-    save(joinpath(outdir, "combined-std-devs-logscale.svg"), fig)
-end
-
-
 """
 Create proton, electron, and combined plots for a particular sample statistic
 
@@ -193,6 +138,65 @@ function make_sample_stat_plots(log_pₚ, log_pₑ, p_stat, e_stat; outdir, stat
     lines!(ax, log_pₑ, e_stat, color = color_pf_e, label = "electrons")
     axislegend(ax, framevisible = false)
     save(joinpath(outdir, "combined-$stat_title.svg"), fig)
+end
+
+function make_std_dev_plots(log_pₚ, log_pₑ, p_std_devs, e_std_devs; outdir)
+    # plotting configs
+    stat_title = "standard deviation"
+    ylabel = "σ"
+    species_map = [
+        ("protons", log_pₚ, p_std_devs, color_pf_p),
+        ("electrons", log_pₑ, e_std_devs, color_pf_e)
+    ]
+
+    for (species, log_p, σ, color) in species_map
+        @info("Making $species plot")
+        fig, ax = make_figax(; stat_title, ylabel)
+        lines!(ax, log_p, σ; color, label = species)
+        axislegend(ax, framevisible = false, position = :lt)
+        save(joinpath(outdir, "$species-std-devs.svg"), fig)
+        ax.yscale = log10
+        save(joinpath(outdir, "$species-std-devs-logscale.svg"), fig)
+    end
+
+    # combined plot
+    @info("Making combined plot")
+    fig, ax = make_figax(; stat_title, ylabel)
+    lines!(ax, log_pₚ, p_std_devs, color = color_pf_p, label = "protons")
+    lines!(ax, log_pₑ, e_std_devs, color = color_pf_e, label = "electrons")
+    axislegend(ax, framevisible = false, position = :lt)
+    save(joinpath(outdir, "combined-std-devs.svg"), fig)
+    ax.yscale = log10
+    save(joinpath(outdir, "combined-std-devs-logscale.svg"), fig)
+end
+
+function make_envelope_plots(log_pₚ, log_pₑ, μₚ, μₑ, σₚ, σₑ; outdir)
+    # plotting configs
+    stat_title = "mean"
+    ylabel = "⟨log nₚ⟩"
+    alpha = 0.4             # How transparent the error band should be
+    species_map = [
+        ("protons", log_pₚ, μₚ, σₚ, color_pf_p),
+        ("electrons", log_pₑ, μₑ, σₑ, color_pf_e)
+    ]
+    for (species, log_p, μ, σ, color) in species_map
+        @info("Making $species plot")
+        fig, ax = make_figax(; stat_title, ylabel)
+        lines!(ax, log_p, μ; color, label = species)
+        band!(ax, log_p, μ + σ, μ - σ; alpha, color, label = species)
+        axislegend(ax, framevisible = false, merge = true)
+        save(joinpath(outdir, "$species-means-w-envelope.svg"), fig)
+    end
+
+    # combined plot
+    @info("Making combined plot")
+    fig, ax = make_figax(; stat_title, ylabel)
+    lines!(ax, log_pₚ, μₚ, color = color_pf_p, label = "protons")
+    band!(ax, log_pₚ, μₚ + σₚ, μₚ - σₚ; alpha, color = color_pf_p, label = "protons")
+    lines!(ax, log_pₑ, μₑ, color = color_pf_e, label = "electrons")
+    band!(ax, log_pₑ, μₑ + σₑ, μₑ - σₑ; alpha, color = color_pf_e, label = "electrons")
+    axislegend(ax, framevisible = false, merge = true)
+    save(joinpath(outdir, "combined-means-w-envelope.svg"), fig)
 end
 
 const color_pf_p, color_sf_p, color_ISM_p, color_pf_e, color_sf_e, color_ISM_e = Makie.wong_colors();
