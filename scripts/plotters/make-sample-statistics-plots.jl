@@ -53,57 +53,13 @@ function (@main)(args = [])
 
     # mean plot
     @info("Creating mean plots ($(now()))")
-    # proton plot
-    @info("Making proton plot")
-    fig, ax = make_figax(stat_title = "mean", ylabel = "⟨log nₚ⟩")
-    lines!(ax, proton_log_p_nat, p_means, color = color_pf_p, label = "protons")
-    axislegend(ax, framevisible = false)
-    save(joinpath(outdir, "proton-means.svg"), fig)
-
-    # electron plot
-    @info("Making electron plot")
-    fig, ax = make_figax(stat_title = "mean", ylabel = "⟨log nₚ⟩")
-    lines!(ax, electron_log_p_nat, e_means, color = color_pf_e, label = "electrons")
-    axislegend(ax, framevisible = false)
-    save(joinpath(outdir, "electron-means.svg"), fig)
-
-    # combined plot
-    @info("Making combined plot")
-    fig, ax = make_figax(stat_title = "mean", ylabel = "⟨log nₚ⟩")
-    lines!(ax, proton_log_p_nat, p_means, color = color_pf_p, label = "protons")
-    lines!(ax, electron_log_p_nat, e_means, color = color_pf_e, label = "electrons")
-    axislegend(ax, framevisible = false)
-    save(joinpath(outdir, "combined-means.svg"), fig)
+    make_sample_stat_plots(
+        proton_log_p_nat, electron_log_p_nat, p_means, e_means;
+        outdir, stat_title = "mean", ylabel = "⟨log nₚ⟩"
+    )
 
     @info("Creating std_dev plots ($(now()))")
-    # proton plot
-    @info("Making proton plot")
-    fig, ax = make_figax(stat_title = "standard deviation", ylabel = "σ")
-    lines!(ax, proton_log_p_nat, p_std_devs, color = color_pf_p, label = "protons")
-    axislegend(ax, framevisible = false)
-    save(joinpath(outdir, "proton-std-devs.svg"), fig)
-    ax.yscale = log10
-    save(joinpath(outdir, "proton-std-devs-logscale.svg"), fig)
-
-    # electron plot
-    @info("Making electron plot")
-    fig, ax = make_figax(stat_title = "standard deviation", ylabel = "σ")
-    lines!(ax, electron_log_p_nat, e_std_devs, color = color_pf_e, label = "electrons")
-    axislegend(ax, framevisible = false)
-    save(joinpath(outdir, "electron-std-devs.svg"), fig)
-    ax.yscale = log10
-    save(joinpath(outdir, "electron-std-devs-logscale.svg"), fig)
-
-    # combined plot
-    @info("Making combined plot")
-    fig, ax = make_figax(stat_title = "standard deviation", ylabel = "σ")
-    lines!(ax, proton_log_p_nat, p_std_devs, color = color_pf_p, label = "protons")
-    lines!(ax, electron_log_p_nat, e_std_devs, color = color_pf_e, label = "electrons")
-    axislegend(ax, framevisible = false)
-    save(joinpath(outdir, "combined-std-devs.svg"), fig)
-    ax.yscale = log10
-    save(joinpath(outdir, "combined-std-devs-logscale.svg"), fig)
-
+    make_std_dev_plots(proton_log_p_nat, electron_log_p_nat, p_std_devs, e_std_devs; outdir)
 
     # mean with std_dev envelope
     @info("Creating mean with std_dev envelope plots ($(now()))")
@@ -135,11 +91,17 @@ function (@main)(args = [])
 
     # skewness
     @info("Creating skewness plots ($(now()))")
-    make_skewness_plots(proton_log_p_nat, electron_log_p_nat, proton_stats.skewness, electron_stats.skewness; column, outdir)
+    make_sample_stat_plots(
+        proton_log_p_nat, electron_log_p_nat, proton_stats.skewness, electron_stats.skewness;
+        outdir, stat_title = "skewness", ylabel = "γ"
+    )
 
     # kurtosis
     @info("Creating kurtosis plots ($(now()))")
-    make_kurtosis_plots(proton_log_p_nat, electron_log_p_nat, proton_stats.kurtosis, electron_stats.kurtosis; column, outdir)
+    make_sample_stat_plots(
+        proton_log_p_nat, electron_log_p_nat, proton_stats.kurtosis, electron_stats.kurtosis;
+        outdir, stat_title = "kurtosis", ylabel = "kurtosis"
+    )
 
     return
 end
@@ -168,56 +130,69 @@ function make_figax(; stat_title, ylabel)
     return fig, ax
 end
 
-function make_skewness_plots(proton_log_p_nat, electron_log_p_nat, p_skewness, e_skewness; column, outdir)
-    # proton plot
-    @info("Making proton plot")
-    fig, ax = make_figax(stat_title = "skewness", ylabel = "γ")
-    lines!(ax, proton_log_p_nat, p_skewness, color = color_pf_p, label = "protons")
-    axislegend(ax, framevisible = false)
-    save(joinpath(outdir, "proton-skewness.svg"), fig)
+function make_std_dev_plots(log_pₚ, log_pₑ, p_std_devs, e_std_devs; outdir)
+    # plotting configs
+    stat_title = "standard deviation"
+    ylabel = "σ"
+    species_map = [
+        ("protons", log_pₚ, p_std_devs, color_pf_p),
+        ("electrons", log_pₑ, e_std_devs, color_pf_e)
+    ]
 
-    # electron plot
-    @info("Making electron plot")
-    fig, ax = make_figax(stat_title = "skewness", ylabel = "γ")
-    lines!(ax, electron_log_p_nat, e_skewness, color = color_pf_e, label = "electrons")
-    axislegend(ax, framevisible = false)
-    save(joinpath(outdir, "electron-skewness.svg"), fig)
+    for (species, log_p, σ, color) in species_map
+        @info("Making $species plot")
+        fig, ax = make_figax(; stat_title, ylabel)
+        lines!(ax, log_p, σ; color, label = species)
+        axislegend(ax, framevisible = false, position = :lt)
+        save(joinpath(outdir, "$species-std-devs.svg"), fig)
+        ax.yscale = log10
+        save(joinpath(outdir, "$species-std-devs-logscale.svg"), fig)
+    end
 
     # combined plot
     @info("Making combined plot")
-    fig, ax = make_figax(stat_title = "skewness", ylabel = "γ")
-    lines!(ax, proton_log_p_nat, p_skewness, color = color_pf_p, label = "protons")
-    lines!(ax, electron_log_p_nat, e_skewness, color = color_pf_e, label = "electrons")
-    axislegend(ax, framevisible = false)
-    save(joinpath(outdir, "combined-skewness.svg"), fig)
-
-    return
+    fig, ax = make_figax(; stat_title, ylabel)
+    lines!(ax, log_pₚ, p_std_devs, color = color_pf_p, label = "protons")
+    lines!(ax, log_pₑ, e_std_devs, color = color_pf_e, label = "electrons")
+    axislegend(ax, framevisible = false, position = :lt)
+    save(joinpath(outdir, "combined-std-devs.svg"), fig)
+    ax.yscale = log10
+    save(joinpath(outdir, "combined-std-devs-logscale.svg"), fig)
 end
 
-function make_kurtosis_plots(proton_log_p_nat, electron_log_p_nat, p_kurtosis, e_kurtosis; column, outdir)
-    # proton plot
-    @info("Making proton plot")
-    fig, ax = make_figax(stat_title = "kurtosis", ylabel = "kurtosis")
-    lines!(ax, proton_log_p_nat, p_kurtosis, color = color_pf_p, label = "protons")
-    axislegend(ax, framevisible = false)
-    save(joinpath(outdir, "proton-kurtosis.svg"), fig)
 
-    # electron plot
-    @info("Making electron plot")
-    fig, ax = make_figax(stat_title = "kurtosis", ylabel = "kurtosis")
-    lines!(ax, electron_log_p_nat, e_kurtosis, color = color_pf_e, label = "electrons")
-    axislegend(ax, framevisible = false)
-    save(joinpath(outdir, "electron-kurtosis.svg"), fig)
+"""
+Create proton, electron, and combined plots for a particular sample statistic
+
+### Arguments
+- `log_pₚ`: Vector containing (log of) proton momenta in mp*c units
+- `log_pₑ`: Vector containing (log of) electron momenta in mp*c units
+- `p_stat`: Sample statistic corresponding to each proton momentum
+- `e_stat`: Sample statistic corresponding to each slice momentum
+- `outdir`: Directory where the plots should be saved
+- `stat_title`: Name of the sample statistic (mean/kurtosis/etc...)
+- `ylabel`: Label for the plots' y-axes
+"""
+function make_sample_stat_plots(log_pₚ, log_pₑ, p_stat, e_stat; outdir, stat_title, ylabel)
+    species_map = [
+        ("protons", log_pₚ, p_stat, color_pf_p),
+        ("electrons", log_pₑ, e_stat, color_pf_e),
+    ]
+    for (species, log_p, stat, color) in species_map
+        @info("Making $species plot")
+        fig, ax = make_figax(; stat_title, ylabel)
+        lines!(ax, log_p, stat; color, label = species)
+        axislegend(ax, framevisible = false)
+        save(joinpath(outdir, "$species-$stat_title.svg"), fig)
+    end
 
     # combined plot
     @info("Making combined plot")
-    fig, ax = make_figax(stat_title = "kurtosis", ylabel = "kurtosis")
-    lines!(ax, proton_log_p_nat, p_kurtosis, color = color_pf_p, label = "protons")
-    lines!(ax, electron_log_p_nat, e_kurtosis, color = color_pf_e, label = "electrons")
+    fig, ax = make_figax(; stat_title, ylabel)
+    lines!(ax, log_pₚ, p_stat, color = color_pf_p, label = "protons")
+    lines!(ax, log_pₑ, e_stat, color = color_pf_e, label = "electrons")
     axislegend(ax, framevisible = false)
-    save(joinpath(outdir, "combined-kurtosis.svg"), fig)
-
-    return
+    save(joinpath(outdir, "combined-$stat_title.svg"), fig)
 end
 
 const color_pf_p, color_sf_p, color_ISM_p, color_pf_e, color_sf_e, color_ISM_e = Makie.wong_colors();
