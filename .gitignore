@@ -96,6 +96,7 @@ mc_out.txt
 *.png
 *.jpg
 *.svg
+*.svgz
 
 # Typst output
 Binormal properties.pdf
