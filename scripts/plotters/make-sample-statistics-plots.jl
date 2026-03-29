@@ -35,10 +35,10 @@ function (@main)(args)
     CR_p_gdf_momentum_filename = joinpath(dir, "dNdp-CR-protons-momentum-split.jld2")
     CR_e_gdf_momentum_filename = joinpath(dir, "dNdp-CR-electrons-momentum-split.jld2")
 
-    @info("Reading data ($(timenow()))")
+    @info("Reading data ($(now()))")
     proton_stats = get_sample_stats(CR_p_gdf_momentum_filename; column)
     electron_stats = get_sample_stats(CR_e_gdf_momentum_filename; column)
-    @info("Finished reading data ($(timenow()))")
+    @info("Finished reading data ($(now()))")
 
     proton_log_p_nat = proton_stats.p
     electron_log_p_nat = electron_stats.p
@@ -52,7 +52,7 @@ function (@main)(args)
     e_std_devs = electron_stats.std_devs
 
     # mean plot
-    @info("Creating mean plots ($(timenow()))")
+    @info("Creating mean plots ($(now()))")
     # proton plot
     @info("Making proton plot")
     fig, ax = make_figax(stat_title = "mean", ylabel = "⟨log nₚ⟩")
@@ -75,7 +75,7 @@ function (@main)(args)
     axislegend(ax, framevisible = false)
     save(joinpath(outdir, "combined-means.svg"), fig)
 
-    @info("Creating std_dev plots ($(timenow()))")
+    @info("Creating std_dev plots ($(now()))")
     # proton plot
     @info("Making proton plot")
     fig, ax = make_figax(stat_title = "standard deviation", ylabel = "σ")
@@ -106,7 +106,7 @@ function (@main)(args)
 
 
     # mean with std_dev envelope
-    @info("Creating mean with std_dev envelope plots ($(timenow()))")
+    @info("Creating mean with std_dev envelope plots ($(now()))")
     # proton plot
     @info("Making proton plot")
     fig, ax = make_figax(stat_title = "mean", ylabel = "⟨log nₚ⟩")
@@ -134,17 +134,17 @@ function (@main)(args)
     save(joinpath(outdir, "combined-means-w-envelope.svg"), fig)
 
     # skewness
-    @info("Creating skewness plots ($(timenow()))")
+    @info("Creating skewness plots ($(now()))")
     make_skewness_plots(proton_log_p_nat, electron_log_p_nat, proton_stats.skewness, electron_stats.skewness; column, outdir)
 
     # kurtosis
-    @info("Creating kurtosis plots ($(timenow()))")
+    @info("Creating kurtosis plots ($(now()))")
     make_kurtosis_plots(proton_log_p_nat, electron_log_p_nat, proton_stats.kurtosis, electron_stats.kurtosis; column, outdir)
 
     return
 end
 
-timenow() = Dates.format(Dates.now(), "HH:MM:SS")
+now() = Dates.format(Dates.now(), "HH:MM:SS")
 
 function get_sample_stats(filename; column)
     gdf = load_object(filename)
