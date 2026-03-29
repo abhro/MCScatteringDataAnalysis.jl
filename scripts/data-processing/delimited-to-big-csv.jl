@@ -13,7 +13,7 @@ using MCScatteringDataAnalysis: ColumnSpecification, name, uses_sentinels,
                                 coupled_spectra_cols, coupled_weights_cols,
                                 esc_cols, grid_cols, CR_cols, therm_cols
 
-function (@main)(args)
+function (@main)(args = [])
     if length(args) != 2
         println("Usage: $PROGRAM_FILE <raw data directory> <processed data directory>")
         println("Note: processed data directory must be relative to the project data path")

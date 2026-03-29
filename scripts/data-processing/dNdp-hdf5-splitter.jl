@@ -9,7 +9,7 @@ using MCScatteringDataAnalysis: dehistogram
 # predicate to check if any of the frames report a flux value
 no_flux_missing(cols...) = !all(ismissing, cols)
 
-function (@main)(args)
+function (@main)(args = [])
     if length(args) != 2
         println("Usage: $PROGRAM_FILE <dNdp directory> <processed data directory>")
         exit(1)

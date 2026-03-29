@@ -13,7 +13,7 @@ const normalization = :pdf
 """
 Entry point of the program/script.
 """
-function (@main)(args)
+function (@main)(args = [])
 
     # overwrite args local with its parsed version
     args = parse_args(args, get_parser())
