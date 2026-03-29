@@ -17,16 +17,19 @@ macro bind(def, element)
 end
 
 # ╔═╡ f1ee2cb0-8274-11ef-0826-f55183647219
-using DrWatson
+import Pkg; Pkg.activate(Base.current_project())
 
 # ╔═╡ e5e0e4e2-2df1-4536-9cc5-bdcec6fc13de
-@quickactivate "MCScatteringDataAnalysis"
+using DrWatson: datadir
 
 # ╔═╡ d609268f-3c94-4244-9b45-8f57a21ea97d
 using Revise
 
 # ╔═╡ 7899ae97-fbc2-43e5-ac77-c6d725f0371e
-using JLD2, DataFrames
+using JLD2: load_object
+
+# ╔═╡ 4cb3e477-2895-4186-9f03-4d14a1f996d4
+using DataFrames
 
 # ╔═╡ b137e7fa-f2ce-4cb1-85d7-87078a9aa9cc
 using Distributions
@@ -48,6 +51,9 @@ using Missings
 
 # ╔═╡ fe2b3846-c753-4685-8704-e6fb50624989
 using Printf
+
+# ╔═╡ a610e549-288a-4806-8b91-b042c9d23faa
+using Random
 
 # ╔═╡ f08edae2-4f29-4274-b010-07cfb3826f1e
 md"""
@@ -175,7 +181,7 @@ plot_ISM_binder = @bind do_plot_ISM CheckBox(default = false);
 
 # ╔═╡ 3fccf366-bf6d-4c7a-a3d1-916b8f13afd3
 map_layer = let
-    y_label = "log(dN/dp)"
+    y_label = "log nₚ"
 
     pf_map = mapping(x_map, :log_dNdp_cr_pf => y_label, color = direct("plasma frame"))
     sf_map = mapping(x_map, :log_dNdp_cr_sf => y_label, color = direct("shock frame"))
@@ -235,7 +241,7 @@ let fig = Figure(), df = CR_p_gdf_iter[plot_iter]
     # Create a plotting specification, which specifies our data source, how to
     # transform our data (`map_layer`), and how to present the data (`visual_layer`).
     spec = data(df) * map_layer * visual_layer
-    title = "dN/dp of Cosmic rays (protons), iteration $plot_iter"
+    title = "nₚ of Cosmic rays (protons), iteration $plot_iter"
     plt = draw!(fig[1, 1], spec, axis = (; title, axis_properties...))
     legend!(fig[1, 1], plt; legend_properties...)
     fig
@@ -244,7 +250,7 @@ end
 # ╔═╡ 7879a41a-a284-452b-9505-a239209f1ed0
 let fig = Figure(), df = CR_e_gdf_iter[plot_iter]
     spec = data(df) * map_layer * visual_layer
-    title = "dN/dp of Cosmic rays (electrons), iteration $plot_iter"
+    title = "nₚ of Cosmic rays (electrons), iteration $plot_iter"
     plt = draw!(fig[1, 1], spec, axis = (; title, axis_properties...))
     legend!(fig[1, 1], plt; legend_properties...)
     fig
@@ -252,27 +258,27 @@ end
 
 # ╔═╡ 1529a53f-a084-40fc-80b0-3f9f31a5868e
 md"""
-Plot of ``\log(p^σ dN/dp)`` vs. ``\log(p)``
+Plot of ``\log(p^σ n_p)`` vs. ``\log(p)``
 """
 
 # ╔═╡ 6537effb-12e6-4f4e-b34f-15dd33547921
 σ = 2.23;
 
 # ╔═╡ 79429dd7-acb7-4c5f-8843-e93e8c4ea68d
-flatten_log_dNdp = (log_p, log_dNdp) -> log_p * σ + log_dNdp;
+flatten_log_nₚ = (log_p, log_nₚ) -> log_p * σ + log_nₚ;
 
 # ╔═╡ dc6d55ec-e30d-4979-9d2c-a3b6b529cdf8
 md"""
-Create an AlgebraOfGraphics layer which transforms the ``\log(dN/dp)`` column to ``σ \log(p) + \log(dN/dp)``.
+Create an AlgebraOfGraphics layer which transforms the ``\log(n_p)`` column to ``σ \log(p) + \log(n_p)``.
 """
 
 # ╔═╡ c8f1dec5-0566-4ce2-8361-21b7d1fe7480
 σ_map_layer = let
-    y_label = "log(dN/dp) + σ log(p)"
+    y_label = "log(nₚ) + σ log(p)"
 
-    pf_map = mapping(x_map, (:log_p_nat, :log_dNdp_cr_pf) => flatten_log_dNdp => y_label, color = direct("plasma frame"))
-    sf_map = mapping(x_map, (:log_p_nat, :log_dNdp_cr_sf) => flatten_log_dNdp => y_label, color = direct("shock frame"))
-    ISM_map = mapping(x_map, (:log_p_nat, :log_dNdp_cr_ISM) => flatten_log_dNdp => y_label, color = direct("ISM frame"))
+    pf_map = mapping(x_map, (:log_p_nat, :log_dNdp_cr_pf) => flatten_log_nₚ => y_label, color = direct("plasma frame"))
+    sf_map = mapping(x_map, (:log_p_nat, :log_dNdp_cr_sf) => flatten_log_nₚ => y_label, color = direct("shock frame"))
+    ISM_map = mapping(x_map, (:log_p_nat, :log_dNdp_cr_ISM) => flatten_log_nₚ => y_label, color = direct("ISM frame"))
 
     do_plot_pf * pf_map + do_plot_sf * sf_map + do_plot_ISM * ISM_map
 end
@@ -294,7 +300,7 @@ Choose which frames to plot:
 # ╔═╡ 64eb4739-9a79-4c8c-99a3-bd338b3af6a0
 let fig = Figure()
     spec = data(CR_p_gdf_iter[plot_iter]) * σ_map_layer * visual_layer
-    title = "dN/dp of Cosmic rays (protons), iteration $plot_iter"
+    title = "nₚ of Cosmic rays (protons), iteration $plot_iter"
     plt = draw!(fig[1, 1], spec; axis = (; title, axis_properties...))
     legend!(fig[1, 1], plt; legend_properties..., halign = :center, valign = :bottom)
 
@@ -307,7 +313,7 @@ end
 # ╔═╡ 63db1015-02a2-4623-aa6a-b6bd772024fa
 let fig = Figure()
     spec = data(CR_e_gdf_iter[plot_iter]) * σ_map_layer * visual_layer
-    title = "dN/dp of Cosmic rays (electrons), iteration $plot_iter"
+    title = "nₚ of Cosmic rays (electrons), iteration $plot_iter"
     plt = draw!(fig[1, 1], spec; axis = (; title, axis_properties...))
     legend!(fig[1, 1], plt; legend_properties..., halign = :center, valign = :bottom)
 
@@ -329,14 +335,14 @@ proton_iterations = 5620:5630;
 let fig = Figure()
     ax = Axis(
         fig[1, 1];
-        title = "dN/dp of Cosmic rays (protons)",
-        xlabel = "log(p) (nat)", ylabel = "log(dN/dp) + σ log(p)",
+        title = "nₚ of Cosmic rays (protons)",
+        xlabel = "log p (nat)", ylabel = "log nₚ + σ log p",
         axis_properties...
     )
 
     for (i, dfp) in enumerate(CR_p_gdf_iter[proton_iterations])
-        log_p, log_dNdp = dfp.log_p_nat, dfp.log_dNdp_cr_pf
-        scatterlines!(ax, log_p, log_dNdp + σ * log_p, label = "plasma frame (iter $i)"; markersize)
+        log_p, log_nₚ = dfp.log_p_nat, dfp.log_nₚ
+        scatterlines!(ax, log_p, log_nₚ + σ * log_p, label = "plasma frame (iter $(proton_iterations[i]))"; markersize)
     end
 
     xlims!(ax, 2, 5)
@@ -346,19 +352,20 @@ end
 
 # ╔═╡ d76b122b-9881-4b83-ab07-34ffe17d72c3
 electron_iterations = 5775:5779;
+# electron_iterations = rand(Xoshiro(1), idx_CR_p_gdf, 20)
 
 # ╔═╡ 1f35f220-7739-4097-b51d-0ab6000be247
 let fig = Figure()
     ax = Axis(
         fig[1, 1];
-        title = "dN/dp of Cosmic rays (electrons)",
-        xlabel = "log(p) (nat)", ylabel = "log(dN/dp) + σ log(p)",
+        title = "nₚ of Cosmic rays (electrons)",
+        xlabel = "log(p) (nat)", ylabel = "log(nₚ) + σ log(p)",
         axis_properties...
     )
 
     for (i, dfe) in enumerate(CR_e_gdf_iter[electron_iterations])
-        log_p, log_dNdp = dfe.log_p_nat, dfe.log_dNdp_cr_pf
-        scatterlines!(ax, log_p, log_dNdp + σ * log_p, label = "plasma frame (iter $i)"; markersize)
+        log_p, log_nₚ = dfe.log_p_nat, dfe.log_nₚ
+        scatterlines!(ax, log_p, log_nₚ + σ * log_p, label = "plasma frame (iter $(electron_iterations[i]))"; markersize)
     end
 
     xlims!(ax, -0.3, 5)
@@ -371,26 +378,68 @@ let fig = Figure()
     ax = Axis(
         fig[1, 1];
         title = "Flux of Cosmic rays",
-        xlabel = "log(p) (mₚc)", ylabel = "log(dN/dp)",
+        xlabel = "log p (nat)", ylabel = "log nₚ",
         axis_properties...
     )
 
     for (i, dfp) in enumerate(CR_p_gdf_iter[proton_iterations])
-        log_p, log_dNdp = dfp.log_p_nat, dfp.log_dNdp_cr_pf
+        log_p, log_nₚ = dfp.log_p_nat, dfp.log_dNdp_cr_pf
         label_tup = i == 1 ? (; label = "protons") : NamedTuple()
-        # lines!(ax, log_p, log_dNdp + σ*log_p; label_tup..., color = color_pf_p)
-        lines!(ax, log_p, log_dNdp; label_tup..., color = color_pf_p)
+        # lines!(ax, log_p, log_nₚ + σ*log_p; label_tup..., color = color_pf_p)
+        lines!(ax, log_p, log_nₚ; label_tup..., color = color_pf_p, linewidth = 0.5)
     end
     for (i, dfe) in enumerate(CR_e_gdf_iter[electron_iterations])
-        log_p, log_dNdp = dfe.log_p_nat, dfe.log_dNdp_cr_pf
+        log_p, log_nₚ = dfe.log_p_nat, dfe.log_dNdp_cr_pf
         label_tup = i == 1 ? (; label = "electrons") : NamedTuple()
-        # lines!(ax, log_p, log_dNdp + σ*log_p; label_tup..., color = color_pf_e)
-        lines!(ax, log_p, log_dNdp; label_tup..., color = color_pf_e)
+        # lines!(ax, log_p, log_nₚ + σ*log_p; label_tup..., color = color_pf_e)
+        lines!(ax, log_p, log_nₚ; label_tup..., color = color_pf_e, linewidth = 0.5, linestyle = :dash)
     end
+
+    # indicate power law
+    ps = range(2, 7, length = 100)
+    ys = @. ps*-σ + 62      # offset just to get it above the fluxes
+    lines!(ax, ps, ys, color = :black)
+    # place text midway through the line, 100 points, so around 50th
+    text!(ax, ps[50], ys[50], text = L"\propto p^{−σ}", fontsize = 24)
 
     # xlims!(ax, 2, 5)
     # ylims!(ax, 57.2, 58.3)
     axislegend(ax, framevisible = false)
+
+    fig
+end
+
+# ╔═╡ 2cf7cf2c-9e8c-465a-9adb-87fbb9c44a95
+let fig = Figure()
+    ax = Axis(
+        fig[1, 1];
+        # title = "Flux of Cosmic rays",
+        xlabel = "log p (nat)", ylabel = "log nₚ + σ log p",
+        axis_properties...
+    )
+
+    for (i, dfp) in enumerate(CR_p_gdf_iter[proton_iterations])
+        log_p, log_nₚ = dfp.log_p_nat, dfp.log_dNdp_cr_pf
+        label_tup = i == 1 ? (; label = "protons") : NamedTuple()
+        lines!(ax, log_p, log_nₚ + σ*log_p; label_tup..., color = color_pf_p, linewidth = 0.7)
+        # lines!(ax, log_p, log_nₚ; label_tup...)
+    end
+
+    for (i, dfe) in enumerate(CR_e_gdf_iter[electron_iterations])
+        log_p, log_nₚ = dfe.log_p_nat, dfe.log_dNdp_cr_pf
+        label_tup = i == 1 ? (; label = "electrons") : NamedTuple()
+        lines!(ax, log_p, log_nₚ + σ*log_p; label_tup..., color = color_pf_e, linewidth = 1, linestyle = :dash)
+        # lines!(ax, log_p, log_nₚ; label_tup...)
+    end
+
+    # For publication: slices where we're inspecting momenta
+    vlines!(ax, 3.2, linewidth = 1, color = :red, linestyle = :dot)
+    vlines!(ax, 5.2, linewidth = 1, color = :red, linestyle = :dot)
+
+    # xlims!(ax, 2, 5)
+    ylims!(ax, 52.5, 58.3)
+    axislegend(ax, framevisible = false)
+
     fig
 end
 
@@ -405,13 +454,13 @@ md"""
 let fig = Figure()
     ax = Axis(
         fig[1,1];
-        title = "dN/dp of Cosmic rays (protons)",
-        xlabel = "log(p) (nat)", ylabel = "log(dN/dp) + σ log(p)",
+        title = "nₚ of Cosmic rays (protons)",
+        xlabel = "log(p) (nat)", ylabel = "log(nₚ) + σ log(p)",
         axis_properties...)
 
     for (i, dfp) in enumerate(CR_p_gdf_iter)
-        log_p, log_dNdp = dfp.log_p_nat, dfp.log_dNdp_cr_pf
-        scatterlines!(ax, log_p, log_dNdp + σ*log_p, label = "plasma frame (iter $i)"; markersize)
+        log_p, log_nₚ = dfp.log_p_nat, dfp.log_dNdp_cr_pf
+        scatterlines!(ax, log_p, log_nₚ + σ*log_p, label = "plasma frame (iter $i)"; markersize)
     end
 
     #hlines!(ax, 57.5)
@@ -436,13 +485,13 @@ Found: iteration 5775 (iseed: 289, iter within seed: 15).
 let fig = Figure()
     ax = Axis(
         fig[1,1];
-        title = "dN/dp of Cosmic rays (electrons)",
-        xlabel = "log(p) (nat)", ylabel = "log(dN/dp) + σ log(p)",
+        title = "nₚ of Cosmic rays (electrons)",
+        xlabel = "log(p) (nat)", ylabel = "log(nₚ) + σ log(p)",
         axis_properties...)
 
     for (i, dfe) in enumerate(CR_e_gdf_iter)
-        log_p, log_dNdp = dfe.log_p_nat, dfe.log_dNdp_cr_pf
-        scatterlines!(ax, log_p, log_dNdp + σ*log_p, label = "plasma frame (iter $i)"; markersize)
+        log_p, log_nₚ = dfe.log_p_nat, dfe.log_dNdp_cr_pf
+        scatterlines!(ax, log_p, log_nₚ + σ*log_p, label = "plasma frame (iter $i)"; markersize)
     end
 
     xlims!(ax, -0.3, 5)
@@ -459,12 +508,14 @@ end
 # ╠═e5e0e4e2-2df1-4536-9cc5-bdcec6fc13de
 # ╠═d609268f-3c94-4244-9b45-8f57a21ea97d
 # ╠═7899ae97-fbc2-43e5-ac77-c6d725f0371e
+# ╠═4cb3e477-2895-4186-9f03-4d14a1f996d4
 # ╠═b137e7fa-f2ce-4cb1-85d7-87078a9aa9cc
 # ╠═7a050dc5-7772-4933-959f-bf4fb478fc7d
 # ╠═acbe8855-c586-46e3-a72b-a556df77b547
 # ╠═5eaf1fbb-9dc7-40e4-87b8-8a0af299f815
 # ╠═3791e767-dcf1-4f9d-909d-a7d08e4c5f9c
 # ╠═fe2b3846-c753-4685-8704-e6fb50624989
+# ╠═a610e549-288a-4806-8b91-b042c9d23faa
 # ╟─c3cedbde-37a4-473b-87e4-d60295362dba
 # ╠═b544df91-fe2d-4396-892c-7faea2edd141
 # ╟─4415022a-54dc-4f3d-a651-f66ae63dd051
@@ -516,6 +567,7 @@ end
 # ╠═d76b122b-9881-4b83-ab07-34ffe17d72c3
 # ╟─1f35f220-7739-4097-b51d-0ab6000be247
 # ╟─5d03370e-5507-41c1-94a6-24c3b5c5e9c0
+# ╠═2cf7cf2c-9e8c-465a-9adb-87fbb9c44a95
 # ╟─e5dbf380-3480-4d96-881a-8c562b5fc6ab
 # ╠═4e26e9ec-b4f2-46f8-bada-945c00cb4907
 # ╟─a0be5567-9256-4c03-9a96-11d4d1973347
