@@ -19,11 +19,11 @@ end
 # ╔═╡ f1ee2cb0-8274-11ef-0826-f55183647219
 import Pkg; Pkg.activate(Base.current_project())
 
-# ╔═╡ e5e0e4e2-2df1-4536-9cc5-bdcec6fc13de
-using DrWatson: datadir
-
 # ╔═╡ d609268f-3c94-4244-9b45-8f57a21ea97d
 using Revise
+
+# ╔═╡ e5e0e4e2-2df1-4536-9cc5-bdcec6fc13de
+using DrWatson: datadir
 
 # ╔═╡ 7899ae97-fbc2-43e5-ac77-c6d725f0371e
 using JLD2: load_object
@@ -171,10 +171,10 @@ Define controllers for which iterations to plot and which frames to plot withni 
 """
 
 # ╔═╡ 1abc4941-d902-450d-9694-aee830e6301d
-plot_pf_binder = @bind do_plot_pf  CheckBox(default = true);
+plot_pf_binder = @bind do_plot_pf CheckBox(default = true);
 
 # ╔═╡ de79813e-1d8d-45c0-b291-203b7f19f23e
-plot_sf_binder = @bind do_plot_sf  CheckBox(default = false);
+plot_sf_binder = @bind do_plot_sf CheckBox(default = false);
 
 # ╔═╡ c02fd290-c706-45a4-b963-c184d3bd6b2f
 plot_ISM_binder = @bind do_plot_ISM CheckBox(default = false);
@@ -341,7 +341,7 @@ let fig = Figure()
     )
 
     for (i, dfp) in enumerate(CR_p_gdf_iter[proton_iterations])
-        log_p, log_nₚ = dfp.log_p_nat, dfp.log_nₚ
+        log_p, log_nₚ = dfp.log_p_nat, dfp.log_dNdp_cr_pf
         scatterlines!(ax, log_p, log_nₚ + σ * log_p, label = "plasma frame (iter $(proton_iterations[i]))"; markersize)
     end
 
@@ -364,7 +364,7 @@ let fig = Figure()
     )
 
     for (i, dfe) in enumerate(CR_e_gdf_iter[electron_iterations])
-        log_p, log_nₚ = dfe.log_p_nat, dfe.log_nₚ
+        log_p, log_nₚ = dfe.log_p_nat, dfe.log_dNdp_cr_pf
         scatterlines!(ax, log_p, log_nₚ + σ * log_p, label = "plasma frame (iter $(electron_iterations[i]))"; markersize)
     end
 
@@ -433,12 +433,18 @@ let fig = Figure()
     end
 
     # For publication: slices where we're inspecting momenta
-    vlines!(ax, 3.2, linewidth = 1, color = :red, linestyle = :dot)
-    vlines!(ax, 5.2, linewidth = 1, color = :red, linestyle = :dot)
+    vlines!(ax, [3.2, 5.2], linewidth = 2.5, color = :red, linestyle = :dot)
+    fontsize = 32
+    text!(ax, 2.7, 56, text = "♤"; fontsize)
+    text!(ax, 5.2, 55.7, text = "♧"; fontsize)
+    text!(ax, 2.7, 57.9, text = "♡"; fontsize)
+    text!(ax, 5.15, 57.6, text = "♢"; fontsize)
 
     # xlims!(ax, 2, 5)
-    ylims!(ax, 52.5, 58.3)
+    ylims!(ax, 52.5, 58.4)
     axislegend(ax, framevisible = false)
+
+    #save("flattened-spectra.svg", fig)
 
     fig
 end
