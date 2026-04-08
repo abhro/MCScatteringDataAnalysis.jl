@@ -5,7 +5,7 @@ using CairoMakie
 using StatsBase
 using Distributions: Normal
 using ArgParse: ArgParseSettings, add_arg_table!, parse_args
-using MCScatteringDataAnalysis: fitdistribution, fitdistributions, fit_dist_to_histogram, bcdistances
+using MCScatteringDataAnalysis: fitdistribution, fitdistributions, fit_dist_to_histogram, bcdistances, unit_ticks
 
 const normalization = :pdf
 const markersize = 5
@@ -51,7 +51,7 @@ function species_plots(CR_gdf_filename; species_name, bins, outdir, should_title
     @info("Fitted $species_name data to distributions")
     @debug("Received fits", mle_fit_dists, hist_fit_dists)
     fig = Figure()
-    ax = Axis(fig[1, 1]; axis_properties...)
+    ax = Axis(fig[1, 1]; xticks = unit_ticks(log_p_nat), axis_properties...)
     if should_title
         ax.title = plot_title
     end

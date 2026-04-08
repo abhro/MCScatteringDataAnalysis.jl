@@ -235,4 +235,21 @@ function gdf_sample_stats(statistic, gdf; column)
     return [statistic(collect(skipmissing(df[!, column]))) for df in gdf]
 end
 export gdf_sample_stats
+
+"""
+Given a vector v, return a list of vectors from lowest in v to highest in v,
+placed one unit apart. Good for ticks in plots.
+
+```julia-repl
+julia> unit_ticks([-6.5, -6.4, -6.3, 2, 1, 0, 2.5])
+-7:3
+```
+"""
+function unit_ticks(v)
+    vmin, vmax = extrema(v)
+    vmin = floor(Int, vmin)
+    vmax = ceil(Int, vmax)
+    return vmin:vmax
+end
+export unit_ticks
 end

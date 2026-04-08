@@ -1,6 +1,6 @@
 using ArgParse: ArgParseSettings, add_arg_table!, parse_args
 import Dates
-using MCScatteringDataAnalysis: gdf_sample_stats
+using MCScatteringDataAnalysis: gdf_sample_stats, unit_ticks
 using CairoMakie
 using JLD2: load_object
 using Statistics: mean, std
@@ -127,6 +127,7 @@ function make_sample_stat_plots(log_pₚ, log_pₑ, p_stat, e_stat; outdir, stat
         @info("Making $species plot")
         fig, ax = make_figax(; stat_title, ylabel)
         lines!(ax, log_p, stat; color, label = species)
+        ax.xticks = unit_ticks(log_p)
         axislegend(ax, framevisible = false)
         save(joinpath(outdir, "$species-$stat_title.svg"), fig)
     end
@@ -134,6 +135,7 @@ function make_sample_stat_plots(log_pₚ, log_pₑ, p_stat, e_stat; outdir, stat
     # combined plot
     @info("Making combined plot")
     fig, ax = make_figax(; stat_title, ylabel)
+    ax.xticks = unit_ticks(vcat(log_pₚ, log_pₑ))
     lines!(ax, log_pₚ, p_stat, color = color_pf_p, label = "protons")
     lines!(ax, log_pₑ, e_stat, color = color_pf_e, label = "electrons")
     axislegend(ax, framevisible = false)
@@ -152,6 +154,7 @@ function make_std_dev_plots(log_pₚ, log_pₑ, p_std_devs, e_std_devs; outdir)
     for (species, log_p, σ, color) in species_map
         @info("Making $species plot")
         fig, ax = make_figax(; stat_title, ylabel)
+        ax.xticks = unit_ticks(log_p)
         lines!(ax, log_p, σ; color, label = species)
         axislegend(ax, framevisible = false, position = :lt)
         save(joinpath(outdir, "$species-std-devs.svg"), fig)
@@ -162,6 +165,7 @@ function make_std_dev_plots(log_pₚ, log_pₑ, p_std_devs, e_std_devs; outdir)
     # combined plot
     @info("Making combined plot")
     fig, ax = make_figax(; stat_title, ylabel)
+    ax.xticks = unit_ticks(vcat(log_pₚ, log_pₑ))
     lines!(ax, log_pₚ, p_std_devs, color = color_pf_p, label = "protons")
     lines!(ax, log_pₑ, e_std_devs, color = color_pf_e, label = "electrons")
     axislegend(ax, framevisible = false, position = :lt)
@@ -182,6 +186,7 @@ function make_envelope_plots(log_pₚ, log_pₑ, μₚ, μₑ, σₚ, σₑ; out
     for (species, log_p, μ, σ, color) in species_map
         @info("Making $species plot")
         fig, ax = make_figax(; stat_title, ylabel)
+        ax.xticks = unit_ticks(log_p)
         lines!(ax, log_p, μ; color, label = species)
         band!(ax, log_p, μ + σ, μ - σ; alpha, color, label = species)
         axislegend(ax, framevisible = false, merge = true)
@@ -191,6 +196,7 @@ function make_envelope_plots(log_pₚ, log_pₑ, μₚ, μₑ, σₚ, σₑ; out
     # combined plot
     @info("Making combined plot")
     fig, ax = make_figax(; stat_title, ylabel)
+    ax.xticks = unit_ticks(vcat(log_pₚ, log_pₑ))
     lines!(ax, log_pₚ, μₚ, color = color_pf_p, label = "protons")
     band!(ax, log_pₚ, μₚ + σₚ, μₚ - σₚ; alpha, color = color_pf_p, label = "protons")
     lines!(ax, log_pₑ, μₑ, color = color_pf_e, label = "electrons")
