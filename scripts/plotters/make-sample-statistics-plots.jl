@@ -46,8 +46,8 @@ function (@main)(args = [])
     electron_stats = get_sample_stats(CR_e_gdf_momentum_filename; column)
     @info("Finished reading data ($(now()))")
 
-    proton_log_p_nat = proton_stats.p
-    electron_log_p_nat = electron_stats.p
+    log_pₚ = proton_stats.p
+    log_pₑ = electron_stats.p
 
     # for each sample statistic plot type
 
@@ -60,28 +60,28 @@ function (@main)(args = [])
     # mean plot
     @info("Creating mean plots ($(now()))")
     make_sample_stat_plots(
-        proton_log_p_nat, electron_log_p_nat, p_means, e_means;
+        log_pₚ, log_pₑ, p_means, e_means;
         outdir, stat_title = "mean", ylabel = L"$⟨\log\,n_p⟩$"
     )
 
     @info("Creating std. dev. plots ($(now()))")
-    make_std_dev_plots(proton_log_p_nat, electron_log_p_nat, p_std_devs, e_std_devs; outdir)
+    make_std_dev_plots(log_pₚ, log_pₑ, p_std_devs, e_std_devs; outdir)
 
     # mean with std_dev envelope
     @info("Creating mean with std. dev. envelope plots ($(now()))")
-    make_envelope_plots(proton_log_p_nat, electron_log_p_nat, p_means, e_means, p_std_devs, e_std_devs; outdir)
+    make_envelope_plots(log_pₚ, log_pₑ, p_means, e_means, p_std_devs, e_std_devs; outdir)
 
     # skewness
     @info("Creating skewness plots ($(now()))")
     make_sample_stat_plots(
-        proton_log_p_nat, electron_log_p_nat, proton_stats.skewness, electron_stats.skewness;
-        outdir, stat_title = "skewness", ylabel = "γ"
+        log_pₚ, log_pₑ, proton_stats.skewness, electron_stats.skewness;
+        outdir, stat_title = "skewness", ylabel = L"γ"
     )
 
     # kurtosis
     @info("Creating kurtosis plots ($(now()))")
     make_sample_stat_plots(
-        proton_log_p_nat, electron_log_p_nat, proton_stats.kurtosis, electron_stats.kurtosis;
+        log_pₚ, log_pₑ, proton_stats.kurtosis, electron_stats.kurtosis;
         outdir, stat_title = "kurtosis", ylabel = "kurtosis"
     )
 
@@ -148,13 +148,13 @@ function make_sample_stat_plots(log_pₚ, log_pₑ, p_stat, e_stat; outdir, stat
     save(joinpath(outdir, "combined-$stat_title.svg"), fig)
 end
 
-function make_std_dev_plots(log_pₚ, log_pₑ, p_std_devs, e_std_devs; outdir)
+function make_std_dev_plots(log_pₚ, log_pₑ, σₚ, σₑ; outdir)
     # plotting configs
     stat_title = "standard deviation"
     ylabel = L"σ"
     species_map = [
-        ("protons", log_pₚ, p_std_devs, color_pf_p),
-        ("electrons", log_pₑ, e_std_devs, color_pf_e)
+        ("protons", log_pₚ, σₚ, color_pf_p),
+        ("electrons", log_pₑ, σₑ, color_pf_e)
     ]
 
     for (species, log_p, σ, color) in species_map
@@ -172,8 +172,8 @@ function make_std_dev_plots(log_pₚ, log_pₑ, p_std_devs, e_std_devs; outdir)
     @info("Making combined plot")
     fig, ax = make_figax(; stat_title, ylabel)
     ax.xticks = unit_ticks(vcat(log_pₚ, log_pₑ))
-    lines!(ax, log_pₚ, p_std_devs, color = color_pf_p, label = "protons")
-    lines!(ax, log_pₑ, e_std_devs, color = color_pf_e, label = "electrons")
+    lines!(ax, log_pₚ, σₚ, color = color_pf_p, label = "protons")
+    lines!(ax, log_pₑ, σₑ, color = color_pf_e, label = "electrons")
     axislegend(ax, position = :lt) #, framevisible = false
     save(joinpath(outdir, "combined-std-devs.svg"), fig)
     ax.yscale = log10
