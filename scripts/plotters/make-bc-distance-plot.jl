@@ -29,6 +29,12 @@ function (@main)(args = [])
     yscale = args["log-scale"] ? log10 : identity
     should_title = args["title"]
 
+    Makie.set_theme!(theme_latexfonts())
+    Makie.update_theme!(fonts = Attributes(
+        regular = "Libertinus Serif",
+        bold = "Libertinus Serif Bold",
+    ))
+
     CR_p_gdf_momentum_filename = joinpath(dir, "dNdp-CR-protons-momentum-split.jld2")
 
     @info("Starting plots of protons")

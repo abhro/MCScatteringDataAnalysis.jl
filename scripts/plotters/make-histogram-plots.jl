@@ -30,6 +30,12 @@ function (@main)(args = [])
     should_plot_mle_fit = args["mle-fit"]
     should_plot_hist_fit = args["hist-fit"]
 
+    Makie.set_theme!(theme_latexfonts())
+    Makie.update_theme!(fonts = Attributes(
+        regular = "Libertinus Serif",
+        bold = "Libertinus Serif Bold",
+    ))
+
     CR_p_gdf_momentum_filename = joinpath(dir, "dNdp-CR-protons-momentum-split.jld2")
     CR_p_gdf_momentum = load_object(CR_p_gdf_momentum_filename)
     proton_log_p_nat = keys(CR_p_gdf_momentum) .|> values .|> first

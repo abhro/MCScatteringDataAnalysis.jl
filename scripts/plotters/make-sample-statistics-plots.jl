@@ -32,6 +32,12 @@ function (@main)(args = [])
     #    exit(1)
     #end
 
+    Makie.set_theme!(theme_latexfonts())
+    Makie.update_theme!(fonts = Attributes(
+        regular = "Libertinus Serif",
+        bold = "Libertinus Serif Bold",
+    ))
+
     CR_p_gdf_momentum_filename = joinpath(dir, "dNdp-CR-protons-momentum-split.jld2")
     CR_e_gdf_momentum_filename = joinpath(dir, "dNdp-CR-electrons-momentum-split.jld2")
 
@@ -55,7 +61,7 @@ function (@main)(args = [])
     @info("Creating mean plots ($(now()))")
     make_sample_stat_plots(
         proton_log_p_nat, electron_log_p_nat, p_means, e_means;
-        outdir, stat_title = "mean", ylabel = "⟨log nₚ⟩"
+        outdir, stat_title = "mean", ylabel = L"$⟨\log\,n_p⟩$"
     )
 
     @info("Creating std. dev. plots ($(now()))")
@@ -145,7 +151,7 @@ end
 function make_std_dev_plots(log_pₚ, log_pₑ, p_std_devs, e_std_devs; outdir)
     # plotting configs
     stat_title = "standard deviation"
-    ylabel = "σ"
+    ylabel = L"σ"
     species_map = [
         ("protons", log_pₚ, p_std_devs, color_pf_p),
         ("electrons", log_pₑ, e_std_devs, color_pf_e)
@@ -177,7 +183,7 @@ end
 function make_envelope_plots(log_pₚ, log_pₑ, μₚ, μₑ, σₚ, σₑ; outdir)
     # plotting configs
     stat_title = "mean"
-    ylabel = "⟨log nₚ⟩"
+    ylabel = L"$⟨\log\,n_p⟩$"
     alpha = 0.4             # How transparent the error band should be
     species_map = [
         ("protons", log_pₚ, μₚ, σₚ, color_pf_p),
@@ -211,7 +217,7 @@ const axis_properties = (;
     yminorgridvisible = true,
     xminorticksvisible = true,
     yminorticksvisible = true,
-    xlabel = "log p (nat)",
+    xlabel = L"$\log\,p$ $(m_\text{p} c)$",
 )
 
 """
