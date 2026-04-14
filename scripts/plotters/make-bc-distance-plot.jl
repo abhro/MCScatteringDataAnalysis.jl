@@ -23,7 +23,6 @@ function (@main)(args = [])
     @info("Ensuring directory $outdir exists")
     mkpath(outdir)
 
-    column = Symbol(args["column"])
     bins = args["bins"]
 
     yscale = args["log-scale"] ? log10 : identity
@@ -36,38 +35,61 @@ function (@main)(args = [])
     ))
 
     CR_p_gdf_momentum_filename = joinpath(dir, "dNdp-CR-protons-momentum-split.jld2")
-
-    @info("Starting plots of protons")
-    species_plots(CR_p_gdf_momentum_filename; species_name = "protons", bins, outdir, should_title)
-    @info("Finished plots of protons")
+    process_species(CR_p_gdf_momentum_filename, "protons"; bins, outdir, should_title)
 
     GC.gc()
 
     CR_e_gdf_momentum_filename = joinpath(dir, "dNdp-CR-electrons-momentum-split.jld2")
-
-    @info("Starting plots of electrons")
-    species_plots(CR_e_gdf_momentum_filename; species_name = "electrons", bins, outdir, should_title)
-    @info("Finished plots of electrons")
+    process_species(CR_e_gdf_momentum_filename, "electrons"; bins, outdir, should_title)
 
     return
 end
 
-function species_plots(CR_gdf_filename; species_name, bins, outdir, should_title)
-    (log_p_nat, mle_fit_dists, hist_fit_dists) = dist_fits(CR_gdf_filename, bins)
+function process_species(filename, species_name; bins, outdir, should_title = false)
+    (log_p_nat, mle_fit_dists, hist_fit_dists) = dist_fits(filename, bins)
     @info("Fitted $species_name data to distributions")
-    @debug("Received fits", mle_fit_dists, hist_fit_dists)
+    @info("Starting plots of $species_name")
+    species_plots(
+        log_p_nat, mle_fit_dists, hist_fit_dists;
+        species_name, bins, outdir, should_title,
+    )
+    @info("Finished plots of $species_name")
+end
+
+function species_plots(
+        log_p, mle_fit_dists, hist_fit_dists;
+        species_name, bins, outdir, should_title,
+    )
     fig = Figure()
-    ax = Axis(fig[1, 1]; xticks = unit_ticks(log_p_nat), axis_properties...)
+    ax = Axis(fig[1, 1]; xticks = unit_ticks(log_p), axis_properties...)
     if should_title
         ax.title = plot_title
     end
-    hlines!(ax, 2.0e-3, linewidth = 0.8, linestyle = :dash)
+
+    # cutoff line
+    hlines!(ax, 2.0e-3, linewidth = 1.25, linestyle = :dash, color = :black)
+
+    distmin, distmax = Inf, -Inf # for setting ticks
+    valid_dist = filter(!isnan) ∘ skipmissing
     for (bin_count, dist) in zip(bins, hist_fit_dists)
         @debug("Processing bin count=$bin_count", dist)
         distances = bcdistances(mle_fit_dists.pf, dist.pf)
-        scatterlines!(ax, log_p_nat, distances; label = "bins = $bin_count", markersize)
+        distmin = minimum(distances |> valid_dist; init = distmin)
+        distmax = maximum(distances |> valid_dist; init = distmax)
+        linestyle = bin_count < 75 ? Linestyle([0,6,8]) : :solid # discriminator
+        scatterlines!(ax, log_p, distances; label = "$bin_count", markersize, linestyle)
     end
-    axislegend(ax, position = :ct, framevisible = false)
+    distmin = floor(Int, log10(distmin))
+    distmax = ceil(Int, log10(distmax))
+    ax.yticks = LogTicks(distmin:distmax)
+
+    leg = Legend(
+        fig[1,1], ax, "Number of bins";
+        tellwidth = false, tellheight = false,
+        orientation = :horizontal, valign = :top, nbanks = 2,
+        margin = (10, 10, 10, 10),
+        patchsize = (34, 20),   # make the lines bigger so the pattern shows
+    )
     plot_filename = "bc-distances-$species_name-$(join(bins, ","))-bins.svg"
     save(joinpath(outdir, plot_filename), fig)
     return
@@ -103,7 +125,7 @@ const axis_properties = (;
     yminorgridvisible = true,
     xminorticksvisible = true,
     yminorticksvisible = true,
-    xlabel = "log p (nat)",
+    xlabel = L"$\log\, p$ ($m_\text{p} c$)",
     ylabel = "Bhattacharya distance",
     yscale = log10,
 )
@@ -133,8 +155,6 @@ function get_parser()
             :nargs => '+',
             :metavar => "N",
         ),
-        "--column",
-        Dict(:help => "Which column of the dataframe to bin", :default => :log_dNdp_cr_pf),
 
         "--log-scale",
         Dict(:help => "Whether the y-axis should be in log-scale", :action => :store_true),
