@@ -29,10 +29,12 @@ function (@main)(args = [])
     should_title = args["title"]
 
     Makie.set_theme!(theme_latexfonts())
-    Makie.update_theme!(fonts = Attributes(
-        regular = "Libertinus Serif",
-        bold = "Libertinus Serif Bold",
-    ))
+    Makie.update_theme!(
+        fonts = Attributes(
+            regular = "Libertinus Serif",
+            bold = "Libertinus Serif Bold",
+        )
+    )
 
     CR_p_gdf_momentum_filename = joinpath(dir, "dNdp-CR-protons-momentum-split.jld2")
     process_species(CR_p_gdf_momentum_filename, "protons"; bins, outdir, should_title)
@@ -54,6 +56,7 @@ function process_species(filename, species_name; bins, outdir, should_title = fa
         species_name, bins, outdir, should_title,
     )
     @info("Finished plots of $species_name")
+    return
 end
 
 function species_plots(
@@ -76,7 +79,7 @@ function species_plots(
         distances = bcdistances(mle_fit_dists.pf, dist.pf)
         distmin = minimum(distances |> valid_dist; init = distmin)
         distmax = maximum(distances |> valid_dist; init = distmax)
-        linestyle = bin_count < 75 ? Linestyle([0,6,8]) : :solid # discriminator
+        linestyle = bin_count < 75 ? Linestyle([0, 6, 8]) : :solid # discriminator
         scatterlines!(ax, log_p, distances; label = "$bin_count", markersize, linestyle)
     end
     distmin = floor(Int, log10(distmin))
@@ -84,7 +87,7 @@ function species_plots(
     ax.yticks = LogTicks(distmin:distmax)
 
     leg = Legend(
-        fig[1,1], ax, "Number of bins";
+        fig[1, 1], ax, "Number of bins";
         tellwidth = false, tellheight = false,
         orientation = :horizontal, valign = :top, nbanks = 2,
         margin = (10, 10, 10, 10),

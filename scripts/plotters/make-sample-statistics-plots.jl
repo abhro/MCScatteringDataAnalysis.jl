@@ -33,10 +33,12 @@ function (@main)(args = [])
     #end
 
     Makie.set_theme!(theme_latexfonts())
-    Makie.update_theme!(fonts = Attributes(
-        regular = "Libertinus Serif",
-        bold = "Libertinus Serif Bold",
-    ))
+    Makie.update_theme!(
+        fonts = Attributes(
+            regular = "Libertinus Serif",
+            bold = "Libertinus Serif Bold",
+        )
+    )
 
     CR_p_gdf_momentum_filename = joinpath(dir, "dNdp-CR-protons-momentum-split.jld2")
     CR_e_gdf_momentum_filename = joinpath(dir, "dNdp-CR-electrons-momentum-split.jld2")
@@ -146,6 +148,7 @@ function make_sample_stat_plots(log_pₚ, log_pₑ, p_stat, e_stat; outdir, stat
     lines!(ax, log_pₑ, e_stat, color = color_pf_e, label = "electrons")
     axislegend(ax) #, framevisible = false
     save(joinpath(outdir, "combined-$stat_title.svg"), fig)
+    return
 end
 
 function make_std_dev_plots(log_pₚ, log_pₑ, σₚ, σₑ; outdir)
@@ -154,7 +157,7 @@ function make_std_dev_plots(log_pₚ, log_pₑ, σₚ, σₑ; outdir)
     ylabel = L"σ"
     species_map = [
         ("protons", log_pₚ, σₚ, color_pf_p),
-        ("electrons", log_pₑ, σₑ, color_pf_e)
+        ("electrons", log_pₑ, σₑ, color_pf_e),
     ]
 
     for (species, log_p, σ, color) in species_map
@@ -178,6 +181,7 @@ function make_std_dev_plots(log_pₚ, log_pₑ, σₚ, σₑ; outdir)
     save(joinpath(outdir, "combined-std-devs.svg"), fig)
     ax.yscale = log10
     save(joinpath(outdir, "combined-std-devs-logscale.svg"), fig)
+    return
 end
 
 function make_envelope_plots(log_pₚ, log_pₑ, μₚ, μₑ, σₚ, σₑ; outdir)
@@ -187,7 +191,7 @@ function make_envelope_plots(log_pₚ, log_pₑ, μₚ, μₑ, σₚ, σₑ; out
     alpha = 0.4             # How transparent the error band should be
     species_map = [
         ("protons", log_pₚ, μₚ, σₚ, color_pf_p),
-        ("electrons", log_pₑ, μₑ, σₑ, color_pf_e)
+        ("electrons", log_pₑ, μₑ, σₑ, color_pf_e),
     ]
     for (species, log_p, μ, σ, color) in species_map
         @info("Making $species plot")
@@ -209,6 +213,7 @@ function make_envelope_plots(log_pₚ, log_pₑ, μₚ, μₑ, σₚ, σₑ; out
     band!(ax, log_pₑ, μₑ + σₑ, μₑ - σₑ; alpha, color = color_pf_e, label = "electrons")
     axislegend(ax, merge = true) #, framevisible = false
     save(joinpath(outdir, "combined-means-w-envelope.svg"), fig)
+    return
 end
 
 const color_pf_p, color_sf_p, color_ISM_p, color_pf_e, color_sf_e, color_ISM_e = Makie.wong_colors();

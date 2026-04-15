@@ -397,7 +397,7 @@ let fig = Figure()
 
     # indicate power law
     ps = range(2, 7, length = 100)
-    ys = @. ps*-σ + 62      # offset just to get it above the fluxes
+    ys = @. ps * -σ + 62      # offset just to get it above the fluxes
     lines!(ax, ps, ys, color = :black)
     # place text midway through the line, 100 points, so around 50th
     text!(ax, ps[50], ys[50], text = L"\propto p^{−σ}", fontsize = 24)
@@ -421,14 +421,14 @@ let fig = Figure()
     for (i, dfp) in enumerate(CR_p_gdf_iter[proton_iterations])
         log_p, log_nₚ = dfp.log_p_nat, dfp.log_dNdp_cr_pf
         label_tup = i == 1 ? (; label = "protons") : NamedTuple()
-        lines!(ax, log_p, log_nₚ + σ*log_p; label_tup..., color = color_pf_p, linewidth = 0.7)
+        lines!(ax, log_p, log_nₚ + σ * log_p; label_tup..., color = color_pf_p, linewidth = 0.7)
         # lines!(ax, log_p, log_nₚ; label_tup...)
     end
 
     for (i, dfe) in enumerate(CR_e_gdf_iter[electron_iterations])
         log_p, log_nₚ = dfe.log_p_nat, dfe.log_dNdp_cr_pf
         label_tup = i == 1 ? (; label = "electrons") : NamedTuple()
-        lines!(ax, log_p, log_nₚ + σ*log_p; label_tup..., color = color_pf_e, linewidth = 1, linestyle = :dash)
+        lines!(ax, log_p, log_nₚ + σ * log_p; label_tup..., color = color_pf_e, linewidth = 1, linestyle = :dash)
         # lines!(ax, log_p, log_nₚ; label_tup...)
     end
 

@@ -64,7 +64,7 @@ vn_upstream = n_upstream ÷ 2
 # ╔═╡ 83065981-47b3-42ea-9f61-079abe92e6f6
 # number of downstream particles that get a velocity vector
 # vn_downstream = 90
-vn_downstream = n_downstream ÷ (8//5)
+vn_downstream = n_downstream ÷ (8 // 5)
 
 # ╔═╡ 041d4f92-c2e5-435a-a07f-31339554583e
 begin
@@ -100,7 +100,7 @@ downstream_velocities_thermal = let
     fluctuation_angles = rand(rng, θ_dist, vn_downstream)
     # unlike upstream, all angles are likely, so no right-angle offset needed
     fluctuations = Point2.(sincos.(fluctuation_angles))
-    u_downstream/1.3 .* fluctuations
+    u_downstream / 1.3 .* fluctuations
 end
 
 # ╔═╡ 5ae39433-ee6b-413e-9217-2fa200e9c012
@@ -132,7 +132,7 @@ downstream_color = Makie.wong_colors()[3]
 schematic_figure = let
     fig = Figure()
     ax = Axis(
-        fig[1,1];
+        fig[1, 1];
         xgridvisible = false, ygridvisible = false,
         xticks = -5:5,
         xticksvisible = true, xminorticksvisible = true,
@@ -145,7 +145,7 @@ schematic_figure = let
     hidespines!(ax, :l, :t, :r)
 
     text!(ax, -0.7, 2.2, text = L"\textbf{shock front}")
-    text!(ax, -4.6, 2.2, text = upstream_text,  color = upstream_color)
+    text!(ax, -4.6, 2.2, text = upstream_text, color = upstream_color)
     text!(ax, 1.4, 2.2, text = downstream_text, color = downstream_color)
 
     # plot the particle populations as dots
