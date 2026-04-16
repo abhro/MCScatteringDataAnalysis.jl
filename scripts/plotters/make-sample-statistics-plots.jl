@@ -20,6 +20,7 @@ function (@main)(args = [])
     mkpath(outdir)
 
     column = Symbol(args["column"])
+    should_title = args["title"]
 
     # get option for if we want combined, protons only, and/or electrons only
     #plot_combined = args["combined"]
@@ -63,28 +64,28 @@ function (@main)(args = [])
     @info("Creating mean plots ($(now()))")
     make_sample_stat_plots(
         log_pₚ, log_pₑ, p_means, e_means;
-        outdir, stat_title = "mean", ylabel = L"$⟨\log\,n_p⟩$"
+        outdir, should_title, stat_title = "mean", ylabel = L"$⟨\log\,n_p⟩$"
     )
 
     @info("Creating std. dev. plots ($(now()))")
-    make_std_dev_plots(log_pₚ, log_pₑ, p_std_devs, e_std_devs; outdir)
+    make_std_dev_plots(log_pₚ, log_pₑ, p_std_devs, e_std_devs; outdir, should_title)
 
     # mean with std_dev envelope
     @info("Creating mean with std. dev. envelope plots ($(now()))")
-    make_envelope_plots(log_pₚ, log_pₑ, p_means, e_means, p_std_devs, e_std_devs; outdir)
+    make_envelope_plots(log_pₚ, log_pₑ, p_means, e_means, p_std_devs, e_std_devs; outdir, should_title)
 
     # skewness
     @info("Creating skewness plots ($(now()))")
     make_sample_stat_plots(
         log_pₚ, log_pₑ, proton_stats.skewness, electron_stats.skewness;
-        outdir, stat_title = "skewness", ylabel = L"γ"
+        outdir, should_title, stat_title = "skewness", ylabel = L"γ"
     )
 
     # kurtosis
     @info("Creating kurtosis plots ($(now()))")
     make_sample_stat_plots(
         log_pₚ, log_pₑ, proton_stats.kurtosis, electron_stats.kurtosis;
-        outdir, stat_title = "kurtosis", ylabel = "kurtosis"
+        outdir, should_title, stat_title = "kurtosis", ylabel = "kurtosis"
     )
 
     return
@@ -103,14 +104,16 @@ function get_sample_stats(filename; column)
     return (; p, means, std_devs, skewness, kurtosis)
 end
 
-function make_figax(; stat_title, ylabel)
+function make_figax(; stat_title, ylabel, should_title)
     fig = Figure()
     ax = Axis(
         fig[1, 1];
-        title = "Sample $stat_title vs momentum slice",
         axis_properties...,
         ylabel,
     )
+    if should_title
+        ax.title = "Sample $stat_title vs momentum slice"
+    end
     return fig, ax
 end
 
@@ -126,14 +129,14 @@ Create proton, electron, and combined plots for a particular sample statistic
 - `stat_title`: Name of the sample statistic (mean/kurtosis/etc...)
 - `ylabel`: Label for the plots' y-axes
 """
-function make_sample_stat_plots(log_pₚ, log_pₑ, p_stat, e_stat; outdir, stat_title, ylabel)
+function make_sample_stat_plots(log_pₚ, log_pₑ, p_stat, e_stat; outdir, stat_title, ylabel, should_title)
     species_map = [
         ("protons", log_pₚ, p_stat, color_pf_p),
         ("electrons", log_pₑ, e_stat, color_pf_e),
     ]
     for (species, log_p, stat, color) in species_map
         @info("Making $species plot")
-        fig, ax = make_figax(; stat_title, ylabel)
+        fig, ax = make_figax(; stat_title, ylabel, should_title)
         lines!(ax, log_p, stat; color, label = species)
         ax.xticks = unit_ticks(log_p)
         #axislegend(ax) #, framevisible = false
@@ -142,7 +145,7 @@ function make_sample_stat_plots(log_pₚ, log_pₑ, p_stat, e_stat; outdir, stat
 
     # combined plot
     @info("Making combined plot")
-    fig, ax = make_figax(; stat_title, ylabel)
+    fig, ax = make_figax(; stat_title, ylabel, should_title)
     ax.xticks = unit_ticks(vcat(log_pₚ, log_pₑ))
     lines!(ax, log_pₚ, p_stat, color = color_pf_p, label = "protons")
     lines!(ax, log_pₑ, e_stat, color = color_pf_e, label = "electrons")
@@ -151,7 +154,7 @@ function make_sample_stat_plots(log_pₚ, log_pₑ, p_stat, e_stat; outdir, stat
     return
 end
 
-function make_std_dev_plots(log_pₚ, log_pₑ, σₚ, σₑ; outdir)
+function make_std_dev_plots(log_pₚ, log_pₑ, σₚ, σₑ; outdir, should_title)
     # plotting configs
     stat_title = "standard deviation"
     ylabel = L"σ"
@@ -162,7 +165,7 @@ function make_std_dev_plots(log_pₚ, log_pₑ, σₚ, σₑ; outdir)
 
     for (species, log_p, σ, color) in species_map
         @info("Making $species plot")
-        fig, ax = make_figax(; stat_title, ylabel)
+        fig, ax = make_figax(; stat_title, ylabel, should_title)
         ax.xticks = unit_ticks(log_p)
         lines!(ax, log_p, σ; color, label = species)
         #axislegend(ax, framevisible = false, position = :lt)
@@ -173,7 +176,7 @@ function make_std_dev_plots(log_pₚ, log_pₑ, σₚ, σₑ; outdir)
 
     # combined plot
     @info("Making combined plot")
-    fig, ax = make_figax(; stat_title, ylabel)
+    fig, ax = make_figax(; stat_title, ylabel, should_title)
     ax.xticks = unit_ticks(vcat(log_pₚ, log_pₑ))
     lines!(ax, log_pₚ, σₚ, color = color_pf_p, label = "protons")
     lines!(ax, log_pₑ, σₑ, color = color_pf_e, label = "electrons")
@@ -184,7 +187,7 @@ function make_std_dev_plots(log_pₚ, log_pₑ, σₚ, σₑ; outdir)
     return
 end
 
-function make_envelope_plots(log_pₚ, log_pₑ, μₚ, μₑ, σₚ, σₑ; outdir)
+function make_envelope_plots(log_pₚ, log_pₑ, μₚ, μₑ, σₚ, σₑ; outdir, should_title)
     # plotting configs
     stat_title = "mean"
     ylabel = L"$⟨\log\,n_p⟩$"
@@ -195,7 +198,7 @@ function make_envelope_plots(log_pₚ, log_pₑ, μₚ, μₑ, σₚ, σₑ; out
     ]
     for (species, log_p, μ, σ, color) in species_map
         @info("Making $species plot")
-        fig, ax = make_figax(; stat_title, ylabel)
+        fig, ax = make_figax(; stat_title, ylabel, should_title)
         ax.xticks = unit_ticks(log_p)
         lines!(ax, log_p, μ; color, label = species)
         band!(ax, log_p, μ + σ, μ - σ; alpha, color, label = species)
@@ -205,7 +208,7 @@ function make_envelope_plots(log_pₚ, log_pₑ, μₚ, μₑ, σₚ, σₑ; out
 
     # combined plot
     @info("Making combined plot")
-    fig, ax = make_figax(; stat_title, ylabel)
+    fig, ax = make_figax(; stat_title, ylabel, should_title)
     ax.xticks = unit_ticks(vcat(log_pₚ, log_pₑ))
     lines!(ax, log_pₚ, μₚ, color = color_pf_p, label = "protons")
     band!(ax, log_pₚ, μₚ + σₚ, μₚ - σₚ; alpha, color = color_pf_p, label = "protons")
@@ -240,6 +243,9 @@ function get_parser()
 
         "--column",
         Dict(:help => "Which column of the dataframe to take statistics off", :default => :log_dNdp_cr_pf, :metavar => "COL"),
+
+        "--title",
+        Dict(:help => "Whether we should add a title to each figure", :action => :store_true),
 
         #"--no-combined", Dict(:dest_name => "combined", :action => :store_false),
         #"--combined",
