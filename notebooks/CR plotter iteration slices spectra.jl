@@ -429,7 +429,7 @@ let fig = Figure()
     ax.xticks = -1:8
     ax.yticks = 30:5:60
     # ylims!(ax, 57.2, 58.3)
-    axislegend(ax)#, framevisible = false)
+    axislegend(ax)
 
     # save("power-law-spectra.svg", fig)
 
@@ -470,7 +470,7 @@ let fig = Figure()
     ax.xticks = -1:8
     # xlims!(ax, -0.8, 7.6)
     ylims!(ax, 54.5, 58.4)
-    axislegend(ax)#, framevisible = false)
+    axislegend(ax)
 
     # save("flattened-spectra.svg", fig)
 

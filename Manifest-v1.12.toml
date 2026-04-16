@@ -2,7 +2,7 @@
 
 julia_version = "1.12.5"
 manifest_format = "2.0"
-project_hash = "19407314a8e9b9e5ec882952e4cdef42e1938272"
+project_hash = "d5165a9e3636a82dcef892918c5b0e09814f601b"
 
 [[deps.ADTypes]]
 git-tree-sha1 = "f7304359109c768cf32dc5fa2d371565bb63b68a"
@@ -1272,7 +1272,7 @@ uuid = "2fda8390-95c7-5789-9bda-21331edee243"
 version = "0.15.1"
 
 [[deps.MCScatteringDataAnalysis]]
-deps = ["AlgebraOfGraphics", "ArgParse", "BiNormalDistributions", "CSV", "CairoMakie", "Comonicon", "DataFrames", "Dates", "DelimitedFiles", "Distributions", "DrWatson", "Format", "Glob", "HypothesisTests", "JLD2", "KernelDensity", "LinearAlgebra", "LsqFit", "Missings", "Pluto", "PlutoLinks", "PlutoUI", "Printf", "Revise", "Sobol", "StaticArrays", "Statistics", "StatsAPI", "StatsBase"]
+deps = ["AlgebraOfGraphics", "ArgParse", "BiNormalDistributions", "CSV", "CairoMakie", "Comonicon", "DataFrames", "Dates", "DelimitedFiles", "Distributions", "DrWatson", "Format", "Glob", "HypothesisTests", "JLD2", "KernelDensity", "LaTeXStrings", "LinearAlgebra", "LsqFit", "Missings", "Pluto", "PlutoLinks", "PlutoUI", "Printf", "Revise", "Sobol", "StaticArrays", "Statistics", "StatsAPI", "StatsBase"]
 path = "."
 uuid = "bf7559df-1170-47f2-96bf-287de9cbd746"
 version = "0.0.1"

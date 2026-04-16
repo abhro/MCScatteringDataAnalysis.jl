@@ -2,6 +2,7 @@ using JLD2: load_object
 using DataFrames
 using LinearAlgebra: normalize
 using CairoMakie
+using LaTeXStrings: LaTeXString, latexstring
 using StatsBase
 using Distributions: Normal, params
 using Printf: @sprintf
@@ -98,7 +99,8 @@ const axis_properties = (;
     yminorgridvisible = true,
     xminorticksvisible = true,
     yminorticksvisible = true,
-    xlabel = "log(nₚ)",
+    xlabel = L"\log\,n_p",
+    ylabel = "p.d.f.",
 )
 
 const color_pf_p, color_sf_p, color_ISM_p, color_pf_e, color_sf_e, color_ISM_e = Makie.wong_colors()
@@ -110,7 +112,6 @@ function make_plot(samples, mle_dist, hist_dist; bins, yscale, should_plot_mle_f
     fig = Figure()
     ax = Axis(
         fig[1, 1];
-        ylabel = "pdf",
         yscale,
         ##title = "Histogram of protons dN/dp at log p = $log_p_nat_at_slice_p (mₚc)",
         axis_properties...
@@ -119,23 +120,23 @@ function make_plot(samples, mle_dist, hist_dist; bins, yscale, should_plot_mle_f
     n = length(samples)
     ##samples ./= std(samples)
     if n != 0
-        stephist!(ax, samples; label = "plasma frame ($n samples)", bins, normalization, color = color_pf_p, linewidth = 2)
+        stephist!(ax, samples; label = LaTeXString("plasma frame ($n samples)"), bins, normalization, color = color_pf_p, linewidth = 2)
     end
 
     if should_plot_mle_fit && !ismissing(mle_dist)
         # n points seems like a good heuristic
         data_span = range(extrema(samples)..., length = max(n, 2000))
-        dist_label = @sprintf("MLE fit (μ=%.3f, σ=%.3f)", params(mle_dist)...)
-        plot!(ax, data_span, mle_dist, label = dist_label, color = :indianred, linewidth = 1)
+        dist_label = @sprintf("MLE fit (\$μ=%.3f\$, \$σ=%.3f\$)", params(mle_dist)...)
+        plot!(ax, data_span, mle_dist, label = latexstring(dist_label), color = :indianred, linewidth = 1.4)
     end
     if should_plot_hist_fit && !ismissing(hist_dist)
         # n points seems like a good heuristic
         data_span = range(extrema(samples)..., length = max(n, 2000))
-        dist_label = @sprintf("Curve fit (μ=%.3f, σ=%.3f)", params(hist_dist)...)
-        plot!(ax, data_span, hist_dist, label = dist_label, color = :brown, linestyle = :dash)
+        dist_label = @sprintf("Curve fit (\$μ=%.3f\$, \$σ=%.3f\$)", params(hist_dist)...)
+        plot!(ax, data_span, hist_dist, label = latexstring(dist_label), color = :brown, linestyle = :dash)
     end
 
-    axislegend(ax, framevisible = false)
+    axislegend(ax)
 
     return fig
 end
@@ -144,7 +145,7 @@ end
 Create and return an ArgParse.jl arg table
 """
 function get_parser()
-    s = ArgParseSettings()
+    s = ArgParseSettings(; help_width = 108)
 
     add_arg_table!(
         s,
