@@ -38,7 +38,11 @@ using Distributions
 using PlutoUI
 
 # ╔═╡ acbe8855-c586-46e3-a72b-a556df77b547
-using CairoMakie
+begin
+    using CairoMakie
+    Makie.set_theme!(theme_latexfonts())
+    Makie.update_theme!(fonts = Attributes(regular = "Libertinus Serif", bold = "Libertinus Sans Bold"))
+end
 
 # ╔═╡ 5eaf1fbb-9dc7-40e4-87b8-8a0af299f815
 begin
@@ -78,7 +82,7 @@ TableOfContents(depth = 6)
 html"""<style>
 main {
     max-width: 83%;
-    padding-left: max(300px, 5%);
+    padding-left: max(300px, 20%);
     padding-right: 0%;
 }
 </style>"""
@@ -159,8 +163,23 @@ Create a method for multiplication that makes the AlgebraOfGraphics layers look 
 # A little type-piracy makes the world go round
 Base.:*(b::Bool, l::Layer) = b ? l : zerolayer()
 
+# ╔═╡ 49a1d8ce-2dad-4547-b338-c5d68cdbc528
+xlabel = L"$\log\,p$ $(m_\text{p} c)$";
+
 # ╔═╡ 9ad1edfe-818d-4a26-8658-632369a90845
-x_map = :log_p_nat => "log p (nat)";
+x_map = :log_p_nat => xlabel;
+
+# ╔═╡ b20205f2-362c-4fa2-9021-262ac8de2ceb
+maps = let
+    ylabel = L"$\log\,n_p$"
+    pf_map = mapping(x_map, :log_dNdp_cr_pf => ylabel, color = direct("plasma frame"))
+    sf_map = mapping(x_map, :log_dNdp_cr_sf => ylabel, color = direct("shock frame"))
+    ISM_map = mapping(x_map, :log_dNdp_cr_ISM => ylabel, color = direct("ISM frame"))
+    pf_map_all = mapping(x_map, :log_dNdp_all_pf => ylabel, color = direct("plasma frame, all"))
+    sf_map_all = mapping(x_map, :log_dNdp_all_sf => ylabel, color = direct("shock frame, all"))
+    ISM_map_all = mapping(x_map, :log_dNdp_all_ISM => ylabel, color = direct("ISM frame, all"))
+    (; pf = pf_map, pf_all = pf_map_all, sf = sf_map, sf_all = sf_map_all, ISM = ISM_map, ISM_all = ISM_map_all)
+end;
 
 # ╔═╡ 968fd2bf-172b-462e-8c45-4ab7cf21f41e
 visual_layer = visual(Lines);
@@ -180,15 +199,7 @@ plot_sf_binder = @bind do_plot_sf CheckBox(default = false);
 plot_ISM_binder = @bind do_plot_ISM CheckBox(default = false);
 
 # ╔═╡ 3fccf366-bf6d-4c7a-a3d1-916b8f13afd3
-map_layer = let
-    y_label = "log nₚ"
-
-    pf_map = mapping(x_map, :log_dNdp_cr_pf => y_label, color = direct("plasma frame"))
-    sf_map = mapping(x_map, :log_dNdp_cr_sf => y_label, color = direct("shock frame"))
-    ISM_map = mapping(x_map, :log_dNdp_cr_ISM => y_label, color = direct("ISM frame"))
-
-    do_plot_pf * pf_map + do_plot_sf * sf_map + do_plot_ISM * ISM_map
-end;
+map_layer = do_plot_pf * maps.pf + do_plot_sf * maps.sf + do_plot_ISM * maps.ISM; # + pf_map_all
 
 # ╔═╡ d9b28dbe-b3d6-47d6-91c9-21b9350d5069
 idx_CR_p_gdf = axes(CR_p_gdf_iter, 1);
@@ -241,20 +252,26 @@ let fig = Figure(), df = CR_p_gdf_iter[plot_iter]
     # Create a plotting specification, which specifies our data source, how to
     # transform our data (`map_layer`), and how to present the data (`visual_layer`).
     spec = data(df) * map_layer * visual_layer
-    title = "nₚ of Cosmic rays (protons), iteration $plot_iter"
+    title = "Spectra of Cosmic rays (protons), iteration $plot_iter"
     plt = draw!(fig[1, 1], spec, axis = (; title, axis_properties...))
     legend!(fig[1, 1], plt; legend_properties...)
+    # ylims!(50, 58)
     fig
 end
 
 # ╔═╡ 7879a41a-a284-452b-9505-a239209f1ed0
 let fig = Figure(), df = CR_e_gdf_iter[plot_iter]
     spec = data(df) * map_layer * visual_layer
-    title = "nₚ of Cosmic rays (electrons), iteration $plot_iter"
+    title = "Spectra of Cosmic rays (electrons), iteration $plot_iter"
     plt = draw!(fig[1, 1], spec, axis = (; title, axis_properties...))
     legend!(fig[1, 1], plt; legend_properties...)
     fig
 end
+
+# ╔═╡ 0e43598e-2465-4377-913b-684bfff7f1c7
+md"""
+### Flattened spectra
+"""
 
 # ╔═╡ 1529a53f-a084-40fc-80b0-3f9f31a5868e
 md"""
@@ -272,16 +289,19 @@ md"""
 Create an AlgebraOfGraphics layer which transforms the ``\log(n_p)`` column to ``σ \log(p) + \log(n_p)``.
 """
 
+# ╔═╡ 937b66b1-bd5b-4de2-8f76-658aa4d335dc
+flattened_ylabel = L"\log(p^σ n_p)";
+
+# ╔═╡ 7878036f-dcd8-487a-92fd-a6d17a4cb290
+flattened_maps = let
+    pf_map = mapping(x_map, (:log_p_nat, :log_dNdp_cr_pf) => flatten_log_nₚ => flattened_ylabel, color = direct("plasma frame"))
+    sf_map = mapping(x_map, (:log_p_nat, :log_dNdp_cr_sf) => flatten_log_nₚ => flattened_ylabel, color = direct("shock frame"))
+    ISM_map = mapping(x_map, (:log_p_nat, :log_dNdp_cr_ISM) => flatten_log_nₚ => flattened_ylabel, color = direct("ISM frame"))
+    (; pf = pf_map, sf = sf_map, ISM = ISM_map)
+end;
+
 # ╔═╡ c8f1dec5-0566-4ce2-8361-21b7d1fe7480
-σ_map_layer = let
-    y_label = "log(nₚ) + σ log(p)"
-
-    pf_map = mapping(x_map, (:log_p_nat, :log_dNdp_cr_pf) => flatten_log_nₚ => y_label, color = direct("plasma frame"))
-    sf_map = mapping(x_map, (:log_p_nat, :log_dNdp_cr_sf) => flatten_log_nₚ => y_label, color = direct("shock frame"))
-    ISM_map = mapping(x_map, (:log_p_nat, :log_dNdp_cr_ISM) => flatten_log_nₚ => y_label, color = direct("ISM frame"))
-
-    do_plot_pf * pf_map + do_plot_sf * sf_map + do_plot_ISM * ISM_map
-end
+σ_map_layer = do_plot_pf * flattened_maps.pf + do_plot_sf * flattened_maps.sf + do_plot_ISM * flattened_maps.ISM
 
 # ╔═╡ b352849e-eca0-4ac5-acbe-9f48d0507f38
 md"""
@@ -300,7 +320,7 @@ Choose which frames to plot:
 # ╔═╡ 64eb4739-9a79-4c8c-99a3-bd338b3af6a0
 let fig = Figure()
     spec = data(CR_p_gdf_iter[plot_iter]) * σ_map_layer * visual_layer
-    title = "nₚ of Cosmic rays (protons), iteration $plot_iter"
+    title = "Spectra of Cosmic rays (protons), iteration $plot_iter"
     plt = draw!(fig[1, 1], spec; axis = (; title, axis_properties...))
     legend!(fig[1, 1], plt; legend_properties..., halign = :center, valign = :bottom)
 
@@ -313,11 +333,12 @@ end
 # ╔═╡ 63db1015-02a2-4623-aa6a-b6bd772024fa
 let fig = Figure()
     spec = data(CR_e_gdf_iter[plot_iter]) * σ_map_layer * visual_layer
-    title = "nₚ of Cosmic rays (electrons), iteration $plot_iter"
+    title = "Spectra of Cosmic rays (electrons), iteration $plot_iter"
     plt = draw!(fig[1, 1], spec; axis = (; title, axis_properties...))
     legend!(fig[1, 1], plt; legend_properties..., halign = :center, valign = :bottom)
 
     ax = only(plt).axis # this is stupid
+    ax.xticks = -2:8
     hlines!(ax, 56.5, linewidth = 0.5)
 
     fig
@@ -335,8 +356,8 @@ proton_iterations = 5620:5630;
 let fig = Figure()
     ax = Axis(
         fig[1, 1];
-        title = "nₚ of Cosmic rays (protons)",
-        xlabel = "log p (nat)", ylabel = "log nₚ + σ log p",
+        title = "Spectra of Cosmic rays (protons)",
+        xlabel, ylabel = flattened_ylabel,
         axis_properties...
     )
 
@@ -345,6 +366,7 @@ let fig = Figure()
         scatterlines!(ax, log_p, log_nₚ + σ * log_p, label = "plasma frame (iter $(proton_iterations[i]))"; markersize)
     end
 
+    ax.xticks = 2:0.5:5
     xlims!(ax, 2, 5)
     ylims!(ax, 57.2, 58.3)
     fig
@@ -358,8 +380,8 @@ electron_iterations = 5775:5779;
 let fig = Figure()
     ax = Axis(
         fig[1, 1];
-        title = "nₚ of Cosmic rays (electrons)",
-        xlabel = "log(p) (nat)", ylabel = "log(nₚ) + σ log(p)",
+        title = "Spectra of Cosmic rays (electrons)",
+        xlabel, ylabel = flattened_ylabel,
         axis_properties...
     )
 
@@ -368,6 +390,7 @@ let fig = Figure()
         scatterlines!(ax, log_p, log_nₚ + σ * log_p, label = "plasma frame (iter $(electron_iterations[i]))"; markersize)
     end
 
+    ax.xticks = -1:5
     xlims!(ax, -0.3, 5)
     ylims!(ax, 56, 57.0)
     fig
@@ -377,8 +400,8 @@ end
 let fig = Figure()
     ax = Axis(
         fig[1, 1];
-        title = "Flux of Cosmic rays",
-        xlabel = "log p (nat)", ylabel = "log nₚ",
+        # title = "Spectral flux of Cosmic rays",
+        xlabel, ylabel = L"\log\,n_p",
         axis_properties...
     )
 
@@ -392,7 +415,7 @@ let fig = Figure()
         log_p, log_nₚ = dfe.log_p_nat, dfe.log_dNdp_cr_pf
         label_tup = i == 1 ? (; label = "electrons") : NamedTuple()
         # lines!(ax, log_p, log_nₚ + σ*log_p; label_tup..., color = color_pf_e)
-        lines!(ax, log_p, log_nₚ; label_tup..., color = color_pf_e, linewidth = 0.5, linestyle = :dash)
+        lines!(ax, log_p, log_nₚ; label_tup..., color = color_pf_e, linewidth = 1, linestyle = :dashdot)
     end
 
     # indicate power law
@@ -403,8 +426,12 @@ let fig = Figure()
     text!(ax, ps[50], ys[50], text = L"\propto p^{−σ}", fontsize = 24)
 
     # xlims!(ax, 2, 5)
+    ax.xticks = -1:8
+    ax.yticks = 30:5:60
     # ylims!(ax, 57.2, 58.3)
-    axislegend(ax, framevisible = false)
+    axislegend(ax)#, framevisible = false)
+
+    # save("power-law-spectra.svg", fig)
 
     fig
 end
@@ -414,14 +441,14 @@ let fig = Figure()
     ax = Axis(
         fig[1, 1];
         # title = "Flux of Cosmic rays",
-        xlabel = "log p (nat)", ylabel = "log nₚ + σ log p",
+        xlabel, ylabel = flattened_ylabel,
         axis_properties...
     )
 
     for (i, dfp) in enumerate(CR_p_gdf_iter[proton_iterations])
         log_p, log_nₚ = dfp.log_p_nat, dfp.log_dNdp_cr_pf
         label_tup = i == 1 ? (; label = "protons") : NamedTuple()
-        lines!(ax, log_p, log_nₚ + σ * log_p; label_tup..., color = color_pf_p, linewidth = 0.7)
+        lines!(ax, log_p, log_nₚ + σ * log_p; label_tup..., color = color_pf_p, linewidth = 1)
         # lines!(ax, log_p, log_nₚ; label_tup...)
     end
 
@@ -434,17 +461,18 @@ let fig = Figure()
 
     # For publication: slices where we're inspecting momenta
     vlines!(ax, [3.2, 5.2], linewidth = 2.5, color = :red, linestyle = :dot)
-    fontsize = 32
-    text!(ax, 2.7, 56, text = "♤"; fontsize)
-    text!(ax, 5.2, 55.7, text = "♧"; fontsize)
-    text!(ax, 2.7, 57.9, text = "♡"; fontsize)
-    text!(ax, 5.15, 57.6, text = "♢"; fontsize)
+    fontsize = 40
+    text!(ax, 2.6, 56.15, text = "♤"; fontsize)
+    text!(ax, 5.2, 55.8, text = "♧"; fontsize)
+    text!(ax, 2.6, 57.98, text = "♡"; fontsize)
+    text!(ax, 5.15, 57.7, text = "♢"; fontsize)
 
-    # xlims!(ax, 2, 5)
-    ylims!(ax, 52.5, 58.4)
-    axislegend(ax, framevisible = false)
+    ax.xticks = -1:8
+    # xlims!(ax, -0.8, 7.6)
+    ylims!(ax, 54.5, 58.4)
+    axislegend(ax)#, framevisible = false)
 
-    #save("flattened-spectra.svg", fig)
+    # save("flattened-spectra.svg", fig)
 
     fig
 end
@@ -540,7 +568,9 @@ end
 # ╠═3cc54622-c4e4-4c59-8828-4aa899a51e51
 # ╟─113aaa26-2df1-412a-a0e1-0a5fd25e92dd
 # ╠═25204be4-5005-44a6-987d-f28789485a60
+# ╠═49a1d8ce-2dad-4547-b338-c5d68cdbc528
 # ╠═9ad1edfe-818d-4a26-8658-632369a90845
+# ╠═b20205f2-362c-4fa2-9021-262ac8de2ceb
 # ╠═3fccf366-bf6d-4c7a-a3d1-916b8f13afd3
 # ╠═968fd2bf-172b-462e-8c45-4ab7cf21f41e
 # ╟─cc0e1155-60cd-4b82-910a-9a80b489f58c
@@ -558,10 +588,13 @@ end
 # ╟─d7d554cf-2f16-49e1-849d-25b5088e85ff
 # ╟─220c3ca5-e0b5-4f5c-86b0-e5d7cdd67558
 # ╟─7879a41a-a284-452b-9505-a239209f1ed0
+# ╟─0e43598e-2465-4377-913b-684bfff7f1c7
 # ╟─1529a53f-a084-40fc-80b0-3f9f31a5868e
 # ╠═6537effb-12e6-4f4e-b34f-15dd33547921
 # ╠═79429dd7-acb7-4c5f-8843-e93e8c4ea68d
 # ╟─dc6d55ec-e30d-4979-9d2c-a3b6b529cdf8
+# ╠═937b66b1-bd5b-4de2-8f76-658aa4d335dc
+# ╠═7878036f-dcd8-487a-92fd-a6d17a4cb290
 # ╠═c8f1dec5-0566-4ce2-8361-21b7d1fe7480
 # ╟─b352849e-eca0-4ac5-acbe-9f48d0507f38
 # ╟─822bf68e-5335-45b8-b313-1cc92b53ea01
