@@ -118,6 +118,12 @@ idx_CR_p_gdf = axes(CR_p_gdf_momentum, 1);
 # ╔═╡ f8d26a2c-2789-4b04-8bb7-71bf19686bbd
 idx_CR_e_gdf = axes(CR_e_gdf_momentum, 1);
 
+# ╔═╡ efed6856-264e-4917-8d01-aadfa4aaf9ea
+proton_log_p_nat = keys(CR_p_gdf_momentum) .|> values .|> first;
+
+# ╔═╡ 72e45c0b-d1e4-4244-8ff8-0d1013a57d71
+electron_log_p_nat = keys(CR_e_gdf_momentum) .|> values .|> first;
+
 # ╔═╡ 628130bf-da25-4799-8e5e-3d2db15b1e49
 md"""
 # Plot Cosmic Ray data
@@ -258,116 +264,8 @@ All of the plotting code below can be simplified much, much more with AlgebraOfG
 
 # ╔═╡ 54ec7213-3e48-423b-9208-befc6583b908
 md"""
-### Sample size
+## Sample size
 """
-
-# ╔═╡ 932c2a77-0198-4df4-a4bd-30d0bda93946
-md"""
-### Means
-"""
-
-# ╔═╡ 7da22399-718c-4f16-ba02-7ae27773942b
-md"""
-#### Mean with uncertainty envelope
-"""
-
-# ╔═╡ d9b1e2c3-d3d3-4bdb-b4b2-c7849f61d2c9
-md"""
-!!! note
-    TODO: draw vlines at different momenta for thesis, then pull the histograms out of them to show that if we pick a momentum, it has an entire sample set with a given histogram and a distribution. Pick some from low, middle, and high end of spectra.
-"""
-
-# ╔═╡ 5767b9ac-64c2-4d2f-ad42-961184c7edc7
-md"""
-### Standard deviations
-"""
-
-# ╔═╡ 7495e7e9-3d50-4401-baef-d2e3c11e6b46
-md"""
-### Skewness
-"""
-
-# ╔═╡ de5f1493-a018-40cd-8b30-0681f1c61768
-md"""
-Should we plot electrons? $plot_electrons_binder
-"""
-
-# ╔═╡ bb3a74ce-78ee-487e-a413-4c0e035e8818
-md"""
-### Kurtosis
-"""
-
-# ╔═╡ ecf80697-b786-4b02-9563-f3d082383b76
-md"""
-Choose which frames to plot:
-- Plasma frame: $plot_pf_binder
-- Shock frame: $plot_sf_binder
-- ISM frame: $plot_ISM_binder
-"""
-
-# ╔═╡ 9ea7a3a4-987d-416d-88d1-672e3cce23c5
-md"""
-## dN/dp vs. iteration
-"""
-
-# ╔═╡ b7a96870-784e-4ce0-830d-d245fc16e5f4
-# ╠═╡ disabled = true
-#=╠═╡
-let df = CR_p_gdf_momentum[proton_momentum_index]
-
-    fig = Figure()
-    ax = Axis(
-        fig[1,1];
-        title = "dN/dp of Cosmic rays (protons) against iteration, momentum slice",
-        xlabel = "Iteration", ylabel = "log(dN/dp)")
-
-    do_plot_pf && scatter!(ax, df.iter, df.log_dNdp_cr_pf, label = "plasma frame"; markersize, color = color_pf_p)
-    do_plot_sf && scatter!(ax, df.iter, df.log_dNdp_cr_sf, label = "shock frame"; markersize, color = color_sf_p)
-    do_plot_ISM && scatter!(ax, df.iter, df.log_dNdp_cr_ISM, label = "ISM frame"; markersize, color = color_ISM_p)
-
-    #xlims!(ax, -16, -3)
-    #ylims!(ax, -100, -98)
-    leg = axislegend(ax, position = :rb, framevisible = false)
-    #Legend(fig[1,2], ax)
-    fig
-end
-  ╠═╡ =#
-
-# ╔═╡ 4ac1798d-ec27-4571-9b2a-44cb432ef0d6
-# ╠═╡ disabled = true
-#=╠═╡
-let df = CR_p_gdf_momentum[electron_momentum_index]
-
-    fig = Figure()
-    ax = Axis(
-        fig[1,1];
-        #aspect = AxisAspect(1.2),
-        title = "dN/dp of Cosmic rays (electrons) against iteration, momentum slice",
-        #axis_properties...,
-        xlabel = "Iteration", ylabel = "log(dN/dp)")
-
-    do_plot_pf && scatter!(ax, df.iter, df.log_dNdp_cr_pf, label = "plasma frame"; markersize, color = color_pf_e)
-    do_plot_sf && scatter!(ax, df.iter, df.log_dNdp_cr_sf, label = "shock frame"; markersize, color = color_sf_e)
-    do_plot_ISM && scatter!(ax, df.iter, df.log_dNdp_cr_ISM, label = "ISM frame"; markersize, color = color_ISM_e)
-
-    #xlims!(ax, -16, -3)
-    #ylims!(ax, -100, -98)
-    axislegend(ax, position = :rb, framevisible = false)
-    #Legend(fig[1,2], ax)
-    fig
-end
-  ╠═╡ =#
-
-# ╔═╡ fbd71150-7e0b-4a20-ad79-4260b78a21ef
-md"""
-# Constants and functions
-"""
-
-# ╔═╡ efed6856-264e-4917-8d01-aadfa4aaf9ea
-proton_log_p_nat = keys(CR_p_gdf_momentum) .|> values .|> first;
-
-# ╔═╡ 72e45c0b-d1e4-4244-8ff8-0d1013a57d71
-electron_log_p_nat = keys(CR_e_gdf_momentum) .|> values .|> first;
 
 # ╔═╡ f186773a-cbd7-47a7-81e4-e0b3e71ebcc5
 elec_p_idx = sortperm(electron_log_p_nat)
@@ -414,6 +312,11 @@ let
     fig
 end
 
+# ╔═╡ 932c2a77-0198-4df4-a4bd-30d0bda93946
+md"""
+## Means
+"""
+
 # ╔═╡ 91bba2da-c925-4123-bb8a-c1f9be8619e9
 let
     fig = Figure()
@@ -455,6 +358,11 @@ let
 
     fig
 end
+
+# ╔═╡ 7da22399-718c-4f16-ba02-7ae27773942b
+md"""
+### Mean with uncertainty envelope
+"""
 
 # ╔═╡ 3f36fc06-3799-41f3-971b-d13d43e5fc20
 let
@@ -509,6 +417,11 @@ let
 
     fig
 end
+
+# ╔═╡ 5767b9ac-64c2-4d2f-ad42-961184c7edc7
+md"""
+## Standard deviations
+"""
 
 # ╔═╡ b6ce51e5-b4ff-49eb-83db-ecf3e8a081ac
 let
@@ -592,6 +505,16 @@ let
     fig
 end
 
+# ╔═╡ 7495e7e9-3d50-4401-baef-d2e3c11e6b46
+md"""
+## Skewness
+"""
+
+# ╔═╡ de5f1493-a018-40cd-8b30-0681f1c61768
+md"""
+Should we plot electrons? $plot_electrons_binder
+"""
+
 # ╔═╡ adf24143-4be1-46c7-a63a-fe4dd490791d
 let
     fig = Figure()
@@ -618,6 +541,11 @@ let
 
     fig
 end
+
+# ╔═╡ bb3a74ce-78ee-487e-a413-4c0e035e8818
+md"""
+## Kurtosis
+"""
 
 # ╔═╡ 67533f87-b016-45fe-b582-53c3c225c056
 let
@@ -646,6 +574,14 @@ let
     fig
 end
 
+# ╔═╡ ecf80697-b786-4b02-9563-f3d082383b76
+md"""
+Choose which frames to plot:
+- Plasma frame: $plot_pf_binder
+- Shock frame: $plot_sf_binder
+- ISM frame: $plot_ISM_binder
+"""
+
 # ╔═╡ Cell order:
 # ╟─f0e77bbd-e420-49f1-9b40-f9d994888b93
 # ╟─cd809ca8-2cc4-435d-ab8b-b7b24fa40ed1
@@ -673,6 +609,8 @@ end
 # ╟─d85427f4-86ed-4c04-980a-a4152b5875e8
 # ╠═1572a05b-77db-43a4-81cd-d9eb3c9bf2e0
 # ╠═f8d26a2c-2789-4b04-8bb7-71bf19686bbd
+# ╠═efed6856-264e-4917-8d01-aadfa4aaf9ea
+# ╠═72e45c0b-d1e4-4244-8ff8-0d1013a57d71
 # ╟─628130bf-da25-4799-8e5e-3d2db15b1e49
 # ╟─ecf233ad-d75e-4aa5-bf7e-ff3e7b1d8755
 # ╟─59a22149-3397-4e97-9f7b-5d502aacf293
@@ -701,20 +639,13 @@ end
 # ╟─932c2a77-0198-4df4-a4bd-30d0bda93946
 # ╟─91bba2da-c925-4123-bb8a-c1f9be8619e9
 # ╟─7da22399-718c-4f16-ba02-7ae27773942b
-# ╠═d9b1e2c3-d3d3-4bdb-b4b2-c7849f61d2c9
 # ╟─3f36fc06-3799-41f3-971b-d13d43e5fc20
 # ╟─5767b9ac-64c2-4d2f-ad42-961184c7edc7
 # ╟─b6ce51e5-b4ff-49eb-83db-ecf3e8a081ac
-# ╠═6266b083-269c-442b-8682-2587c944a276
+# ╟─6266b083-269c-442b-8682-2587c944a276
 # ╟─7495e7e9-3d50-4401-baef-d2e3c11e6b46
 # ╟─de5f1493-a018-40cd-8b30-0681f1c61768
 # ╟─adf24143-4be1-46c7-a63a-fe4dd490791d
 # ╟─bb3a74ce-78ee-487e-a413-4c0e035e8818
 # ╟─67533f87-b016-45fe-b582-53c3c225c056
 # ╟─ecf80697-b786-4b02-9563-f3d082383b76
-# ╟─9ea7a3a4-987d-416d-88d1-672e3cce23c5
-# ╠═b7a96870-784e-4ce0-830d-d245fc16e5f4
-# ╠═4ac1798d-ec27-4571-9b2a-44cb432ef0d6
-# ╟─fbd71150-7e0b-4a20-ad79-4260b78a21ef
-# ╠═efed6856-264e-4917-8d01-aadfa4aaf9ea
-# ╠═72e45c0b-d1e4-4244-8ff8-0d1013a57d71
