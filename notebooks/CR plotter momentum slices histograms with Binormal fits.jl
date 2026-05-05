@@ -93,7 +93,7 @@ md"""
 md"""
 !!! warning "Do not run"
 
-    The following two cells with DrWatson are commented out because the root Project.toml file no longer contain some of the packages used in ths notebook for perfomance reasons. If you need to re-run, uncomment the lines invloving `DrWatson` and `@quickactivate`, and re-add the packages to the Project.toml file.
+    The following two cells with DrWatson are commented out because the root Project.toml file no longer contain some of the packages used in this notebook for performance reasons. If you need to re-run, uncomment the lines involving `DrWatson` and `@quickactivate`, and re-add the packages to the Project.toml file.
 """
 
 # ╔═╡ f1ee2cb0-8274-11ef-0826-f55183647219
