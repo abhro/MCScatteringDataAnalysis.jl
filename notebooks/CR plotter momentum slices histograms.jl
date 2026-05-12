@@ -167,10 +167,14 @@ axis_properties = (
 )
 
 # ╔═╡ f86707a1-9d79-4df8-8798-3f7ea1d1797c
+# bins = 20;
+# bins = 30;
+# bins = 35;
 # bins = 40;
-# bins = 50;
-bins = 90;
+bins = 50;
+# bins = 90;
 # bins = 180;
+# bins = 450;
 # bins = 900;
 
 # ╔═╡ 50b1a87f-49ff-4d93-aa6e-f042a87b875e
@@ -229,16 +233,12 @@ Choose which frames to plot:
 """
 
 # ╔═╡ febdc8a1-00bb-47a7-83d2-6cccef5190f5
-# ╠═╡ disabled = true
-#=╠═╡
 CR_p_gdf_momentum[proton_momentum_index]
-  ╠═╡ =#
 
 # ╔═╡ 35710ad9-f2e4-487b-be19-c29500633726
 md"""
 Proton momentum slice to plot (index): $proton_index_binder (min: $(minimum(idx_CR_p_gdf)), max: $(maximum(idx_CR_p_gdf)))
 """
-
 
 # ╔═╡ 7be1e6da-0eb9-45e5-a4f9-bb6deedc3def
 md"""
@@ -359,6 +359,15 @@ Approach it like curve-fitting
 # ╔═╡ f2fe3844-2be8-4da6-9656-40312304556b
 normal_distrib_protons_from_curves = fitdistributions(v -> fit_dist_to_histogram(Normal, v; nbins = bins), CR_p_gdf_momentum)
 
+# ╔═╡ 3941deab-6731-4545-a8d4-07ed4631a8ce
+begin
+    normal_distrib_protons_from_curves_50 = fitdistributions(v -> fit_dist_to_histogram(Normal, v; nbins = 50), CR_p_gdf_momentum)
+    normal_distrib_protons_from_curves_90 = fitdistributions(v -> fit_dist_to_histogram(Normal, v; nbins = 90), CR_p_gdf_momentum)
+    normal_distrib_protons_from_curves_180 = fitdistributions(v -> fit_dist_to_histogram(Normal, v; nbins = 180), CR_p_gdf_momentum)
+    normal_distrib_protons_from_curves_450 = fitdistributions(v -> fit_dist_to_histogram(Normal, v; nbins = 450), CR_p_gdf_momentum)
+    normal_distrib_protons_from_curves_900 = fitdistributions(v -> fit_dist_to_histogram(Normal, v; nbins = 900), CR_p_gdf_momentum)
+end
+
 # ╔═╡ b0d555b3-5087-4405-8343-ce304d482ca9
 fitted_dist_curve = normal_distrib_protons_from_curves.pf[proton_momentum_index]
 
@@ -386,6 +395,15 @@ md"""
 md"""
 ### Distribution agreement curve
 """
+
+# ╔═╡ ede2f04c-0a49-4078-942c-fce0f6093e57
+begin
+    proton_distances_50 = bcdistances(normal_distrib_protons.pf, normal_distrib_protons_from_curves_50.pf)
+    proton_distances_90 = bcdistances(normal_distrib_protons.pf, normal_distrib_protons_from_curves_90.pf)
+    proton_distances_180 = bcdistances(normal_distrib_protons.pf, normal_distrib_protons_from_curves_180.pf)
+    proton_distances_450 = bcdistances(normal_distrib_protons.pf, normal_distrib_protons_from_curves_450.pf)
+    proton_distances_900 = bcdistances(normal_distrib_protons.pf, normal_distrib_protons_from_curves_900.pf)
+end
 
 # ╔═╡ e890ae58-8664-4234-88d6-4e6da5624a55
 md"""
@@ -476,6 +494,8 @@ let df = CR_p_gdf_momentum[proton_momentum_index], distribs = normal_distrib_pro
         axis_properties...
     )
 
+    # xlims!(ax, 46.5, 46.7)
+
     if do_plot_pf
         log_dNdp = df.log_dNdp_cr_pf |> skipmissing |> collect
         # log_dNdp ./= std(log_dNdp)
@@ -483,12 +503,12 @@ let df = CR_p_gdf_momentum[proton_momentum_index], distribs = normal_distrib_pro
 
         distrib = distribs.pf[proton_momentum_index]
         if !ismissing(distrib)
-            plot!(ax, distrib, label = @sprintf("MLE fit 𝒩 (%.6f, %.6f)", params(distrib)...), color = :indianred)
+            # plot!(ax, distrib, label = @sprintf("MLE fit 𝒩 (%.6f, %.6f)", params(distrib)...), color = :indianred)
         end
 
         curve_fit_distrib = normal_distrib_protons_from_curves.pf[proton_momentum_index]
         if !ismissing(curve_fit_distrib)
-            plot!(ax, curve_fit_distrib, label = @sprintf("Curve fit 𝒩 (%.6f, %.6f)", params(curve_fit_distrib)...), color = :orange)
+            # plot!(ax, curve_fit_distrib, label = @sprintf("Curve fit 𝒩 (%.6f, %.6f)", params(curve_fit_distrib)...), color = :orange)
         end
     end
 
@@ -611,6 +631,27 @@ let
     # lines!(ax, x, fitted_dist_curve, label = "curve-fit dist", linewidth = 0.5)
 
     axislegend(ax, framevisible = false, position = :rt)
+    fig
+end
+
+# ╔═╡ c801bcd2-f779-4ad0-ad46-9229009e38c4
+let
+    fig = Figure()
+    ax = Axis(
+        fig[1, 1];
+        axis_properties...,
+        title = "Protons distribution agreement curve",
+        xlabel = "log p (nat)", ylabel = "Bhattacharya distance",
+        yscale = p_val_yscale,
+    )
+    scatterlines!(ax, proton_log_p_nat, proton_distances_50; label = "bins = 50", markersize)
+    scatterlines!(ax, proton_log_p_nat, proton_distances_90; label = "bins = 90", markersize)
+    scatterlines!(ax, proton_log_p_nat, proton_distances_180; label = "bins = 180", markersize)
+    scatterlines!(ax, proton_log_p_nat, proton_distances_450; label = "bins = 450", markersize)
+    scatterlines!(ax, proton_log_p_nat, proton_distances_900; label = "bins = 900", markersize)
+
+    axislegend(ax, position = :ct)
+    vlines!(ax, 7.5, linewidth = 0.4)
     fig
 end
 
@@ -750,7 +791,7 @@ end
 # ╟─628130bf-da25-4799-8e5e-3d2db15b1e49
 # ╟─ecf233ad-d75e-4aa5-bf7e-ff3e7b1d8755
 # ╟─59a22149-3397-4e97-9f7b-5d502aacf293
-# ╟─f91132bd-28af-4a6c-9a77-5c5b0ed4a08a
+# ╠═f91132bd-28af-4a6c-9a77-5c5b0ed4a08a
 # ╠═f86707a1-9d79-4df8-8798-3f7ea1d1797c
 # ╠═50b1a87f-49ff-4d93-aa6e-f042a87b875e
 # ╟─105361e9-cafd-4755-bcbd-fdcbcb07b291
@@ -767,7 +808,7 @@ end
 # ╟─ecf80697-b786-4b02-9563-f3d082383b76
 # ╠═febdc8a1-00bb-47a7-83d2-6cccef5190f5
 # ╟─35710ad9-f2e4-487b-be19-c29500633726
-# ╟─4051e244-4c84-4983-8cb9-bc7f53daa9f6
+# ╠═4051e244-4c84-4983-8cb9-bc7f53daa9f6
 # ╟─7be1e6da-0eb9-45e5-a4f9-bb6deedc3def
 # ╟─88822f52-aab8-4931-9091-1909da6c604b
 # ╟─4a32f313-8ba7-4354-9843-efd86607efb8
@@ -807,15 +848,18 @@ end
 # ╟─639ab710-c411-4831-9e1d-d7fba723b7bc
 # ╟─3860d0cf-20f4-4256-9286-8757afc38ef9
 # ╠═f2fe3844-2be8-4da6-9656-40312304556b
+# ╠═3941deab-6731-4545-a8d4-07ed4631a8ce
 # ╠═97291776-74f0-428a-ab4f-3c498b630000
 # ╟─355205d3-aaf6-4eb2-90c8-332bd9c2a75b
 # ╟─452c9b2f-7138-4310-b0c6-df2be7ab8c76
 # ╠═b238afe1-3d1f-4e15-bc49-1b015a39c02c
+# ╠═ede2f04c-0a49-4078-942c-fce0f6093e57
 # ╠═78a22648-c76a-4b5c-b552-9be000a60109
 # ╟─e890ae58-8664-4234-88d6-4e6da5624a55
 # ╟─b1c91648-8150-4694-9c2f-4d4a9cf6c195
 # ╟─1e90778b-ce06-4b77-b0c2-93c87f78f1ec
 # ╠═7534104f-885d-48c5-8ae0-ddae56fcd86d
+# ╠═c801bcd2-f779-4ad0-ad46-9229009e38c4
 # ╠═d77a95bf-2d54-46d5-81ca-b671ee1db695
 # ╟─04dad413-0dc0-4ceb-81c2-e208ef082f38
 # ╟─94a91acd-a878-4c3c-9716-8bed60bf8c6c

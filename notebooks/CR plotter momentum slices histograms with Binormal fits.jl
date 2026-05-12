@@ -935,12 +935,6 @@ function fit_mom(::Type{BiNormal{T}}, x::AbstractVector{T}; solver = nothing) wh
     return BiNormal(sol.u...)
 end
 
-# ╔═╡ b63ff630-624b-4e9b-bc03-dc32fd691b05
-# ╠═╡ disabled = true
-#=╠═╡
-testset = CR_p_gdf_momentum[testset_index].log_dNdp_cr_pf |> skipmissing|> collect
-  ╠═╡ =#
-
 # ╔═╡ f66bbb64-2415-46bf-9974-ad43d3622cb5
 # ╠═╡ disabled = true
 #=╠═╡
@@ -1014,7 +1008,6 @@ mixture_model_test = BiNormal(abs.(s.zero)...)
 # ╟─90e850f3-7b48-441a-92ab-1e1f6bf04e9a
 # ╠═18ae83a7-98e2-4ef0-b21c-cac428146188
 # ╠═e0cc631f-28a1-42db-84fc-9e7dcc9387bf
-# ╠═b63ff630-624b-4e9b-bc03-dc32fd691b05
 # ╠═96b36184-f98e-4b31-a2d5-1754bb40d84a
 # ╠═cf870504-0f29-4354-9a4a-76971459aeba
 # ╠═3596bac9-5797-40c6-a4da-cdcc1cc9a451
