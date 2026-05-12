@@ -343,6 +343,33 @@ SSE_hist(log_dNdp, fitted_dist_MLE)
 # ╔═╡ 55d8c831-27e6-4914-a836-7a05281e8fb3
 sum(logpdf.(fitted_dist_MLE, log_dNdp))
 
+# ╔═╡ 7654a2bf-695f-4d8c-9e96-f809c336185f
+fit(SkewNormal, CR_p_gdf_momentum[proton_momentum_index].log_dNdp_cr_pf |> skipmissing |> collect)
+
+# ╔═╡ 526bf43f-5042-4a64-91f4-f37b2f50774a
+CR_p_gdf_momentum[proton_momentum_index].log_dNdp_cr_pf |> skipmissing |> collect
+
+# ╔═╡ 351ca66d-5864-49a3-bcd5-aa7dfec5cc1e
+function sknorm_params(x)
+    if isempty(x) || length(x) == 1
+        return missing
+    end
+    γ = max(-0.99, min(0.99, skewness(x)))
+    γ_exped = abs(γ)^(2//3)
+    μ = mean(x)
+    σ = std(x)
+    δ = sign(γ) * sqrt(π/2) * sqrt(γ_exped / (γ_exped + (2 - π/2)^(2//3)))
+    # @show γ μ σ δ
+    α = δ / sqrt(1 - δ^2)
+    ω = σ / sqrt(1 - 2/π * δ^2)
+    ξ = μ - ω * δ * sqrt(2/π)
+    # @show ξ ω α
+    return SkewNormal(ξ, ω, α)
+end
+
+# ╔═╡ f49a6b08-423c-4f42-b03f-ae7a7149e59d
+skewnormal_distrib_protons = fitdistributions(v -> ifelse(isempty(collect(skipmissing(v))), missing, sknorm_params(collect(skipmissing(v)))), CR_p_gdf_momentum)
+
 # ╔═╡ e75ea9c0-59ca-4097-b4f6-6a3af04dc308
 normal_distrib_electrons = fitdistributions(v -> fitdistribution(Normal, v), CR_e_gdf_momentum)
 
@@ -377,14 +404,8 @@ SSE_hist(log_dNdp, fitted_dist_curve)
 # ╔═╡ 89f8d7a8-ea2e-4906-9460-da16154b0404
 sum(logpdf.(fitted_dist_curve, log_dNdp))
 
-# ╔═╡ b238afe1-3d1f-4e15-bc49-1b015a39c02c
-proton_distances = bcdistances(normal_distrib_protons.pf, normal_distrib_protons_from_curves.pf)
-
 # ╔═╡ 97291776-74f0-428a-ab4f-3c498b630000
 normal_distrib_electrons_from_curves = fitdistributions(v -> fit_dist_to_histogram(Normal, v; nbins = bins), CR_e_gdf_momentum)
-
-# ╔═╡ 78a22648-c76a-4b5c-b552-9be000a60109
-electron_distances = bcdistances(normal_distrib_electrons.pf, normal_distrib_electrons_from_curves.pf)
 
 # ╔═╡ 355205d3-aaf6-4eb2-90c8-332bd9c2a75b
 md"""
@@ -395,6 +416,12 @@ md"""
 md"""
 ### Distribution agreement curve
 """
+
+# ╔═╡ b238afe1-3d1f-4e15-bc49-1b015a39c02c
+proton_distances = bcdistances(normal_distrib_protons.pf, normal_distrib_protons_from_curves.pf)
+
+# ╔═╡ 78a22648-c76a-4b5c-b552-9be000a60109
+electron_distances = bcdistances(normal_distrib_electrons.pf, normal_distrib_electrons_from_curves.pf)
 
 # ╔═╡ ede2f04c-0a49-4078-942c-fce0f6093e57
 begin
@@ -499,11 +526,17 @@ let df = CR_p_gdf_momentum[proton_momentum_index], distribs = normal_distrib_pro
     if do_plot_pf
         log_dNdp = df.log_dNdp_cr_pf |> skipmissing |> collect
         # log_dNdp ./= std(log_dNdp)
-        !isempty(log_dNdp) && stephist!(ax, log_dNdp, label = "plasma frame ($(length(log_dNdp)) samples)"; bins, normalization, color = color_pf_p)
+        !isempty(log_dNdp) && stephist!(ax, log_dNdp, label = "plasma frame\n($(length(log_dNdp)) samples)"; bins, normalization, color = color_pf_p)
 
         distrib = distribs.pf[proton_momentum_index]
         if !ismissing(distrib)
-            # plot!(ax, distrib, label = @sprintf("MLE fit 𝒩 (%.6f, %.6f)", params(distrib)...), color = :indianred)
+            plot!(ax, distrib, label = @sprintf("MLE fit\n𝒩 (%.6f, %.6f)", params(distrib)...), color = :indianred)
+        end
+
+        distrib = skewnormal_distrib_protons.pf[proton_momentum_index]
+        xs = range(extrema(log_dNdp)..., length=1000)
+        if !ismissing(distrib)
+            lines!(ax, xs, pdf.(distrib, xs), label = @sprintf("MoM fit\nSN(%.3f, %.3f, %.3f)", params(distrib)...), color = :green)
         end
 
         curve_fit_distrib = normal_distrib_protons_from_curves.pf[proton_momentum_index]
@@ -530,7 +563,7 @@ let df = CR_p_gdf_momentum[proton_momentum_index], distribs = normal_distrib_pro
     end
 
     try
-        leg = axislegend(ax, framevisible = false, position = :rt)
+        leg = axislegend(ax, framevisible = false, position = :lt)
         # leg.tellheight = true
     catch e
         # axislegend has no plots to work with, because the current index doesn't have any samples. stop it complaining.
@@ -844,6 +877,10 @@ end
 # ╟─f3132403-113d-4b30-9fd0-379d28ade3c7
 # ╟─8bc20375-2562-4611-a67b-5884aa99b5f0
 # ╠═e6b9701d-3d27-4c0c-b0b9-9879527f369c
+# ╠═f49a6b08-423c-4f42-b03f-ae7a7149e59d
+# ╠═7654a2bf-695f-4d8c-9e96-f809c336185f
+# ╠═526bf43f-5042-4a64-91f4-f37b2f50774a
+# ╠═351ca66d-5864-49a3-bcd5-aa7dfec5cc1e
 # ╠═e75ea9c0-59ca-4097-b4f6-6a3af04dc308
 # ╟─639ab710-c411-4831-9e1d-d7fba723b7bc
 # ╟─3860d0cf-20f4-4256-9286-8757afc38ef9
