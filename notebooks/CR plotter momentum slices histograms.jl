@@ -41,10 +41,7 @@ using CairoMakie
 @revise using MCScatteringDataAnalysis
 
 # ╔═╡ 547aad6f-32db-405d-9886-a727f1591101
-begin
-    using AlgebraOfGraphics
-    import AlgebraOfGraphics as AoG
-end
+using AlgebraOfGraphics; import AlgebraOfGraphics as AoG
 
 # ╔═╡ 7a050dc5-7772-4933-959f-bf4fb478fc7d
 using PlutoUI
@@ -166,6 +163,21 @@ axis_properties = (
     xlabel = "log(dN/dp)",
 )
 
+# ╔═╡ ec49f060-d792-4c4a-98c0-237e21a863a4
+md"""
+Set a bunch of legend properties to get AlgebraOfGraphics to behave.
+"""
+
+# ╔═╡ 853f1d4c-65a1-4fa4-ad69-99fff3c9b570
+# options for getting legend by AlgebraOfGraphics to cooperate
+legend_properties = (
+    valign = :top,
+    halign = :right,
+    tellwidth = false,
+    margin = (10, 10, 10, 10),
+    framevisible = false,
+)
+
 # ╔═╡ f86707a1-9d79-4df8-8798-3f7ea1d1797c
 # bins = 20;
 # bins = 30;
@@ -179,6 +191,30 @@ bins = 50;
 
 # ╔═╡ 50b1a87f-49ff-4d93-aa6e-f042a87b875e
 color_pf_p, color_sf_p, color_ISM_p, color_pf_e, color_sf_e, color_ISM_e = Makie.wong_colors();
+
+# ╔═╡ 47cad620-6f44-4fca-aae4-9b293acb3c93
+md"""
+Create a method for multiplication that makes the AlgebraOfGraphics layers look a little more algebraic.
+"""
+
+# ╔═╡ b03fee2d-9bd6-44e1-bd35-744a2254a316
+# A little type-piracy makes the world go round
+Base.:*(b::Bool, l::Layer) = b ? l : zerolayer()
+
+# ╔═╡ 023a207c-cf8f-417f-bd7a-861c72369a9b
+x_map = :log_dNdp_cr_pf => "log(dN/dp)";
+
+# ╔═╡ 6455ce06-d1e0-420d-8cb2-7bd2a02225a5
+y_label = "log(dN/dp)";
+
+# ╔═╡ a3dff5be-4052-46ac-a791-e453e8587dc2
+pf_map = mapping(:log_dNdp_cr_pf => y_label, color = direct("plasma frame"));
+
+# ╔═╡ b9b604a3-5557-400a-a88d-09000802324a
+sf_map = mapping(:log_dNdp_cr_sf => y_label, color = direct("shock frame"));
+
+# ╔═╡ e4d0d4ca-b995-4037-851a-7b956171effb
+ISM_map = mapping(:log_dNdp_cr_ISM => y_label, color = direct("ISM frame"));
 
 # ╔═╡ 1b9f507c-1585-4ad1-8090-bdde6de972d6
 md"""
@@ -195,29 +231,20 @@ plot_sf_binder = @bind do_plot_sf CheckBox(default = false);
 plot_ISM_binder = @bind do_plot_ISM CheckBox(default = false);
 
 # ╔═╡ 105361e9-cafd-4755-bcbd-fdcbcb07b291
-map_layer = let
-    x_map = :log_dNdp_cr_pf => "log(dN/dp)"
-    y_label = "log(dN/dp)"
-
-    pf_map = mapping(x_map, :log_dNdp_cr_pf => y_label, color = direct("plasma frame"))
-    sf_map = mapping(x_map, :log_dNdp_cr_sf => y_label, color = direct("shock frame"))
-    ISM_map = mapping(x_map, :log_dNdp_cr_ISM => y_label, color = direct("ISM frame"))
-
-    combined_layer = zerolayer()
-    if do_plot_pf
-        combined_layer += pf_map
-    end
-    if do_plot_sf
-        combined_layer += sf_map
-    end
-    if do_plot_ISM
-        combined_layer += ISM_map
-    end
-    combined_layer
-end
+map_layer = do_plot_pf * pf_map + do_plot_sf * sf_map + do_plot_ISM * ISM_map;
 
 # ╔═╡ 4553a97d-6b78-4268-90de-d8bee348d3d4
 plot_electrons_binder = @bind do_plot_electrons CheckBox(default = true);
+
+# ╔═╡ 256c8263-063a-4335-9255-85a53f102313
+CR_p_std_log_dNdp = (;
+    pf = gdf_sample_stats(std, CR_p_gdf_momentum; column = :log_dNdp_cr_pf),
+    sf = gdf_sample_stats(std, CR_p_gdf_momentum; column = :log_dNdp_cr_sf),
+    ISM = gdf_sample_stats(std, CR_p_gdf_momentum; column = :log_dNdp_cr_ISM),
+);
+
+# ╔═╡ b0457616-1cb7-44b5-818c-ed76a7a7417b
+pf_layer = mapping(CR_p_std_log_dNdp.pf)
 
 # ╔═╡ ce8b1307-dc78-463b-9f41-04fe5dded525
 md"""
@@ -238,6 +265,16 @@ CR_p_gdf_momentum[proton_momentum_index]
 # ╔═╡ 35710ad9-f2e4-487b-be19-c29500633726
 md"""
 Proton momentum slice to plot (index): $proton_index_binder (min: $(minimum(idx_CR_p_gdf)), max: $(maximum(idx_CR_p_gdf)))
+"""
+
+# ╔═╡ b7eafb71-2889-4d82-9579-5ff662fff704
+md"""
+AlgebraOfGraphics
+"""
+
+# ╔═╡ 03e8409c-fe00-43c2-94ec-d6feb470238c
+md"""
+Makie only
 """
 
 # ╔═╡ 7be1e6da-0eb9-45e5-a4f9-bb6deedc3def
@@ -377,14 +414,8 @@ SSE_hist(log_dNdp, fitted_dist_curve)
 # ╔═╡ 89f8d7a8-ea2e-4906-9460-da16154b0404
 sum(logpdf.(fitted_dist_curve, log_dNdp))
 
-# ╔═╡ b238afe1-3d1f-4e15-bc49-1b015a39c02c
-proton_distances = bcdistances(normal_distrib_protons.pf, normal_distrib_protons_from_curves.pf)
-
 # ╔═╡ 97291776-74f0-428a-ab4f-3c498b630000
 normal_distrib_electrons_from_curves = fitdistributions(v -> fit_dist_to_histogram(Normal, v; nbins = bins), CR_e_gdf_momentum)
-
-# ╔═╡ 78a22648-c76a-4b5c-b552-9be000a60109
-electron_distances = bcdistances(normal_distrib_electrons.pf, normal_distrib_electrons_from_curves.pf)
 
 # ╔═╡ 355205d3-aaf6-4eb2-90c8-332bd9c2a75b
 md"""
@@ -395,6 +426,12 @@ md"""
 md"""
 ### Distribution agreement curve
 """
+
+# ╔═╡ b238afe1-3d1f-4e15-bc49-1b015a39c02c
+proton_distances = bcdistances(normal_distrib_protons.pf, normal_distrib_protons_from_curves.pf)
+
+# ╔═╡ 78a22648-c76a-4b5c-b552-9be000a60109
+electron_distances = bcdistances(normal_distrib_electrons.pf, normal_distrib_electrons_from_curves.pf)
 
 # ╔═╡ ede2f04c-0a49-4078-942c-fce0f6093e57
 begin
@@ -468,6 +505,19 @@ md"""
 # ╔═╡ 377aaf8f-b909-4c42-bc77-912fd300c300
 normalization = :pdf;
 
+# ╔═╡ f32983bd-700f-4064-a20b-dd2d98f8521f
+stephist_layer = histogram(Stairs; bins, normalization);
+
+# ╔═╡ 061c4af2-dd56-4ada-94cb-607fa662da61
+let df = CR_p_gdf_momentum[proton_momentum_index], distribs = normal_distrib_protons
+    fig = Figure()
+    spec = data(df) * stephist_layer * map_layer
+    title = "Histogram of protons dN/dp at log p = $log_p_nat_at_slice (mₚc)"
+    plt = draw!(fig[1, 1], spec; axis = (; title, axis_properties...))
+    legend!(fig[1, 1], plt; legend_properties...)
+    fig
+end
+
 # ╔═╡ 32edc221-e586-4510-9427-977b22f62f6c
 md"""
 Vector of momentum slices
@@ -483,6 +533,16 @@ log_p_nat_at_slice_p = proton_log_p_nat[proton_momentum_index];
 md"""
 Value of proton momentum at current slice: log(*p*/*m*ₚ*c*) = $log_p_nat_at_slice_p
 """
+
+# ╔═╡ 061c4af2-dd56-4ada-94cb-607fa662da61
+let df = CR_p_gdf_momentum[proton_momentum_index], distribs = normal_distrib_protons
+    fig = Figure()
+    spec = data(df) * stephist_layer * map_layer
+    title = "Histogram of protons dN/dp at log p = $log_p_nat_at_slice_p (mₚc)"
+    plt = draw!(fig[1,1], spec; axis = (; title, axis_properties...))
+    legend!(fig[1,1], plt; legend_properties...)
+    fig
+end
 
 # ╔═╡ 4051e244-4c84-4983-8cb9-bc7f53daa9f6
 let df = CR_p_gdf_momentum[proton_momentum_index], distribs = normal_distrib_protons
@@ -514,7 +574,7 @@ let df = CR_p_gdf_momentum[proton_momentum_index], distribs = normal_distrib_pro
 
     if do_plot_sf
         log_dNdp = df.log_dNdp_cr_sf |> skipmissing |> collect
-        !isempty(log_dNdp) && hist!(ax, log_dNdp, label = "shock frame"; bins, normalization, color = color_sf_p)
+        !isempty(log_dNdp) && stephist!(ax, log_dNdp, label = "shock frame"; bins, normalization, color = color_sf_p)
         distrib = distribs.sf[proton_momentum_index]
         if !ismissing(distrib)
             plot!(ax, distrib, label = @sprintf("𝒩 (%.2f, %.2f)", params(distrib)...), color = color_sf_p)
@@ -522,7 +582,7 @@ let df = CR_p_gdf_momentum[proton_momentum_index], distribs = normal_distrib_pro
     end
     if do_plot_ISM
         log_dNdp = df.log_dNdp_cr_ISM |> skipmissing |> collect
-        !isempty(log_dNdp) && hist!(ax, log_dNdp, label = "ISM frame"; bins, normalization, color = color_ISM_p)
+        !isempty(log_dNdp) && stephist!(ax, log_dNdp, label = "ISM frame"; bins, normalization, color = color_ISM_p)
         distrib = distribs.ISM[proton_momentum_index]
         if !ismissing(distrib)
             plot!(ax, distrib, label = @sprintf("𝒩 (%.2f, %.2f)", params(distrib)...), color = color_ISM_p)
@@ -792,14 +852,25 @@ end
 # ╟─ecf233ad-d75e-4aa5-bf7e-ff3e7b1d8755
 # ╟─59a22149-3397-4e97-9f7b-5d502aacf293
 # ╠═f91132bd-28af-4a6c-9a77-5c5b0ed4a08a
+# ╟─ec49f060-d792-4c4a-98c0-237e21a863a4
+# ╟─853f1d4c-65a1-4fa4-ad69-99fff3c9b570
 # ╠═f86707a1-9d79-4df8-8798-3f7ea1d1797c
 # ╠═50b1a87f-49ff-4d93-aa6e-f042a87b875e
-# ╟─105361e9-cafd-4755-bcbd-fdcbcb07b291
+# ╟─47cad620-6f44-4fca-aae4-9b293acb3c93
+# ╠═b03fee2d-9bd6-44e1-bd35-744a2254a316
+# ╠═023a207c-cf8f-417f-bd7a-861c72369a9b
+# ╠═6455ce06-d1e0-420d-8cb2-7bd2a02225a5
+# ╠═a3dff5be-4052-46ac-a791-e453e8587dc2
+# ╠═b9b604a3-5557-400a-a88d-09000802324a
+# ╠═e4d0d4ca-b995-4037-851a-7b956171effb
+# ╠═105361e9-cafd-4755-bcbd-fdcbcb07b291
 # ╟─1b9f507c-1585-4ad1-8090-bdde6de972d6
 # ╠═d6513272-7232-43e6-ac88-a58462181041
 # ╠═59be6983-6e37-4a70-8929-69176a5f807e
 # ╠═60deb76f-3efe-4e0d-b176-9f0169259dca
 # ╠═4553a97d-6b78-4268-90de-d8bee348d3d4
+# ╠═b0457616-1cb7-44b5-818c-ed76a7a7417b
+# ╠═256c8263-063a-4335-9255-85a53f102313
 # ╟─ce8b1307-dc78-463b-9f41-04fe5dded525
 # ╠═71404de8-f8b2-4d26-b7d7-41064cae1447
 # ╠═6c16fc5a-7113-4b6e-abf2-de1275cceda5
@@ -808,6 +879,10 @@ end
 # ╟─ecf80697-b786-4b02-9563-f3d082383b76
 # ╠═febdc8a1-00bb-47a7-83d2-6cccef5190f5
 # ╟─35710ad9-f2e4-487b-be19-c29500633726
+# ╠═f32983bd-700f-4064-a20b-dd2d98f8521f
+# ╟─b7eafb71-2889-4d82-9579-5ff662fff704
+# ╟─061c4af2-dd56-4ada-94cb-607fa662da61
+# ╟─03e8409c-fe00-43c2-94ec-d6feb470238c
 # ╠═4051e244-4c84-4983-8cb9-bc7f53daa9f6
 # ╟─7be1e6da-0eb9-45e5-a4f9-bb6deedc3def
 # ╟─88822f52-aab8-4931-9091-1909da6c604b
